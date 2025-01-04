@@ -1,10 +1,10 @@
 :root {
   --guess-dark: #687fa8;
   --guess-light: #99a8c2;
-  --solution-dark: #1253c4;
-  --solution-light: #699ae0;
-  --super-solution-dark: #c4c112;
-  --super-solution-light: #eae871;
+  --solution-dark: #4432e3;
+  --solution-light: #5090f0;
+  --super-solution-dark: #dd00f5;
+  --super-solution-light: #d481f8;
   --background-dark: #11111b;
 }
 

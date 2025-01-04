@@ -1,7 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
 import { Connection, Letter, MouseAction, Solution } from './strands';
-import { StrandsService } from './strands.service';
+import { StrandsService } from '../core/strands.service';
+import { ActivatedRoute } from '@angular/router';
+import { defaultLetterGrid } from '../core/constants';
 
 enum GameEvent {
   SolutionFound,
@@ -16,56 +18,7 @@ enum GameEvent {
   styleUrl: './strands.component.css'
 })
 export class StrandsComponent {
-  letters: Letter[] = [
-    { letter: 'D', location: { x: 0, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'U', location: { x: 0, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'U', location: { x: 0, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'A', location: { x: 0, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'L', location: { x: 0, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'B', location: { x: 0, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'F', location: { x: 1, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'A', location: { x: 1, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 1, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'K', location: { x: 1, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'E', location: { x: 1, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'L', location: { x: 1, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'R', location: { x: 2, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'A', location: { x: 2, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'R', location: { x: 2, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'B', location: { x: 2, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 2, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'A', location: { x: 2, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'O', location: { x: 3, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 3, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 3, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'E', location: { x: 3, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'M', location: { x: 3, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'W', location: { x: 3, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'E', location: { x: 4, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'G', location: { x: 4, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'R', location: { x: 4, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 4, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'I', location: { x: 4, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'E', location: { x: 4, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'B', location: { x: 5, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'L', location: { x: 5, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'O', location: { x: 5, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'I', location: { x: 5, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'D', location: { x: 5, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'I', location: { x: 5, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'L', location: { x: 6, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'E', location: { x: 6, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'T', location: { x: 6, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'N', location: { x: 6, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'G', location: { x: 6, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'O', location: { x: 6, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'U', location: { x: 7, y: 0 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'A', location: { x: 7, y: 1 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'M', location: { x: 7, y: 2 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'M', location: { x: 7, y: 3 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'I', location: { x: 7, y: 4 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
-    { letter: 'H', location: { x: 7, y: 5 }, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 }
-  ];
+  letters: Letter[] = defaultLetterGrid;
 
   fixedConnections: Connection[] = [];
   tryConnections: Connection[] = [];
@@ -81,14 +34,7 @@ export class StrandsComponent {
 
   currentTry: Letter[] = [];
 
-  solutions: Solution[] = [
-    { locations: [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, { x: 2, y: 3 }, { x: 2, y: 4 }, { x: 2, y: 5 }, { x: 3, y: 4 }, { x: 3, y: 3 }, { x: 3, y: 2 }], isSuperSolution: true, found: false },
-    { locations: [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 2 }, { x: 1, y: 3 }, { x: 1, y: 4 }, { x: 1, y: 5 }, { x: 0, y: 5 }, { x: 0, y: 4 }, { x: 0, y: 3 }, { x: 0, y: 2 }], isSuperSolution: false, found: false },
-    { locations: [{ x: 3, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }, { x: 4, y: 0 }], isSuperSolution: false, found: false },
-    { locations: [{ x: 3, y: 5 }, { x: 4, y: 5 }, { x: 4, y: 4 }, { x: 4, y: 3 }, { x: 4, y: 2 }, { x: 5, y: 2 }, { x: 6, y: 2 }], isSuperSolution: false, found: false },
-    { locations: [{ x: 7, y: 5 }, { x: 7, y: 4 }, { x: 7, y: 3 }, { x: 7, y: 2 }, { x: 6, y: 1 }, { x: 5, y: 1 }, { x: 5, y: 0 }, { x: 6, y: 0 }, { x: 7, y: 1 }, { x: 7, y: 0 }], isSuperSolution: false, found: false },
-    { locations: [{ x: 5, y: 3 }, { x: 6, y: 3 }, { x: 5, y: 4 }, { x: 5, y: 5 }, { x: 6, y: 4 }, { x: 6, y: 5 },], isSuperSolution: false, found: false },
-  ];
+  solutions: Solution[] = [];
 
   statusText = '';
   statusColor = 'white';
@@ -96,12 +42,54 @@ export class StrandsComponent {
   gameEvents: GameEvent[] = [];
 
   date = '';
-  subTitle = 'Bunte Wörter';
-  title = 'Stränge #0';
+  subTitle = '';
+  title = '';
+  finished = false;
+  ready = false;
+  loading = true;
+  finishedCount = 0;
 
-  constructor(private strandsService: StrandsService) {
-    const now = new Date();
-    this.date = now.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  constructor(private strandsService: StrandsService, private route: ActivatedRoute) {
+    const date = new Date();
+    this.route.params.subscribe(params => {
+      const dateParam = params['date'];
+      if (dateParam) {
+        date.setTime(Date.parse(dateParam));
+      }
+      this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      this.strandsService.loadRiddle(date.toISOString().substring(0, 10)).subscribe({
+        next: riddle => {
+          this.title = 'Stränge #' + riddle.index;
+          this.subTitle = riddle.theme;
+          const riddleLetters: string[] = riddle.letters.flat()
+          this.letters.forEach(letter => {
+            letter.isGuessActive = false;
+            letter.isSolutionActive = false;
+            letter.isSuperSolutionActive = false;
+            letter.hintTiming = -1;
+            letter.letter = riddleLetters.shift()!;
+          });
+          this.solutions = riddle.solutions.map(s => ({ ...s, found: false }));
+          this.nonSolutionWordsFound = [];
+          this.tipsUsed = 0;
+          this.finishedCount = 0;
+          this.gameEvents = [];
+          this.activeHint = null;
+          this.activeHintInAnimation = false;
+          this.fixedConnections = [];
+          this.tryConnections = [];
+          this.connections = [];
+          this.statusText = '';
+          this.statusColor = 'white';
+          this.ready = true;
+          this.loading = false;
+        },
+        error: () => {
+          this.ready = false;
+          this.loading = false;
+        }
+      });
+    });
   }
 
   @HostListener('mouseup')
@@ -117,7 +105,6 @@ export class StrandsComponent {
       letter.isGuessActive = false;
     });
     this.currentTry = [];
-    // this.statusText = '';
     if (recalculate) this.calculateConnections();
   }
 
@@ -135,6 +122,7 @@ export class StrandsComponent {
   copyWinToClipboard(): void {
     /* example:
     Stränge #1
+    „subtitle“
     💡🔵💡🔵
     🟡🔵🔵💡
     🔵🔵
@@ -151,6 +139,10 @@ export class StrandsComponent {
       }
       return acc;
     }, [] as (GameEvent | null)[]);
+    // remove trailing null event
+    if (events[events.length - 1] === null) {
+      events.pop();
+    }
     let gameResult = events.map(event => {
       switch (event) {
         case GameEvent.SolutionFound:
@@ -163,13 +155,15 @@ export class StrandsComponent {
           return lineBreak;
       }
     }).join('');
-    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + lineBreak + gameResult;
+    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + gameResult + lineBreak + lineBreak + 'https://stränge.de/' + lineBreak + 'https://xn--strnge-dua.de/';
     navigator.clipboard.writeText(clipboardText);
     navigator.share({ title: this.title, text: clipboardText });
     console.log(clipboardText);
   }
 
   win(): void {
+    this.setStatus('GEWONNEN!', 'var(--super-solution-light)');
+    this.finished = true;
     this.copyWinToClipboard();
   }
 
@@ -179,6 +173,7 @@ export class StrandsComponent {
       const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
       solution!.found = true;
       this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
+      this.finishedCount++;
       if (solution!.isSuperSolution) {
         this.setStatus('DURCHGANGSWORT!', 'var(--super-solution-light)');
       } else {

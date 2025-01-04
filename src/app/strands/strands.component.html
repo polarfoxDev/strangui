@@ -1,3 +1,4 @@
+@if(ready) {
 <div class="strands">
   <h1>Stränge, {{ date }}</h1>
   <h2>Thema: „{{ subTitle }}“</h2>
@@ -37,13 +38,38 @@
     }
   </svg>
 
+  <div class="counter-box">
+    <b>{{ finishedCount }}</b> von <b>{{ solutions.length }}</b> Themen-Wörtern
+    gefunden
+  </div>
   <div class="hint-box">
+    @if(!finished) {
     <button
       class="hint level-{{ nonSolutionWordsFound.length - tipsUsed * 3 }}"
       [disabled]="nonSolutionWordsFound.length - tipsUsed * 3 < 3"
       (click)="useHint()"
     >
       Hinweis
+      <span class="hint-numbers">
+        {{ nonSolutionWordsFound.length - tipsUsed * 3 }} / 3
+      </span>
     </button>
+    } @else {
+    <div class="game-over-box">
+      <p>🎉 Du hast das Spiel für heute abgeschlossen 🎉</p>
+      <button class="hint" (click)="copyWinToClipboard()">Teilen</button>
+    </div>
+    }
   </div>
 </div>
+} @else if (loading) {
+<div class="loading">
+  <h1>Stränge werden geladen</h1>
+  <p>Bitte warten...</p>
+</div>
+} @else {
+<div class="error">
+  <h1>Ein Fehler ist aufgetreten</h1>
+  <p>Bitte versuche es später erneut.</p>
+</div>
+}

@@ -1,4 +1,6 @@
-.strands {
+.strands,
+.loading,
+.error {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,12 +35,16 @@ h2 {
 .hint {
   display: block;
   height: 40px;
-  width: 120px;
+  width: 210px;
   border-radius: 20px;
   background: var(--guess-dark);
   border: 1px solid var(--guess-dark);
   color: white;
   font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
 }
 .hint.level-0 {
   background: var(--dark-background);
@@ -47,19 +53,33 @@ h2 {
   background: linear-gradient(
     to right,
     var(--guess-dark),
-    var(--guess-dark) 40px,
-    transparent 40px
+    var(--guess-dark) 70px,
+    transparent 70px
   );
 }
 .hint.level-2 {
   background: linear-gradient(
     to right,
     var(--guess-dark),
-    var(--guess-dark) 80px,
-    transparent 80px
+    var(--guess-dark) 140px,
+    transparent 140px
   );
 }
 .hint-box {
   height: 60px;
   min-height: 60px;
+}
+.hint-numbers {
+  font-size: 14px;
+  margin: 0;
+}
+.game-over-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.counter-box {
+  font-size: 20px;
 }

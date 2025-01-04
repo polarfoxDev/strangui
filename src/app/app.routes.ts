@@ -4,11 +4,11 @@ import { StrandsComponent } from './strands/strands.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'daily',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    component: StrandsComponent
   },
   {
-    path: 'daily',
+    path: 'history/:date',
     component: StrandsComponent
   }
 ];

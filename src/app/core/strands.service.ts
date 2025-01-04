@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { RiddleConfig } from '../strands/strands';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,9 @@ export class StrandsService {
 
   wordExists(word: string): boolean {
     return this.allWords.includes(word);
+  }
+
+  loadRiddle(date: string): Observable<RiddleConfig> {
+    return this.http.get<RiddleConfig>(`/riddle-${date}.json`);
   }
 }

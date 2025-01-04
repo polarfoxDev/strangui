@@ -20,10 +20,20 @@ export interface LetterLocation {
   y: number;
 }
 
-export interface Solution {
+export interface Solution extends SolutionConfig {
+  found: boolean;
+}
+
+export interface SolutionConfig {
   locations: LetterLocation[];
   isSuperSolution: boolean;
-  found: boolean;
+}
+
+export interface RiddleConfig {
+  index: number;
+  theme: string;
+  letters: string[][];
+  solutions: SolutionConfig[];
 }
 
 export enum MouseAction {
