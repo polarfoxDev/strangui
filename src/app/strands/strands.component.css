@@ -5,6 +5,7 @@
   align-items: center;
   height: 100%;
   gap: 20px;
+  overflow: auto;
 }
 h1 {
   margin-bottom: 0;
@@ -27,6 +28,7 @@ h2 {
   margin-top: calc(8 * -60px - 20px);
   width: calc(6 * 60px);
   height: calc(8 * 60px);
+  min-height: calc(8 * 60px);
 }
 .hint {
   display: block;
@@ -56,4 +58,8 @@ h2 {
     var(--guess-dark) 80px,
     transparent 80px
   );
+}
+.hint-box {
+  height: 60px;
+  min-height: 60px;
 }

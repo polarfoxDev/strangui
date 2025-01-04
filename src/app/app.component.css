@@ -1,0 +1,11 @@
+.app {
+  height: 100%;
+}
+.version {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+  font-size: 12px;
+  color: var(--guess-light);
+}
