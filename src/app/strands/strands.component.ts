@@ -3,6 +3,12 @@ import { LetterComponent } from './letter/letter.component';
 import { Connection, Letter, MouseAction, Solution } from './strands';
 import { StrandsService } from './strands.service';
 
+enum GameEvent {
+  SolutionFound,
+  SuperSolutionFound,
+  HintUsed,
+}
+
 @Component({
   selector: 'app-strands',
   imports: [LetterComponent],
@@ -84,7 +90,14 @@ export class StrandsComponent {
     { locations: [{ x: 5, y: 3 }, { x: 6, y: 3 }, { x: 5, y: 4 }, { x: 5, y: 5 }, { x: 6, y: 4 }, { x: 6, y: 5 },], isSuperSolution: false, found: false },
   ];
 
-  constructor(private strandsService: StrandsService) { }
+  gameEvents: GameEvent[] = [];
+
+  date = '';
+
+  constructor(private strandsService: StrandsService) {
+    const now = new Date();
+    this.date = now.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  }
 
   @HostListener('mouseup')
   onMouseup() {
@@ -114,11 +127,54 @@ export class StrandsComponent {
     this.connections = this.fixedConnections.concat(this.tryConnections);
   }
 
+  copyWinToClipboard(): void {
+    /* example:
+    Stränge #1
+    💡🔵💡🔵
+    🟡🔵🔵💡
+    🔵🔵
+    */
+    const title = 'Stränge #1';
+    const hintIcon = '💡';
+    const solutionIcon = '🔵';
+    const superSolutionIcon = '🟡';
+    const lineBreak = '\n';
+    // inject null event every 5th event to create line break
+    const events = this.gameEvents.reduce((acc, event, index) => {
+      acc.push(event);
+      if ((index + 1) % 4 === 0) {
+        acc.push(null);
+      }
+      return acc;
+    }, [] as (GameEvent | null)[]);
+    let gameResult = events.map(event => {
+      switch (event) {
+        case GameEvent.SolutionFound:
+          return solutionIcon;
+        case GameEvent.SuperSolutionFound:
+          return superSolutionIcon;
+        case GameEvent.HintUsed:
+          return hintIcon;
+        default:
+          return lineBreak;
+      }
+    }).join('');
+    const clipboardText = title + lineBreak + gameResult;
+    navigator.clipboard.writeText(clipboardText);
+    navigator.share({ title, text: clipboardText });
+    console.log(clipboardText);
+  }
+
+  win(): void {
+    this.copyWinToClipboard();
+  }
+
   checkWin(): void {
     const tryPath = JSON.stringify(this.currentTry.map(l => l.location));
     if (this.solutions.map(s => JSON.stringify(s.locations)).some(solutionPath => solutionPath === tryPath)) {
       const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
       solution!.found = true;
+      this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
       this.currentTry.forEach(letter => { letter.isSolutionActive = !solution!.isSuperSolution; letter.isSuperSolutionActive = solution!.isSuperSolution; });
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
       this.fixedConnections = this.fixedConnections.concat(this.tryConnections);
@@ -129,6 +185,9 @@ export class StrandsComponent {
       });
       this.activeHint = null;
       this.activeHintInAnimation = false;
+      if (this.solutions.every(s => s.found)) {
+        this.win();
+      }
       return;
     }
     const tryWord = this.currentTry.map(l => l.letter).join('');
@@ -183,6 +242,7 @@ export class StrandsComponent {
       }
       this.activeHintInAnimation = true;
       this.tipsUsed++;
+      this.gameEvents.push(GameEvent.HintUsed);
       this.activeHint.locations.forEach((location, index) => {
         const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
         letter!.hintTiming = index + 1;
@@ -200,6 +260,7 @@ export class StrandsComponent {
       });
       this.activeHint = selectedSolution;
       this.tipsUsed++;
+      this.gameEvents.push(GameEvent.HintUsed);
       this.activeHintInAnimation = false;
     }
   }
