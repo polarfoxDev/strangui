@@ -1,6 +1,9 @@
 <div class="strands">
   <h1>Stränge, {{ date }}</h1>
-  <h2>Thema: "Bunte Wörter"</h2>
+  <h2>Thema: „{{ subTitle }}“</h2>
+  <p class="current-guess" [style.color]="statusColor">
+    &nbsp;{{ statusText }}&nbsp;
+  </p>
   <div class="letterbox">
     @for (letter of letters; track $index) {
     <app-letter

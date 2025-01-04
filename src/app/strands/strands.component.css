@@ -13,6 +13,10 @@ h2 {
   margin-top: 0;
   color: var(--guess-light);
 }
+.current-guess {
+  font-size: 28px;
+  margin: 0;
+}
 .letterbox {
   display: grid;
   grid-template-columns: repeat(6, 60px);

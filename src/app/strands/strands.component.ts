@@ -90,9 +90,14 @@ export class StrandsComponent {
     { locations: [{ x: 5, y: 3 }, { x: 6, y: 3 }, { x: 5, y: 4 }, { x: 5, y: 5 }, { x: 6, y: 4 }, { x: 6, y: 5 },], isSuperSolution: false, found: false },
   ];
 
+  statusText = '';
+  statusColor = 'white';
+
   gameEvents: GameEvent[] = [];
 
   date = '';
+  subTitle = 'Bunte Wörter';
+  title = 'Stränge #0';
 
   constructor(private strandsService: StrandsService) {
     const now = new Date();
@@ -106,13 +111,13 @@ export class StrandsComponent {
     this.untry();
   }
 
-
   untry(recalculate = true): void {
     this.dragTryActive = false;
     this.currentTry.forEach(letter => {
       letter.isGuessActive = false;
     });
     this.currentTry = [];
+    // this.statusText = '';
     if (recalculate) this.calculateConnections();
   }
 
@@ -134,7 +139,6 @@ export class StrandsComponent {
     🟡🔵🔵💡
     🔵🔵
     */
-    const title = 'Stränge #1';
     const hintIcon = '💡';
     const solutionIcon = '🔵';
     const superSolutionIcon = '🟡';
@@ -159,9 +163,9 @@ export class StrandsComponent {
           return lineBreak;
       }
     }).join('');
-    const clipboardText = title + lineBreak + gameResult;
+    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + lineBreak + gameResult;
     navigator.clipboard.writeText(clipboardText);
-    navigator.share({ title, text: clipboardText });
+    navigator.share({ title: this.title, text: clipboardText });
     console.log(clipboardText);
   }
 
@@ -175,6 +179,11 @@ export class StrandsComponent {
       const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
       solution!.found = true;
       this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
+      if (solution!.isSuperSolution) {
+        this.setStatus('DURCHGANGSWORT!', 'var(--super-solution-light)');
+      } else {
+        this.setStatus(this.currentTry.map(l => l.letter).join(''), 'var(--solution-light)');
+      }
       this.currentTry.forEach(letter => { letter.isSolutionActive = !solution!.isSuperSolution; letter.isSuperSolutionActive = solution!.isSuperSolution; });
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
       this.fixedConnections = this.fixedConnections.concat(this.tryConnections);
@@ -191,26 +200,56 @@ export class StrandsComponent {
       return;
     }
     const tryWord = this.currentTry.map(l => l.letter).join('');
-    if (tryWord.length >= 4 && !this.nonSolutionWordsFound.includes(tryWord) && this.strandsService.wordExists(tryWord)) {
-      this.nonSolutionWordsFound.push(tryWord);
+    if (tryWord.length < 1) return;
+    if (tryWord.length < 4) {
+      this.setStatus('Zu kurz');
+      return;
     }
+    if (this.nonSolutionWordsFound.includes(tryWord)) {
+      this.setStatus('Bereits gefunden');
+      return;
+    }
+    if (!this.strandsService.wordExists(tryWord)) {
+      this.setStatus('Nicht in der Liste');
+      return;
+    }
+    this.nonSolutionWordsFound.push(tryWord);
+  }
+
+  setStatus(text: string, color: string = 'white'): void {
+    setTimeout(() => {
+      this.statusText = text;
+      this.statusColor = color;
+    });
   }
 
   addTryPoint(letter: Letter): void {
-    if (this.currentTry.some(l => l === letter)) return;
+    if (this.currentTry.some(l => l === letter)) {
+      // remove all letters after this letter
+      // also, set back state of all letters after this letter
+      const lettersToRemove = this.currentTry.slice(this.currentTry.indexOf(letter) + 1);
+      lettersToRemove.forEach(l => l.isGuessActive = false);
+      this.currentTry = this.currentTry.slice(0, this.currentTry.indexOf(letter) + 1);
+      this.setStatus(this.currentTry.map(l => l.letter).join(''));
+      this.calculateConnections();
+      return;
+    };
     // require coordinates of latest try point and current letter to touch on sides or corners
     if (this.currentTry.length > 0) {
       const lastLetter = this.currentTry[this.currentTry.length - 1];
       if (Math.abs(lastLetter.location.x - letter.location.x) <= 1 && Math.abs(lastLetter.location.y - letter.location.y) <= 1) {
         this.currentTry.push(letter);
+        this.setStatus(this.currentTry.map(l => l.letter).join(''));
         this.calculateConnections();
       } else {
         this.untry(false);
         this.currentTry.push(letter);
+        this.setStatus(this.currentTry.map(l => l.letter).join(''));
         this.calculateConnections();
       }
     } else {
       this.currentTry.push(letter);
+      this.setStatus(this.currentTry.map(l => l.letter).join(''));
       this.calculateConnections();
     }
   }
