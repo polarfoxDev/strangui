@@ -6,6 +6,13 @@
   height: 100%;
   gap: 20px;
 }
+h1 {
+  margin-bottom: 0;
+}
+h2 {
+  margin-top: 0;
+  color: var(--guess-light);
+}
 .letterbox {
   display: grid;
   grid-template-columns: repeat(6, 60px);
