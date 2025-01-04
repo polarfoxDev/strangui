@@ -4,7 +4,13 @@
   <p class="current-guess" [style.color]="statusColor">
     &nbsp;{{ statusText }}&nbsp;
   </p>
-  <div class="letterbox">
+  <div
+    #letterbox
+    class="letterbox"
+    (touchmove)="onTouchMove($event, letterbox.getBoundingClientRect())"
+    (touchend)="onTouchEnd($event)"
+    (touchstart)="onTouchStart($event, letterbox.getBoundingClientRect())"
+  >
     @for (letter of letters; track $index) {
     <app-letter
       [letter]="letter"
@@ -12,7 +18,7 @@
     ></app-letter>
     }
   </div>
-  <svg class="connections">
+  <svg class="connections" (touchstart)="$event.preventDefault()">
     @for (connection of connections; track $index) {
     <line
       [attr.x1]="connection.from.y * 60 + 30"

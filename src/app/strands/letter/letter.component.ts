@@ -11,22 +11,22 @@ export class LetterComponent {
   @Input() letter!: Letter;
   @Output() mouseEvent = new EventEmitter<MouseAction>();
 
-  mouseDown(event: MouseEvent) {
+  mouseDown(event: Event) {
     event.preventDefault();
     this.mouseEvent.emit(MouseAction.Down);
   }
 
-  mouseUp(event: MouseEvent) {
+  mouseUp(event: Event) {
     event.preventDefault();
     this.mouseEvent.emit(MouseAction.Up);
   }
 
-  mouseMove(event: MouseEvent) {
+  mouseMove(event: Event) {
     event.preventDefault();
     this.mouseEvent.emit(MouseAction.Move);
   }
 
-  click(event: MouseEvent) {
+  click(event: Event) {
     event.preventDefault();
     this.mouseEvent.emit(MouseAction.Click);
   }

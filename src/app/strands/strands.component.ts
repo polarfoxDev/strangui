@@ -303,4 +303,46 @@ export class StrandsComponent {
       this.activeHintInAnimation = false;
     }
   }
+
+  private findLetterByPixelLocation(x: number, y: number): Letter | undefined {
+    // basic idea: { x: Math.floor(x / 60), y: Math.floor(y / 60) };
+    // but only if x and y are within the bounds of the letter circle (letter coordinates are the center of the circle, radius is 42px)
+    // so the distance from the center of the circle to the point (x, y) must be less than 42px
+    const letterX = Math.floor(x / 60);
+    const letterY = Math.floor(y / 60);
+    const letterCenterX = letterX * 60 + 30;
+    const letterCenterY = letterY * 60 + 30;
+    const distance = Math.sqrt(Math.pow(x - letterCenterX, 2) + Math.pow(y - letterCenterY, 2));
+    if (distance < 30) {
+      return this.letters.find(l => l.location.x === letterX && l.location.y === letterY);
+    }
+    return undefined;
+  }
+
+  onTouchMove(event: TouchEvent, boundingBox: DOMRect): void {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const y = touch.clientX - boundingBox.left;
+    const x = touch.clientY - boundingBox.top;
+    const letter = this.findLetterByPixelLocation(x, y);
+    if (letter) {
+      this.onLetterMouseEvent(MouseAction.Move, letter);
+    }
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    event.preventDefault();
+    this.onMouseup();
+  }
+
+  onTouchStart(event: TouchEvent, boundingBox: DOMRect): void {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const y = touch.clientX - boundingBox.left;
+    const x = touch.clientY - boundingBox.top;
+    const letter = this.findLetterByPixelLocation(x, y);
+    if (letter) {
+      this.onLetterMouseEvent(MouseAction.Down, letter);
+    }
+  }
 }
