@@ -18,6 +18,28 @@
   z-index: 2;
   cursor: pointer;
 }
+@keyframes hintHighlighting {
+  0% {
+    border-color: var(--solution-light);
+  }
+  10% {
+    border-color: var(--super-solution-light);
+  }
+  20% {
+    border-color: var(--solution-light);
+  }
+  100% {
+    border-color: var(--solution-light);
+  }
+}
+.letter.hint .letter-content {
+  border: 3px dashed var(--solution-light);
+}
+.letter.hint-animated .letter-content {
+  border: 3px dashed var(--solution-light);
+  animation: hintHighlighting 6s infinite;
+  animation-delay: var(--animation-delay, 0s);
+}
 .letter.solution .letter-content {
   background-color: var(--solution-dark);
 }

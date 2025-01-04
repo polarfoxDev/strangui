@@ -24,3 +24,13 @@
   />
   }
 </svg>
+
+<div class="hint-box">
+  <button
+    class="hint level-{{ nonSolutionWordsFound.length - tipsUsed * 3 }}"
+    [disabled]="nonSolutionWordsFound.length - tipsUsed * 3 < 3"
+    (click)="useHint()"
+  >
+    Hint
+  </button>
+</div>

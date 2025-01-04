@@ -9,3 +9,32 @@
   width: calc(6 * 60px);
   height: calc(8 * 60px);
 }
+.hint {
+  display: block;
+  height: 40px;
+  width: 120px;
+  border-radius: 20px;
+  background: var(--guess-dark);
+  border: 1px solid var(--guess-dark);
+  color: white;
+  font-size: 20px;
+}
+.hint.level-0 {
+  background: var(--dark-background);
+}
+.hint.level-1 {
+  background: linear-gradient(
+    to right,
+    var(--guess-dark),
+    var(--guess-dark) 40px,
+    transparent 40px
+  );
+}
+.hint.level-2 {
+  background: linear-gradient(
+    to right,
+    var(--guess-dark),
+    var(--guess-dark) 80px,
+    transparent 80px
+  );
+}

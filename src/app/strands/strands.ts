@@ -11,6 +11,7 @@ export interface Letter {
   isGuessActive: boolean;
   isSolutionActive: boolean;
   isSuperSolutionActive: boolean;
+  hintTiming: number;
   location: LetterLocation;
 }
 
@@ -22,6 +23,7 @@ export interface LetterLocation {
 export interface Solution {
   locations: LetterLocation[];
   isSuperSolution: boolean;
+  found: boolean;
 }
 
 export enum MouseAction {
