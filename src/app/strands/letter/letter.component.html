@@ -1,0 +1,16 @@
+<div
+  class="letter"
+  [class.guess]="letter.isGuessActive"
+  [class.solution]="letter.isSolutionActive"
+  [class.super-solution]="letter.isSuperSolutionActive"
+>
+  <div
+    class="letter-content"
+    (mousedown)="mouseDown($event)"
+    (mouseover)="mouseMove($event)"
+    (mouseup)="mouseUp($event)"
+    (click)="click($event)"
+  >
+    <div class="letter-content-text">{{ letter.letter }}</div>
+  </div>
+</div>

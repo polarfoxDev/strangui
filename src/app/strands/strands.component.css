@@ -1,0 +1,11 @@
+.letterbox {
+  display: grid;
+  grid-template-columns: repeat(6, 60px);
+  grid-auto-rows: 60px;
+}
+.connections {
+  display: block;
+  margin-top: calc(8 * -60px);
+  width: calc(6 * 60px);
+  height: calc(8 * 60px);
+}

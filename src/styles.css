@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --guess-dark: #687fa8;
+  --guess-light: #99a8c2;
+  --solution-dark: #1253c4;
+  --solution-light: #699ae0;
+  --super-solution-dark: #c4c112;
+  --super-solution-light: #eae871;
+  --background-dark: #11111b;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: var(--background-dark);
+  color: #fff;
+}
