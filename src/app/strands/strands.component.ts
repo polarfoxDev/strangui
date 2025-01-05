@@ -59,7 +59,7 @@ export class StrandsComponent {
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
       this.strandsService.loadRiddle(date.toISOString().substring(0, 10)).subscribe({
         next: riddle => {
-          this.title = 'Stränge #' + riddle.index;
+          this.title = 'Stränge.de #' + riddle.index;
           this.subTitle = riddle.theme;
           const riddleLetters: string[] = riddle.letters.flat()
           this.letters.forEach(letter => {
@@ -155,7 +155,7 @@ export class StrandsComponent {
           return lineBreak;
       }
     }).join('');
-    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + gameResult + lineBreak + lineBreak + 'https://stränge.de/' + lineBreak + 'https://xn--strnge-dua.de/';
+    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + gameResult + lineBreak;
     navigator.clipboard.writeText(clipboardText);
     navigator.share({ title: this.title, text: clipboardText });
     console.log(clipboardText);
