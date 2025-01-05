@@ -194,6 +194,10 @@ export class StrandsComponent {
     const tryPath = JSON.stringify(this.currentTry.map(l => l.location));
     if (this.solutions.map(s => JSON.stringify(s.locations)).some(solutionPath => solutionPath === tryPath)) {
       const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
+      if (solution!.found) {
+        this.setStatus('Bereits gefunden');
+        return;
+      }
       solution!.found = true;
       this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
       this.finishedCount++;
