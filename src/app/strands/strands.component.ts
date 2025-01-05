@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
-import { Connection, GameEvent, GameState, Letter, MouseAction, Solution } from './strands';
+import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './strands';
 import { StrandsService } from '../core/strands.service';
 import { ActivatedRoute } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
@@ -187,13 +187,25 @@ export class StrandsComponent {
     if (autoCopy) this.copyWinToClipboard();
   }
 
+  private getSolutionCompareString(letters: Letter[]): string {
+    const printedWord = letters.map(l => l.letter).join('');
+    const sortedLetterLocations = letters.map(l => l.location).sort((a, b) => a.x - b.x || a.y - b.y);
+    const compareString = JSON.stringify([printedWord, sortedLetterLocations]);
+    return compareString;
+  }
+
+  private getSolutionCompareStringByLocations(locations: LetterLocation[]): string {
+    const letters = locations.map(location => this.letters.find(l => l.location.x === location.x && l.location.y === location.y)!);
+    return this.getSolutionCompareString(letters);
+  }
+
   checkWin(): void {
     if (this.solutions.every(s => s.found)) {
       this.win(false);
     }
-    const tryPath = JSON.stringify(this.currentTry.map(l => l.location));
-    if (this.solutions.map(s => JSON.stringify(s.locations)).some(solutionPath => solutionPath === tryPath)) {
-      const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
+    const tryPath = this.getSolutionCompareString(this.currentTry);
+    if (this.solutions.map(s => this.getSolutionCompareStringByLocations(s.locations)).some(solutionPath => solutionPath === tryPath)) {
+      const solution = this.solutions.find(s => this.getSolutionCompareStringByLocations(s.locations) === tryPath);
       if (solution!.found) {
         this.setStatus('Bereits gefunden');
         return;
@@ -210,7 +222,7 @@ export class StrandsComponent {
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
       this.fixedConnections = this.fixedConnections.concat(this.tryConnections);
       this.untry();
-      if (JSON.stringify(this.activeHint?.locations) === tryPath) {
+      if (this.getSolutionCompareStringByLocations(this.activeHint?.locations ?? []) === tryPath) {
         this.activeHint?.locations.forEach(location => {
           const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
           letter!.hintTiming = -1;
