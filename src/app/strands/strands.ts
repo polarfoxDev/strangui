@@ -20,6 +20,12 @@ export interface LetterLocation {
   y: number;
 }
 
+export enum GameEvent {
+  SolutionFound,
+  SuperSolutionFound,
+  HintUsed,
+}
+
 export interface Solution extends SolutionConfig {
   found: boolean;
 }
@@ -41,4 +47,15 @@ export enum MouseAction {
   Up,
   Move,
   Click
+}
+
+export interface GameState {
+  solutionStates: Solution[];
+  nonSolutionWordsFound: string[];
+  tipsUsed: number;
+  gameEvents: GameEvent[];
+  activeHint: Solution | null;
+  activeHintInAnimation: boolean;
+  fixedConnections: Connection[];
+  letterStates: Letter[];
 }

@@ -1,15 +1,10 @@
 import { Component, HostListener } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
-import { Connection, Letter, MouseAction, Solution } from './strands';
+import { Connection, GameEvent, GameState, Letter, MouseAction, Solution } from './strands';
 import { StrandsService } from '../core/strands.service';
 import { ActivatedRoute } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
-
-enum GameEvent {
-  SolutionFound,
-  SuperSolutionFound,
-  HintUsed,
-}
+import { AppStorage, SafeStorageAccessor } from '../core/storage';
 
 @Component({
   selector: 'app-strands',
@@ -49,6 +44,8 @@ export class StrandsComponent {
   loading = true;
   finishedCount = 0;
 
+  gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
+
   constructor(private strandsService: StrandsService, private route: ActivatedRoute) {
     const date = new Date();
     this.route.params.subscribe(params => {
@@ -59,9 +56,12 @@ export class StrandsComponent {
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
       this.strandsService.loadRiddle(date.toISOString().substring(0, 10)).subscribe({
         next: riddle => {
+          this.gameState = this.strandsService.getGameStateAccessor(date.toISOString().substring(0, 10), this.solutions, this.letters);
+          this.gameState.init();
+          const currentState = this.gameState.get();
           this.title = 'Stränge.de #' + riddle.index;
           this.subTitle = riddle.theme;
-          const riddleLetters: string[] = riddle.letters.flat()
+          const riddleLetters: string[] = riddle.letters.flat();
           this.letters.forEach(letter => {
             letter.isGuessActive = false;
             letter.isSolutionActive = false;
@@ -70,17 +70,37 @@ export class StrandsComponent {
             letter.letter = riddleLetters.shift()!;
           });
           this.solutions = riddle.solutions.map(s => ({ ...s, found: false }));
-          this.nonSolutionWordsFound = [];
-          this.tipsUsed = 0;
-          this.finishedCount = 0;
-          this.gameEvents = [];
-          this.activeHint = null;
-          this.activeHintInAnimation = false;
-          this.fixedConnections = [];
+          this.nonSolutionWordsFound = currentState.nonSolutionWordsFound;
+          this.tipsUsed = currentState.tipsUsed;
+          this.finishedCount = currentState.solutionStates.filter(s => s.found).length;
+          this.gameEvents = currentState.gameEvents;
+          this.activeHint = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(currentState.activeHint?.locations)) || null;
+          this.activeHintInAnimation = currentState.activeHintInAnimation;
+          this.fixedConnections = currentState.fixedConnections;
           this.tryConnections = [];
           this.connections = [];
           this.statusText = '';
           this.statusColor = 'white';
+          currentState.fixedConnections.forEach(connection => {
+            this.fixedConnections.push({ ...connection });
+          });
+          currentState.letterStates.forEach(letter => {
+            const currentLetter = this.letters.find(l => l.location.x === letter.location.x && l.location.y === letter.location.y);
+            if (currentLetter) {
+              currentLetter.isGuessActive = letter.isGuessActive;
+              currentLetter.isSolutionActive = letter.isSolutionActive;
+              currentLetter.isSuperSolutionActive = letter.isSuperSolutionActive;
+              currentLetter.hintTiming = letter.hintTiming;
+            }
+          });
+          currentState.solutionStates.forEach(solution => {
+            const currentSolution = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(solution.locations));
+            if (currentSolution) {
+              currentSolution.found = solution.found;
+            }
+          });
+          this.calculateConnections();
+          this.checkWin();
           this.ready = true;
           this.loading = false;
         },
@@ -161,13 +181,16 @@ export class StrandsComponent {
     console.log(clipboardText);
   }
 
-  win(): void {
+  win(autoCopy = true): void {
     this.setStatus('GEWONNEN!', 'var(--super-solution-light)');
     this.finished = true;
-    this.copyWinToClipboard();
+    if (autoCopy) this.copyWinToClipboard();
   }
 
   checkWin(): void {
+    if (this.solutions.every(s => s.found)) {
+      this.win(false);
+    }
     const tryPath = JSON.stringify(this.currentTry.map(l => l.location));
     if (this.solutions.map(s => JSON.stringify(s.locations)).some(solutionPath => solutionPath === tryPath)) {
       const solution = this.solutions.find(s => JSON.stringify(s.locations) === tryPath);
@@ -183,15 +206,18 @@ export class StrandsComponent {
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
       this.fixedConnections = this.fixedConnections.concat(this.tryConnections);
       this.untry();
-      this.activeHint?.locations.forEach(location => {
-        const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
-        letter!.hintTiming = -1;
-      });
-      this.activeHint = null;
-      this.activeHintInAnimation = false;
+      if (JSON.stringify(this.activeHint?.locations) === tryPath) {
+        this.activeHint?.locations.forEach(location => {
+          const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
+          letter!.hintTiming = -1;
+        });
+        this.activeHint = null;
+        this.activeHintInAnimation = false;
+      }
       if (this.solutions.every(s => s.found)) {
         this.win();
       }
+      this.gameState.partialUpdate(() => ({ solutionStates: this.solutions, fixedConnections: this.fixedConnections, letterStates: this.letters, gameEvents: this.gameEvents, activeHint: this.activeHint, activeHintInAnimation: this.activeHintInAnimation }));
       return;
     }
     const tryWord = this.currentTry.map(l => l.letter).join('');
@@ -209,6 +235,7 @@ export class StrandsComponent {
       return;
     }
     this.nonSolutionWordsFound.push(tryWord);
+    this.gameState.partialUpdate(() => ({ nonSolutionWordsFound: this.nonSolutionWordsFound }));
   }
 
   setStatus(text: string, color: string = 'white'): void {
@@ -281,6 +308,7 @@ export class StrandsComponent {
         const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
         letter!.hintTiming = index + 1;
       });
+      this.gameState.partialUpdate(() => ({ tipsUsed: this.tipsUsed, activeHintInAnimation: true, letterStates: this.letters, gameEvents: this.gameEvents }));
       return;
     }
     let selectedSolution = this.solutions.find(s => !s.isSuperSolution && !s.found);
@@ -296,6 +324,7 @@ export class StrandsComponent {
       this.tipsUsed++;
       this.gameEvents.push(GameEvent.HintUsed);
       this.activeHintInAnimation = false;
+      this.gameState.partialUpdate(() => ({ tipsUsed: this.tipsUsed, activeHint: selectedSolution, activeHintInAnimation: false, letterStates: this.letters, gameEvents: this.gameEvents }));
     }
   }
 
