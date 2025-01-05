@@ -124,12 +124,12 @@ export class StrandsComponent {
     Stränge #1
     „subtitle“
     💡🔵💡🔵
-    🟡🔵🔵💡
+    🟣🔵🔵💡
     🔵🔵
     */
     const hintIcon = '💡';
     const solutionIcon = '🔵';
-    const superSolutionIcon = '🟡';
+    const superSolutionIcon = '🟣';
     const lineBreak = '\n';
     // inject null event every 5th event to create line break
     const events = this.gameEvents.reduce((acc, event, index) => {
