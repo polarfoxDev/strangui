@@ -1,7 +1,10 @@
 @if(ready) {
 <div class="strands">
   <h1>Stränge, {{ date }}</h1>
-  <h2>Thema: „{{ subTitle }}“</h2>
+  <p class="theme-box">
+    <span class="theme-title">Thema des Tages</span>
+    <span class="theme-content">{{ subTitle }}</span>
+  </p>
   <p class="current-guess" [style.color]="statusColor">
     &nbsp;{{ statusText }}&nbsp;
   </p>
@@ -15,6 +18,7 @@
     @for (letter of letters; track $index) {
     <app-letter
       [letter]="letter"
+      [isDisabled]="finished"
       (mouseEvent)="onLetterMouseEvent($event, letter)"
     ></app-letter>
     }
@@ -38,10 +42,6 @@
     }
   </svg>
 
-  <div class="counter-box">
-    <b>{{ finishedCount }}</b> von <b>{{ solutions.length }}</b> Themen-Wörtern
-    gefunden
-  </div>
   <div class="hint-box">
     @if(!finished) {
     <button
@@ -54,6 +54,10 @@
         {{ nonSolutionWordsFound.length - tipsUsed * 3 }} / 3
       </span>
     </button>
+    <div class="counter-box">
+      <b>{{ finishedCount }}</b> von
+      <b>{{ solutions.length }}</b> Themen-<br />Wörtern gefunden
+    </div>
     } @else {
     <div class="game-over-box">
       <p>🎉 Du hast das Spiel für heute abgeschlossen 🎉</p>

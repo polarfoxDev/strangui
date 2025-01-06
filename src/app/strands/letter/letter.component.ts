@@ -9,6 +9,7 @@ import { Letter, MouseAction } from '../strands';
 })
 export class LetterComponent {
   @Input() letter!: Letter;
+  @Input() isDisabled = false;
   @Output() mouseEvent = new EventEmitter<MouseAction>();
 
   mouseDown(event: Event) {

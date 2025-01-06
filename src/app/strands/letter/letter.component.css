@@ -16,6 +16,8 @@
   border-radius: 100%;
   background-color: var(--background-dark);
   z-index: 2;
+}
+.letter:not(.disabled) .letter-content {
   cursor: pointer;
 }
 @keyframes hintHighlighting {

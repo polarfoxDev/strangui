@@ -293,6 +293,10 @@ export class StrandsComponent {
   }
 
   onLetterMouseEvent(mouseAction: MouseAction, letter: Letter): void {
+    if (this.finished) {
+      this.dragTryActive = false;
+      return;
+    }
     if (mouseAction === MouseAction.Click) {
       this.dragTryActive = false;
       this.addTryPoint(letter);

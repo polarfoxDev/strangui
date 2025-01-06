@@ -1,5 +1,6 @@
 <div
   class="letter"
+  [class.disabled]="isDisabled"
   [class.hint]="letter.hintTiming >= 0"
   [class.hint-animated]="letter.hintTiming >= 1"
   style="--animation-delay: {{ letter.hintTiming / 2 }}s"

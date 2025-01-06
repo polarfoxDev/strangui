@@ -5,20 +5,41 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100dvh - 50px);
   gap: 20px;
-  overflow: auto;
 }
 h1 {
   margin-bottom: 0;
 }
-h2 {
-  margin-top: 0;
-  color: var(--guess-light);
+.theme-box {
+  width: 320px;
+  background: var(--guess-dark);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+.theme-box .theme-title {
+  font-size: 12px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 2px;
+}
+.theme-box .theme-content {
+  width: calc(100% - 20px);
+  text-align: center;
+  padding: 8px;
+  font-weight: bold;
+  background: var(--background-dark);
+  border-radius: 0 0 10px 10px;
+  margin-bottom: 2px;
 }
 .current-guess {
   font-size: 28px;
   margin: 0;
+  margin-bottom: -16px;
 }
 .letterbox {
   display: grid;
@@ -34,17 +55,18 @@ h2 {
 }
 .hint {
   display: block;
-  height: 40px;
-  width: 210px;
+  height: 60px;
+  width: 120px;
   border-radius: 20px;
   background: var(--guess-dark);
   border: 1px solid var(--guess-dark);
   color: white;
   font-size: 20px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 2px;
 }
 .hint.level-0 {
   background: var(--dark-background);
@@ -53,21 +75,25 @@ h2 {
   background: linear-gradient(
     to right,
     var(--guess-dark),
-    var(--guess-dark) 70px,
-    transparent 70px
+    var(--guess-dark) 40px,
+    transparent 40px
   );
 }
 .hint.level-2 {
   background: linear-gradient(
     to right,
     var(--guess-dark),
-    var(--guess-dark) 140px,
-    transparent 140px
+    var(--guess-dark) 80px,
+    transparent 80px
   );
 }
 .hint-box {
   height: 60px;
   min-height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 360px;
 }
 .hint-numbers {
   font-size: 14px;
@@ -81,5 +107,5 @@ h2 {
   align-items: center;
 }
 .counter-box {
-  font-size: 20px;
+  font-size: 18px;
 }
