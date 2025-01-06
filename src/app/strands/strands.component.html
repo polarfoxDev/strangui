@@ -18,6 +18,9 @@
     @for (letter of letters; track $index) {
     <app-letter
       [letter]="letter"
+      [row]="letter.location.x"
+      [column]="letter.location.y"
+      [hintAnimationDelay]="letter.hintFoundDelay"
       [isDisabled]="finished"
       (mouseEvent)="onLetterMouseEvent($event, letter)"
     ></app-letter>

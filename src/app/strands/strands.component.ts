@@ -251,6 +251,12 @@ export class StrandsComponent {
       return;
     }
     this.nonSolutionWordsFound.push(tryWord);
+    this.currentTry.forEach((letter, index) => {
+      letter.hintFoundDelay = (index + 1) * 25;
+      setTimeout(() => {
+        letter.hintFoundDelay = 0;
+      }, 1000 + (index + 1) * 25);
+    });
     this.gameState.partialUpdate(() => ({ nonSolutionWordsFound: this.nonSolutionWordsFound }));
   }
 

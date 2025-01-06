@@ -8,14 +8,33 @@
   align-items: center;
 }
 .letter .letter-content {
-  width: 70%;
-  height: 70%;
+  width: 42px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 100%;
   background-color: var(--background-dark);
   z-index: 2;
+}
+.letter .letter-flyout {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  background-color: var(--guess-dark);
+  position: absolute;
+  visibility: hidden;
+}
+.letter .letter-flyout.transition-pre {
+  visibility: visible;
+  z-index: 3;
+}
+.letter .letter-flyout.transition {
+  transition: transform 0.5s ease-in-out;
+  transform: translate(var(--move-x, 0), var(--move-y, 0));
 }
 .letter:not(.disabled) .letter-content {
   cursor: pointer;
@@ -34,6 +53,17 @@
     border-color: var(--solution-light);
   }
 }
+@keyframes solutionHighlighting {
+  0% {
+    scale: 1;
+  }
+  50% {
+    scale: 0.8;
+  }
+  100% {
+    scale: 1;
+  }
+}
 .letter.hint .letter-content {
   border: 3px dashed var(--solution-light);
 }
@@ -43,9 +73,11 @@
   animation-delay: var(--animation-delay, 0s);
 }
 .letter.solution .letter-content {
+  animation: solutionHighlighting 0.5s ease-in-out;
   background-color: var(--solution-dark);
 }
 .letter.super-solution .letter-content {
+  animation: solutionHighlighting 0.5s ease-in-out;
   background-color: var(--super-solution-dark);
 }
 .letter.guess .letter-content {

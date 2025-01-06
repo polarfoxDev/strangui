@@ -59,7 +59,7 @@ h1 {
   width: 120px;
   border-radius: 20px;
   background: var(--guess-dark);
-  border: 1px solid var(--guess-dark);
+  border: 2px solid var(--guess-dark);
   color: white;
   font-size: 20px;
   display: flex;
@@ -67,16 +67,17 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 2px;
+  z-index: 4;
 }
 .hint.level-0 {
-  background: var(--dark-background);
+  background: var(--background-dark);
 }
 .hint.level-1 {
   background: linear-gradient(
     to right,
     var(--guess-dark),
     var(--guess-dark) 40px,
-    transparent 40px
+    var(--background-dark) 40px
   );
 }
 .hint.level-2 {
@@ -84,7 +85,7 @@ h1 {
     to right,
     var(--guess-dark),
     var(--guess-dark) 80px,
-    transparent 80px
+    var(--background-dark) 80px
   );
 }
 .hint-box {

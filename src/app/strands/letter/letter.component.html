@@ -17,4 +17,10 @@
   >
     <div class="letter-content-text">{{ letter.letter }}</div>
   </div>
+  <div
+    class="letter-flyout"
+    [class.transition-pre]="hintAnimationPreparing"
+    [class.transition]="hintAnimationActive"
+    style="--move-x: {{ moveX }}px; --move-y: {{ moveY }}px"
+  ></div>
 </div>

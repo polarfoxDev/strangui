@@ -12,6 +12,7 @@ export interface Letter {
   isSolutionActive: boolean;
   isSuperSolutionActive: boolean;
   hintTiming: number;
+  hintFoundDelay: number;
   location: LetterLocation;
 }
 
