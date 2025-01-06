@@ -2,13 +2,14 @@ import { Component, HostListener } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
 import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './strands';
 import { StrandsService } from '../core/strands.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
 import { AppStorage, SafeStorageAccessor } from '../core/storage';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-strands',
-  imports: [LetterComponent],
+  imports: [LetterComponent, RouterModule, SpinnerComponent],
   templateUrl: './strands.component.html',
   styleUrl: './strands.component.css'
 })
@@ -37,8 +38,8 @@ export class StrandsComponent {
   gameEvents: GameEvent[] = [];
 
   date = '';
-  subTitle = '';
-  title = '';
+  dateISO = '';
+  theme = '';
   finished = false;
   ready = false;
   loading = true;
@@ -46,7 +47,7 @@ export class StrandsComponent {
 
   gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
 
-  constructor(private strandsService: StrandsService, private route: ActivatedRoute) {
+  constructor(private strandsService: StrandsService, private route: ActivatedRoute, private router: Router) {
     const date = new Date();
     this.route.params.subscribe(params => {
       const dateParam = params['date'];
@@ -54,13 +55,13 @@ export class StrandsComponent {
         date.setTime(Date.parse(dateParam));
       }
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
-      this.strandsService.loadRiddle(date.toISOString().substring(0, 10)).subscribe({
+      this.dateISO = date.toISOString().substring(0, 10);
+      this.strandsService.loadRiddle(this.dateISO).subscribe({
         next: riddle => {
-          this.gameState = this.strandsService.getGameStateAccessor(date.toISOString().substring(0, 10), this.solutions, this.letters);
+          this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, this.solutions, this.letters);
           this.gameState.init();
           const currentState = this.gameState.get();
-          this.title = 'Stränge.de #' + riddle.index;
-          this.subTitle = riddle.theme;
+          this.theme = riddle.theme;
           const riddleLetters: string[] = riddle.letters.flat();
           this.letters.forEach(letter => {
             letter.isGuessActive = false;
@@ -139,52 +140,9 @@ export class StrandsComponent {
     this.connections = this.fixedConnections.concat(this.tryConnections);
   }
 
-  copyWinToClipboard(): void {
-    /* example:
-    Stränge #1
-    „subtitle“
-    💡🔵💡🔵
-    🟣🔵🔵💡
-    🔵🔵
-    */
-    const hintIcon = '💡';
-    const solutionIcon = '🔵';
-    const superSolutionIcon = '🟣';
-    const lineBreak = '\n';
-    // inject null event every 5th event to create line break
-    const events = this.gameEvents.reduce((acc, event, index) => {
-      acc.push(event);
-      if ((index + 1) % 4 === 0) {
-        acc.push(null);
-      }
-      return acc;
-    }, [] as (GameEvent | null)[]);
-    // remove trailing null event
-    if (events[events.length - 1] === null) {
-      events.pop();
-    }
-    let gameResult = events.map(event => {
-      switch (event) {
-        case GameEvent.SolutionFound:
-          return solutionIcon;
-        case GameEvent.SuperSolutionFound:
-          return superSolutionIcon;
-        case GameEvent.HintUsed:
-          return hintIcon;
-        default:
-          return lineBreak;
-      }
-    }).join('');
-    const clipboardText = this.title + lineBreak + "„" + this.subTitle + "“" + lineBreak + gameResult + lineBreak;
-    navigator.clipboard.writeText(clipboardText);
-    navigator.share({ title: this.title, text: clipboardText });
-    console.log(clipboardText);
-  }
-
-  win(autoCopy = true): void {
+  win(): void {
     this.setStatus('GEWONNEN!', 'var(--super-solution-light)');
     this.finished = true;
-    if (autoCopy) this.copyWinToClipboard();
   }
 
   private getSolutionCompareString(letters: Letter[]): string {
@@ -201,7 +159,7 @@ export class StrandsComponent {
 
   checkWin(): void {
     if (this.solutions.every(s => s.found)) {
-      this.win(false);
+      this.win();
     }
     const tryPath = this.getSolutionCompareString(this.currentTry);
     if (this.solutions.map(s => this.getSolutionCompareStringByLocations(s.locations)).some(solutionPath => solutionPath === tryPath)) {
@@ -232,6 +190,9 @@ export class StrandsComponent {
       }
       if (this.solutions.every(s => s.found)) {
         this.win();
+        setTimeout(() => {
+          this.router.navigate(['results'], { queryParams: { date: this.dateISO } });
+        }, 1000);
       }
       this.gameState.partialUpdate(() => ({ solutionStates: this.solutions, fixedConnections: this.fixedConnections, letterStates: this.letters, gameEvents: this.gameEvents, activeHint: this.activeHint, activeHintInAnimation: this.activeHintInAnimation }));
       return;

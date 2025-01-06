@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { StrandsComponent } from './strands/strands.component';
+import { ResultsComponent } from './results/results.component';
 
 export const routes: Routes = [
   {
@@ -10,5 +11,9 @@ export const routes: Routes = [
   {
     path: 'history/:date',
     component: StrandsComponent
+  },
+  {
+    path: 'results',
+    component: ResultsComponent
   }
 ];

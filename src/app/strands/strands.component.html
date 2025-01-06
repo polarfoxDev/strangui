@@ -3,7 +3,7 @@
   <h1>Stränge, {{ date }}</h1>
   <p class="theme-box">
     <span class="theme-title">Thema des Tages</span>
-    <span class="theme-content">{{ subTitle }}</span>
+    <span class="theme-content">{{ theme }}</span>
   </p>
   <p class="current-guess" [style.color]="statusColor">
     &nbsp;{{ statusText }}&nbsp;
@@ -63,16 +63,20 @@
     </div>
     } @else {
     <div class="game-over-box">
-      <p>🎉 Du hast das Spiel für heute abgeschlossen 🎉</p>
-      <button class="hint" (click)="copyWinToClipboard()">Teilen</button>
+      <a
+        class="hint"
+        [routerLink]="['/results']"
+        [queryParams]="{ date: dateISO }"
+      >
+        Ergebnisse ansehen
+      </a>
     </div>
     }
   </div>
 </div>
 } @else if (loading) {
 <div class="loading">
-  <h1>Stränge werden geladen</h1>
-  <p>Bitte warten...</p>
+  <app-spinner></app-spinner>
 </div>
 } @else {
 <div class="error">

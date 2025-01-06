@@ -44,4 +44,8 @@ export class StrandsService {
       letterStates: letterFallback
     });
   }
+
+  getCurrentGameState(date: string): GameState | null {
+    return AppStorage.get<GameState>(`game-state-${date}`);
+  }
 }

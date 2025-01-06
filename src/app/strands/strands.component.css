@@ -69,6 +69,9 @@ h1 {
   gap: 2px;
   z-index: 4;
 }
+.hint:disabled {
+  color: var(--guess-light);
+}
 .hint.level-0 {
   background: var(--background-dark);
 }
@@ -97,6 +100,7 @@ h1 {
   width: 360px;
 }
 .hint-numbers {
+  color: white;
   font-size: 14px;
   margin: 0;
 }
@@ -106,6 +110,10 @@ h1 {
   gap: 10px;
   justify-content: center;
   align-items: center;
+}
+.game-over-box a {
+  width: 250px;
+  text-decoration: none;
 }
 .counter-box {
   font-size: 18px;

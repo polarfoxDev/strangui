@@ -1,0 +1,39 @@
+@if(ready) {
+<div class="strands">
+  <h1>Gut gemacht!</h1>
+  <p class="titles">{{ title }}<br />{{ subTitle }}</p>
+  <p class="emojis">
+    @for (line of emojiLines; track $index) {
+    {{ line }} <br />
+    }
+  </p>
+  <p class="info">
+    Du hast alle Themen-Wörter 🔵 und das Durchgangswort 🟣<br />
+    gefunden. Du hast dafür <b>{{ hintsUsed }}</b> Hinweis@if(hintsUsed !== 1)
+    {e} 💡 benutzt.
+  </p>
+  @if(timeLeft.length > 0) {
+  <p class="next-info">Nächstes Puzzle in</p>
+  <p class="timer">
+    {{ timeLeft }}
+  </p>
+  } @else {
+  <button class="current-button" (click)="today()">
+    Puzzle von heute spielen
+  </button>
+  }
+  <button class="share-button" (click)="share()">Ergebnisse teilen</button>
+  @if(timeLeft.length > 0) {
+  <button class="back-button" (click)="back()">Zurück zum Puzzle</button>
+  }
+</div>
+} @else if (loading) {
+<div class="loading">
+  <app-spinner></app-spinner>
+</div>
+} @else {
+<div class="error">
+  <h1>Ein Fehler ist aufgetreten</h1>
+  <p>Bitte versuche es später erneut.</p>
+</div>
+}
