@@ -23,6 +23,7 @@ p {
   font-size: 30px;
   line-height: 35px;
   letter-spacing: 5px;
+  text-align: initial;
 }
 .next-info {
   text-transform: uppercase;
