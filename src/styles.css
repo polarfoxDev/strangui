@@ -1,11 +1,18 @@
 :root {
-  --guess-dark: #687fa8;
-  --guess-light: #99a8c2;
-  --solution-dark: #2153e8;
-  --solution-light: #5090f0;
-  --super-solution-dark: #dd00f5;
-  --super-solution-light: #d481f8;
-  --background-dark: #11111b;
+  color-scheme: light dark;
+
+  --guess: #687fa8;
+  --guess-brighter: #99a8c2;
+  --solution: #2153e8;
+  --solution-brighter: #5090f0;
+  --super-solution: #dd00f5;
+  --super-solution-brighter: #d481f8;
+
+  --dark-bg: #11111b;
+  --light-bg: #f6f8fa;
+
+  --light-text: #f6f8fa;
+  --dark-text: #11111b;
 }
 
 /* oxygen-mono latin-ext */
@@ -181,7 +188,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: var(--background-dark);
-  color: #fff;
+  background-color: light-dark(var(--light-bg), var(--dark-bg));
+  color: light-dark(var(--dark-text), var(--light-text));
   font-family: "Poppins", sans-serif;
 }

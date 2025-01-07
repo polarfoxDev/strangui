@@ -35,10 +35,10 @@
       [attr.y2]="connection.to.x * 60 + 30"
       [attr.stroke]="
         connection.isGuessActive
-          ? 'var(--guess-light)'
+          ? 'var(--guess-brighter)'
           : connection.isSuperSolutionActive
-          ? 'var(--super-solution-light)'
-          : 'var(--solution-light)'
+          ? 'var(--super-solution-brighter)'
+          : 'var(--solution-brighter)'
       "
       stroke-width="10"
     />

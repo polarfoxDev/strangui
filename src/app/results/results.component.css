@@ -40,9 +40,9 @@ button {
   height: 60px;
   width: 220px;
   border-radius: 10px;
-  background: var(--guess-dark);
+  background: var(--guess);
   border: none;
-  color: white;
+  color: var(--light-text);
   font-size: 20px;
   display: flex;
   flex-direction: column;
@@ -53,10 +53,10 @@ button {
 .back-button {
   height: 40px;
   font-size: 18px;
-  background: var(--background-dark);
-  border: 2px solid var(--guess-dark);
-  color: var(--guess-dark);
+  background: light-dark(var(--light-bg), var(--dark-bg));
+  border: 2px solid var(--guess);
+  color: var(--guess);
 }
 .current-button {
-  background: var(--solution-dark);
+  background: var(--solution);
 }

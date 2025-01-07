@@ -12,7 +12,7 @@ h1 {
 }
 .theme-box {
   width: 320px;
-  background: var(--guess-dark);
+  background: light-dark(var(--guess-brighter), var(--guess));
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -26,13 +26,14 @@ h1 {
   text-align: center;
   text-transform: uppercase;
   margin: 2px;
+  color: var(--light-text);
 }
 .theme-box .theme-content {
   width: calc(100% - 20px);
   text-align: center;
   padding: 8px;
   font-weight: bold;
-  background: var(--background-dark);
+  background: light-dark(var(--light-bg), var(--dark-bg));
   border-radius: 0 0 10px 10px;
   margin-bottom: 2px;
 }
@@ -58,9 +59,9 @@ h1 {
   height: 60px;
   width: 120px;
   border-radius: 20px;
-  background: var(--guess-dark);
-  border: 2px solid var(--guess-dark);
-  color: white;
+  background: light-dark(var(--guess-brighter), var(--guess));
+  border: 2px solid light-dark(var(--guess-brighter), var(--guess));
+  color: light-dark(var(--dark-text), var(--light-text));
   font-size: 20px;
   display: flex;
   flex-direction: column;
@@ -70,25 +71,25 @@ h1 {
   z-index: 4;
 }
 .hint:disabled {
-  color: var(--guess-light);
+  color: light-dark(var(--guess), var(--guess-brighter));
 }
 .hint.level-0 {
-  background: var(--background-dark);
+  background: light-dark(var(--light-bg), var(--dark-bg));
 }
 .hint.level-1 {
   background: linear-gradient(
     to right,
-    var(--guess-dark),
-    var(--guess-dark) 40px,
-    var(--background-dark) 40px
+    light-dark(var(--guess-brighter), var(--guess)),
+    light-dark(var(--guess-brighter), var(--guess)) 40px,
+    light-dark(var(--light-bg), var(--dark-bg)) 40px
   );
 }
 .hint.level-2 {
   background: linear-gradient(
     to right,
-    var(--guess-dark),
-    var(--guess-dark) 80px,
-    var(--background-dark) 80px
+    light-dark(var(--guess-brighter), var(--guess)),
+    light-dark(var(--guess-brighter), var(--guess)) 80px,
+    light-dark(var(--light-bg), var(--dark-bg)) 80px
   );
 }
 .hint-box {
@@ -100,7 +101,7 @@ h1 {
   width: 360px;
 }
 .hint-numbers {
-  color: white;
+  color: light-dark(var(--dark-text), var(--light-text));
   font-size: 14px;
   margin: 0;
 }

@@ -14,6 +14,8 @@ import { SpinnerComponent } from '../spinner/spinner.component';
   styleUrl: './strands.component.css'
 })
 export class StrandsComponent {
+  readonly AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
+
   letters: Letter[] = defaultLetterGrid;
 
   fixedConnections: Connection[] = [];
@@ -33,7 +35,7 @@ export class StrandsComponent {
   solutions: Solution[] = [];
 
   statusText = '';
-  statusColor = 'white';
+  statusColor = this.AUTO_TEXT_COLOR;
 
   gameEvents: GameEvent[] = [];
 
@@ -81,7 +83,7 @@ export class StrandsComponent {
           this.tryConnections = [];
           this.connections = [];
           this.statusText = '';
-          this.statusColor = 'white';
+          this.statusColor = this.AUTO_TEXT_COLOR;
           currentState.fixedConnections.forEach(connection => {
             this.fixedConnections.push({ ...connection });
           });
@@ -141,7 +143,7 @@ export class StrandsComponent {
   }
 
   win(): void {
-    this.setStatus('GEWONNEN!', 'var(--super-solution-light)');
+    this.setStatus('GEWONNEN!', 'var(--super-solution-brighter)');
     this.finished = true;
   }
 
@@ -172,9 +174,9 @@ export class StrandsComponent {
       this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
       this.finishedCount++;
       if (solution!.isSuperSolution) {
-        this.setStatus('DURCHGANGSWORT!', 'var(--super-solution-light)');
+        this.setStatus('DURCHGANGSWORT!', 'var(--super-solution-brighter)');
       } else {
-        this.setStatus(this.currentTry.map(l => l.letter).join(''), 'var(--solution-light)');
+        this.setStatus(this.currentTry.map(l => l.letter).join(''), 'var(--solution-brighter)');
       }
       this.currentTry.forEach(letter => { letter.isSolutionActive = !solution!.isSuperSolution; letter.isSuperSolutionActive = solution!.isSuperSolution; });
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
@@ -221,7 +223,7 @@ export class StrandsComponent {
     this.gameState.partialUpdate(() => ({ nonSolutionWordsFound: this.nonSolutionWordsFound }));
   }
 
-  setStatus(text: string, color: string = 'white'): void {
+  setStatus(text: string, color: string = this.AUTO_TEXT_COLOR): void {
     setTimeout(() => {
       this.statusText = text;
       this.statusColor = color;

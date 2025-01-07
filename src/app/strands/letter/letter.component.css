@@ -8,13 +8,14 @@
   align-items: center;
 }
 .letter .letter-content {
+  color: light-dark(var(--dark-text), var(--light-text));
   width: 42px;
   height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 100%;
-  background-color: var(--background-dark);
+  background-color: light-dark(var(--light-bg), var(--dark-bg));
   z-index: 2;
 }
 .letter .letter-flyout {
@@ -24,7 +25,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 100%;
-  background-color: var(--guess-dark);
+  background-color: var(--guess);
   position: absolute;
   visibility: hidden;
 }
@@ -41,16 +42,16 @@
 }
 @keyframes hintHighlighting {
   0% {
-    border-color: var(--solution-light);
+    border-color: var(--solution-brighter);
   }
   10% {
-    border-color: var(--super-solution-light);
+    border-color: var(--super-solution-brighter);
   }
   20% {
-    border-color: var(--solution-light);
+    border-color: var(--solution-brighter);
   }
   100% {
-    border-color: var(--solution-light);
+    border-color: var(--solution-brighter);
   }
 }
 @keyframes solutionHighlighting {
@@ -65,21 +66,24 @@
   }
 }
 .letter.hint .letter-content {
-  border: 3px dashed var(--solution-light);
+  border: 3px dashed var(--solution-brighter);
 }
 .letter.hint-animated .letter-content {
-  border: 3px dashed var(--solution-light);
+  border: 3px dashed var(--solution-brighter);
   animation: hintHighlighting 6s infinite;
   animation-delay: var(--animation-delay, 0s);
 }
 .letter.solution .letter-content {
+  color: var(--light-text);
   animation: solutionHighlighting 0.5s ease-in-out;
-  background-color: var(--solution-dark);
+  background-color: var(--solution);
 }
 .letter.super-solution .letter-content {
+  color: var(--light-text);
   animation: solutionHighlighting 0.5s ease-in-out;
-  background-color: var(--super-solution-dark);
+  background-color: var(--super-solution);
 }
 .letter.guess .letter-content {
-  background-color: var(--guess-dark);
+  color: var(--light-text);
+  background-color: var(--guess);
 }
