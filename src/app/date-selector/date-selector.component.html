@@ -1,0 +1,19 @@
+<div class="dates">
+  <h1>Vergangene Puzzles</h1>
+
+  <p>Wähle ein Datum, um ein vergangenes Puzzle zu spielen.</p>
+
+  <input
+    type="date"
+    [(ngModel)]="selectedDate"
+    (ngModelChange)="setDate($event)"
+    [min]="minISODate"
+    [max]="todayISODate"
+  />
+
+  @if(outOfRangeOrInvalid) {
+  <button disabled>Ungültiges Datum gewählt</button>
+  } @else {
+  <a [routerLink]="['/', selectedDate]"> Puzzle {{ displayedDate }} spielen </a>
+  }
+</div>

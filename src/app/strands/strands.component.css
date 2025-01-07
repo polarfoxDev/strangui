@@ -16,6 +16,13 @@
 h1 {
   margin: 0;
 }
+.date {
+  font-size: 15px;
+  font-weight: 200;
+}
+.smaller-text {
+  font-size: 12px;
+}
 .theme-box {
   width: 320px;
   background: light-dark(var(--guess-brighter), var(--guess));

@@ -1,0 +1,52 @@
+.dates {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.dates * {
+  text-align: center;
+}
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+h1 {
+  margin: 0;
+}
+input {
+  border: 2px solid var(--guess);
+  border-radius: 10px;
+  font-size: 20px;
+  padding: 16px;
+  text-align: center;
+  background: light-dark(var(--light-bg), var(--dark-bg));
+  color: light-dark(var(--dark-text), var(--light-text));
+}
+button,
+a {
+  display: block;
+  height: 60px;
+  width: 240px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--guess);
+  border: 2px solid var(--guess);
+  color: var(--light-text);
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  gap: 2px;
+  transition: scale 0.2s ease-in-out;
+}
+button:disabled {
+  background: light-dark(var(--light-bg), var(--dark-bg));
+  color: light-dark(var(--dark-text), var(--light-text));
+  border: 2px solid var(--guess);
+}
