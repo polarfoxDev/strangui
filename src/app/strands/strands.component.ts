@@ -15,6 +15,8 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 })
 export class StrandsComponent {
   readonly AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
+  readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
+  readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
 
   letters: Letter[] = defaultLetterGrid;
 
@@ -143,7 +145,7 @@ export class StrandsComponent {
   }
 
   win(): void {
-    this.setStatus('GEWONNEN!', 'var(--super-solution-brighter)');
+    this.setStatus('GEWONNEN!', this.AUTO_TEXT_COLOR_SUPER_SOLUTION);
     this.finished = true;
   }
 
@@ -174,9 +176,9 @@ export class StrandsComponent {
       this.gameEvents.push(solution!.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound);
       this.finishedCount++;
       if (solution!.isSuperSolution) {
-        this.setStatus('DURCHGANGSWORT!', 'var(--super-solution-brighter)');
+        this.setStatus('DURCHGANGSWORT!', this.AUTO_TEXT_COLOR_SUPER_SOLUTION);
       } else {
-        this.setStatus(this.currentTry.map(l => l.letter).join(''), 'var(--solution-brighter)');
+        this.setStatus(this.currentTry.map(l => l.letter).join(''), this.AUTO_TEXT_COLOR_SOLUTION);
       }
       this.currentTry.forEach(letter => { letter.isSolutionActive = !solution!.isSuperSolution; letter.isSuperSolutionActive = solution!.isSuperSolution; });
       this.tryConnections.forEach(connection => { connection.isSolutionActive = !solution!.isSuperSolution; connection.isSuperSolutionActive = solution!.isSuperSolution; connection.isGuessActive = false; });
