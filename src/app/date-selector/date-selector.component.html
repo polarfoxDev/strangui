@@ -3,6 +3,8 @@
 
   <p>Wähle ein Datum, um ein vergangenes Puzzle zu spielen.</p>
 
+  <p>Verfügbarer Zeitraum: {{ minDateString }} &ndash; {{ todayDateString }}</p>
+
   <input
     type="date"
     [(ngModel)]="selectedDate"

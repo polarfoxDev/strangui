@@ -10,7 +10,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class DateSelectorComponent {
   readonly minISODate = '2025-01-05';
+  readonly minDateString = '05.01.2025';
   readonly todayISODate = new Date().toISOString().substring(0, 10);
+  readonly todayDateString = new Date().toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   displayedDate: string = 'von heute';
   selectedDate: string = this.todayISODate;
