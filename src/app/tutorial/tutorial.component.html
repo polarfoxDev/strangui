@@ -1,0 +1,138 @@
+<div class="tutorial">
+  <div class="header">
+    <h1>Spielanleitung</h1>
+    <a class="info-button close-button" [routerLink]="['..']">&#215;</a>
+  </div>
+  <div class="section">
+    <div class="figure">
+      <div #letterbox class="letterbox">
+        @for (letter of figure1.letters; track $index) {
+        <app-letter
+          [letter]="letter"
+          [row]="letter.location.x"
+          [column]="letter.location.y"
+          [hintAnimationDelay]="letter.hintFoundDelay"
+          [isDisabled]="true"
+        ></app-letter>
+        }
+      </div>
+      <div
+        class="cursor"
+        style="--opacity: {{ figure1.cursor.opacity }}; --cx: {{
+          figure1.cursor.y * 60 + 30
+        }}px; --cy: {{
+          figure1.cursor.x * 60 + 30 - 60 * 5
+        }}px; --size-factor: {{ figure1.cursor.opacity === 1 ? 0.9 : 1 }}"
+      ></div>
+      <svg class="connections">
+        @for (connection of figure1.connections; track $index) {
+        @if(connection.isGuessActive || connection.isSuperSolutionActive ||
+        connection.isSolutionActive) {
+        <line
+          [attr.x1]="connection.from.y * 60 + 30"
+          [attr.y1]="connection.from.x * 60 + 30 - 60 * 3"
+          [attr.x2]="connection.to.y * 60 + 30"
+          [attr.y2]="connection.to.x * 60 + 30 - 60 * 3"
+          [attr.stroke]="
+            connection.isGuessActive
+              ? 'var(--guess-brighter)'
+              : connection.isSuperSolutionActive
+              ? 'var(--super-solution-brighter)'
+              : 'var(--solution-brighter)'
+          "
+          stroke-width="10"
+        />
+        } }
+      </svg>
+    </div>
+    Finde Themen-Wörter, um das Spielfeld auszufüllen.
+    <ul>
+      <li>Gefundene Themen-Wörter bleiben blau markiert.</li>
+      <li>
+        Ziehe mit der Maus oder dem Finger über die Buchstaben, um Wörter zu
+        bilden.
+      </li>
+      <li>
+        Die Themen-Wörter füllen das gesamte Spielfeld aus. Themen-Wörter
+        überlappen und überkreuzen sich nicht.
+      </li>
+    </ul>
+    Finde das „Durchgangswort“.
+    <ul>
+      <li>
+        Das Durchgangswort beschreibt das Thema des Puzzles und berührt zwei
+        gegenüberliegende Seiten des Spielfelds. Es kann sich aus mehreren
+        Wörtern zusammensetzen.
+      </li>
+      <li>
+        Das Durchgangswort ist wird rosa markiert, wenn es gefunden wurde.
+      </li>
+      <li>
+        Ein Beispiel: Das Durchgangswort lautet
+        <span class="super-solution">TIERE</span> und dazu gehören Themen-Wörter
+        wie <span class="solution">FUCHS</span>,
+        <span class="solution">KATZE</span>, <span class="solution">HUND</span>,
+        etc.
+      </li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="figure with-hint">
+      <div #letterbox class="letterbox">
+        @for (letter of figure2.letters; track $index) {
+        <app-letter
+          [letter]="letter"
+          [row]="letter.location.x"
+          [column]="letter.location.y"
+          [hintAnimationDelay]="letter.hintFoundDelay"
+          [isDisabled]="true"
+        ></app-letter>
+        }
+      </div>
+      <div
+        class="cursor"
+        style="--opacity: {{ figure2.cursor.opacity }}; --cx: {{
+          figure2.cursor.y * 60 + 30
+        }}px; --cy: {{
+          figure2.cursor.x * 60 + 30 - 60 * 5
+        }}px; --size-factor: {{ figure2.cursor.opacity === 1 ? 0.9 : 1 }}"
+      ></div>
+      <svg class="connections">
+        @for (connection of figure2.connections; track $index) {
+        @if(connection.isGuessActive || connection.isSuperSolutionActive ||
+        connection.isSolutionActive) {
+        <line
+          [attr.x1]="connection.from.y * 60 + 30"
+          [attr.y1]="connection.from.x * 60 + 30 - 60 * 3"
+          [attr.x2]="connection.to.y * 60 + 30"
+          [attr.y2]="connection.to.x * 60 + 30 - 60 * 3"
+          [attr.stroke]="
+            connection.isGuessActive
+              ? 'var(--guess-brighter)'
+              : connection.isSuperSolutionActive
+              ? 'var(--super-solution-brighter)'
+              : 'var(--solution-brighter)'
+          "
+          stroke-width="10"
+        />
+        } }
+      </svg>
+      <button class="hint level-3" [disabled]="true">Hinweis</button>
+    </div>
+    Brauchst du einen Hinweis?
+    <ul>
+      <li>
+        Finde Wörter, die nicht zum Thema gehören, um Hinweise zu erhalten.
+        Jedes Wort muss mindestens vier Buchstaben lang sein.
+      </li>
+      <li>
+        Für jeweils drei gefundene Themen-Wörter verdienst du dir einen Hinweis.
+      </li>
+      <li>
+        Wenn du dir einen Hinweis geben lässt, werden die Buchstaben eines
+        Themen-Wortes hervorgehoben. Ist bereits ein Hinweis aktiv, werden die
+        Buchstaben in der richtigen Reihenfolge aufleuchten.
+      </li>
+    </ul>
+  </div>
+</div>

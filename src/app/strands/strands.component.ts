@@ -43,6 +43,7 @@ export class StrandsComponent {
 
   date = '';
   dateISO = '';
+  isHistoryMode = false;
   theme = '';
   finished = false;
   ready = false;
@@ -52,14 +53,20 @@ export class StrandsComponent {
   gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
 
   constructor(private strandsService: StrandsService, private route: ActivatedRoute, private router: Router) {
-    const date = new Date();
+    let date = new Date();
     this.route.params.subscribe(params => {
       const dateParam = params['date'];
       if (dateParam) {
-        date.setTime(Date.parse(dateParam));
+        const newDate = new Date(dateParam);
+        if (date.toISOString().substring(0, 10) === newDate.toISOString().substring(0, 10)) {
+          this.router.navigate(['']);
+          return;
+        }
+        date = newDate;
       }
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
       this.dateISO = date.toISOString().substring(0, 10);
+      this.isHistoryMode = !!dateParam;
       this.strandsService.loadRiddle(this.dateISO).subscribe({
         next: riddle => {
           this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, this.solutions, this.letters);
@@ -195,7 +202,7 @@ export class StrandsComponent {
       if (this.solutions.every(s => s.found)) {
         this.win();
         setTimeout(() => {
-          this.router.navigate(['results'], { queryParams: { date: this.dateISO } });
+          this.router.navigate([this.dateISO, 'results']);
         }, 1000);
       }
       this.gameState.partialUpdate(() => ({ solutionStates: this.solutions, fixedConnections: this.fixedConnections, letterStates: this.letters, gameEvents: this.gameEvents, activeHint: this.activeHint, activeHintInAnimation: this.activeHintInAnimation }));

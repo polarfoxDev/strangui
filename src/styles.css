@@ -192,3 +192,18 @@ body {
   color: light-dark(var(--dark-text), var(--light-text));
   font-family: "Poppins", sans-serif;
 }
+
+.info-button {
+  border-radius: 100%;
+  border: 2px solid light-dark(var(--guess), var(--guess-brighter));
+  background: none;
+  color: light-dark(var(--guess), var(--guess-brighter));
+  font-weight: bold;
+  font-size: 15px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}

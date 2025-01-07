@@ -1,0 +1,86 @@
+.tutorial {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+h1 {
+  margin: 0;
+}
+.close-button {
+  content: "\00d7";
+  font-size: 20px;
+}
+.section {
+  max-width: 600px;
+  margin: 16px;
+}
+.solution {
+  color: light-dark(var(--solution), var(--solution-brighter));
+}
+.super-solution {
+  color: light-dark(var(--super-solution), var(--super-solution-brighter));
+}
+
+/* Figures */
+
+.figure {
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 16px;
+}
+.figure.with-hint {
+  padding-bottom: 80px;
+}
+
+.letterbox {
+  display: grid;
+  grid-template-columns: repeat(4, 60px);
+  grid-auto-rows: 60px;
+}
+
+.connections {
+  display: block;
+  margin-top: calc(5 * -60px);
+  width: calc(4 * 60px);
+  height: calc(5 * 60px);
+  min-height: calc(5 * 60px);
+}
+
+.cursor {
+  position: absolute;
+  width: calc(25px * var(--size-factor));
+  height: calc(25px * var(--size-factor));
+  border-radius: 100%;
+  z-index: 10;
+  transition: all 0.2s ease-in-out;
+  background: #ff3737;
+  opacity: var(--opacity);
+  transform: translate(var(--cx), var(--cy));
+}
+
+.hint {
+  position: absolute;
+  display: block;
+  height: 60px;
+  width: 120px;
+  border-radius: 20px;
+  background: light-dark(var(--guess-brighter), var(--guess));
+  border: 2px solid light-dark(var(--guess-brighter), var(--guess));
+  color: light-dark(var(--dark-text), var(--light-text));
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  z-index: 9;
+  margin-top: 10px;
+}

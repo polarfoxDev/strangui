@@ -12,19 +12,21 @@
     hast dafür <b>{{ hintsUsed }}</b> Hinweis@if(hintsUsed !== 1) {e} 💡
     benutzt.
   </p>
-  @if(timeLeft.length > 0) {
+  @if(!isHistoric && timeLeft.length > 0) {
   <p class="next-info">Nächstes Puzzle in</p>
   <p class="timer">
     {{ timeLeft }}
   </p>
   } @else {
-  <button class="current-button" (click)="today()">
-    Puzzle von heute spielen
-  </button>
+  <a class="current-button" [routerLink]="['/']"> Puzzle von heute spielen </a>
   }
-  <button (click)="share()">Ergebnisse teilen</button>
+  <button (click)="share()">
+    @if(canShare) { Ergebnisse teilen } @else { Ergebnisse kopieren }
+  </button>
   @if(timeLeft.length > 0) {
-  <button class="back-button" (click)="back()">Zurück zum Puzzle</button>
+  <a class="back-button" [routerLink]="[isHistoric ? '..' : '/']">
+    Zurück zum Puzzle
+  </a>
   }
 </div>
 } @else if (loading) {

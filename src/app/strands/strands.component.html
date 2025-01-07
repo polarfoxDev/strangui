@@ -1,6 +1,9 @@
 @if(ready) {
 <div class="strands">
-  <h1>Stränge, {{ date }}</h1>
+  <div class="header">
+    <h1>Stränge, {{ date }}</h1>
+    <a class="info-button" [routerLink]="['tutorial']"> ? </a>
+  </div>
   <p class="theme-box">
     <span class="theme-title">Thema des Tages</span>
     <span class="theme-content">{{ theme }}</span>
@@ -65,8 +68,9 @@
     <div class="game-over-box">
       <a
         class="hint"
-        [routerLink]="['/results']"
-        [queryParams]="{ date: dateISO }"
+        [routerLink]="
+          this.isHistoryMode ? ['results'] : [this.dateISO, 'results']
+        "
       >
         Ergebnisse ansehen
       </a>

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-results',
-  imports: [SpinnerComponent],
+  imports: [RouterModule, SpinnerComponent],
   templateUrl: './results.component.html',
   styleUrl: './results.component.css'
 })
@@ -20,6 +20,8 @@ export class ResultsComponent {
   ready = false;
   gameEvents: GameEvent[] = [];
   dateISO = '';
+  isHistoric = false;
+  canShare = navigator.share !== undefined;
 
   readonly HINT_ICON = '💡';
   readonly SOLUTION_ICON = '🔵';
@@ -27,8 +29,11 @@ export class ResultsComponent {
   readonly LINE_BREAK = '\n';
 
   constructor(private route: ActivatedRoute, private strandsService: StrandsService, private router: Router) {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.dateISO = params['date'];
+      if (this.dateISO !== new Date().toISOString().substring(0, 10)) {
+        this.isHistoric = true;
+      }
       const gameState = strandsService.getCurrentGameState(this.dateISO);
       if (!gameState) {
         this.loading = false;
@@ -46,6 +51,7 @@ export class ResultsComponent {
         this.loading = false;
         this.ready = true;
       });
+      this.tryShare();
     });
   }
 
@@ -100,17 +106,20 @@ export class ResultsComponent {
     this.emojiLines = gameResult.split(this.LINE_BREAK);
   }
 
+  tryShare() {
+    this.canShare = navigator.canShare({ title: this.title, text: this.getShareText() });
+  }
+
+  private getShareText(): string {
+    return this.title + this.LINE_BREAK + this.subTitle + this.LINE_BREAK + this.emojiLines.join(this.LINE_BREAK) + this.LINE_BREAK;
+  }
+
   share() {
-    const clipboardText = this.title + this.LINE_BREAK + this.subTitle + this.LINE_BREAK + this.emojiLines.join(this.LINE_BREAK) + this.LINE_BREAK;
-    navigator.clipboard.writeText(clipboardText);
-    navigator.share({ title: this.title, text: clipboardText });
-  }
-
-  back() {
-    this.router.navigate(['/']);
-  }
-
-  today() {
-    this.router.navigate(['/']);
+    const shareText = this.getShareText();
+    if (this.canShare) {
+      navigator.share({ title: this.title, text: shareText });
+    } else {
+      navigator.clipboard.writeText(shareText);
+    }
   }
 }
