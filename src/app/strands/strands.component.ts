@@ -53,6 +53,11 @@ export class StrandsComponent {
   gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
 
   constructor(private strandsService: StrandsService, private route: ActivatedRoute, private router: Router) {
+    if (AppStorage.getSafe('firstVisit', true)) {
+      AppStorage.set('firstVisit', false);
+      this.router.navigate(['tutorial']);
+      return;
+    }
     let date = new Date();
     this.route.params.subscribe(params => {
       const dateParam = params['date'];

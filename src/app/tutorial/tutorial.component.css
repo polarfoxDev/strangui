@@ -10,6 +10,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
+  margin-top: 16px;
 }
 h1 {
   margin: 0;
@@ -83,4 +84,27 @@ h1 {
   gap: 2px;
   z-index: 9;
   margin-top: 10px;
+}
+
+.start-button {
+  display: block;
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 8px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 2px solid var(--solution);
+  color: light-dark(var(--dark-text), var(--light-text));
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  gap: 2px;
+  transition: all 0.2s ease-in-out;
+}
+.start-button:hover {
+  color: var(--light-text);
+  background: var(--solution);
 }
