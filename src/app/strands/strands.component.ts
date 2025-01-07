@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
-import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './strands';
+import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './models';
 import { StrandsService } from '../core/strands.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';

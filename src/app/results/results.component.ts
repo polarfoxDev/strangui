@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StrandsService } from '../core/strands.service';
-import { GameEvent } from '../strands/strands';
+import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({

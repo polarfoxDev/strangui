@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Letter, MouseAction } from '../strands';
+import { Letter, MouseAction } from '../models';
 
 @Component({
   selector: 'app-letter',
