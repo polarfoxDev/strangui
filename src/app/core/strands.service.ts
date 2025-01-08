@@ -10,7 +10,7 @@ import { AppStorage, SafeStorageAccessor } from './storage';
 export class StrandsService {
 
   private allWords: string[] = [];
-  private readonly BASE_URL = 'https://strangdaten.fsn1.your-objectstorage.com';
+  private readonly BASE_URL = 'https://rätsel.stränge.de';
 
   constructor(private http: HttpClient) {
     this.prepareWords('wordlist_de.txt');
