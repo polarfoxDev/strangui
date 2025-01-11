@@ -19,9 +19,16 @@
   </p>
   } @else {
   <a class="current-button" [routerLink]="['/']"> Puzzle von heute spielen </a>
+  } @if(canShare){
+  <button (click)="share()">Ergebnisse teilen</button>
   }
-  <button (click)="share()">
-    @if(canShare) { Ergebnisse teilen } @else { Ergebnisse kopieren }
+  <button
+    (click)="copy()"
+    class="copy-button"
+    [class.confirm]="copyButtonConfirmation"
+  >
+    <span class="text">Ergebnisse kopieren</span>
+    <span class="confirmation">Kopiert ✔</span>
   </button>
   @if(timeLeft.length > 0) {
   <a class="back-button" [routerLink]="[isHistoric ? '..' : '/']">

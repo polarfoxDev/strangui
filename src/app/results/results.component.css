@@ -68,3 +68,19 @@ button:active {
   font-size: 16px;
   background: var(--solution);
 }
+.copy-button * {
+  transition: all 0.2s ease-in-out;
+}
+.copy-button .confirmation {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+}
+.copy-button.confirm .text {
+  opacity: 0;
+  visibility: hidden;
+}
+.copy-button.confirm .confirmation {
+  opacity: 1;
+  visibility: visible;
+}

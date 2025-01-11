@@ -22,6 +22,7 @@ export class ResultsComponent {
   dateISO = '';
   isHistoric = false;
   canShare = navigator.share !== undefined;
+  copyButtonConfirmation = false;
 
   readonly HINT_ICON = '💡';
   readonly SOLUTION_ICON = '🔵';
@@ -115,11 +116,14 @@ export class ResultsComponent {
   }
 
   share() {
-    const shareText = this.getShareText();
-    if (this.canShare) {
-      navigator.share({ title: this.title, text: shareText });
-    } else {
-      navigator.clipboard.writeText(shareText);
-    }
+    navigator.share({ title: this.title, text: this.getShareText() });
+  }
+
+  copy() {
+    navigator.clipboard.writeText(this.getShareText());
+    this.copyButtonConfirmation = true;
+    setTimeout(() => {
+      this.copyButtonConfirmation = false;
+    }, 3000);
   }
 }
