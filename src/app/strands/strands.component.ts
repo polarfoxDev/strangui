@@ -18,7 +18,7 @@ export class StrandsComponent {
   readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
   readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
 
-  letters: Letter[] = defaultLetterGrid;
+  letters: Letter[] = [];
 
   fixedConnections: Connection[] = [];
   tryConnections: Connection[] = [];
@@ -74,11 +74,14 @@ export class StrandsComponent {
       this.isHistoryMode = !!dateParam;
       this.strandsService.loadRiddle(this.dateISO).subscribe({
         next: riddle => {
-          this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, this.solutions, this.letters);
+          const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
+          this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, [], defaultGridCopy);
           this.gameState.init();
           const currentState = this.gameState.get();
+          console.log(currentState.letterStates);
           this.theme = riddle.theme;
           const riddleLetters: string[] = riddle.letters.flat();
+          this.letters = defaultGridCopy;
           this.letters.forEach(letter => {
             letter.isGuessActive = false;
             letter.isSolutionActive = false;
