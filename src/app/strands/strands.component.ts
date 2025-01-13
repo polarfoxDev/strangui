@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
 import { AppStorage, SafeStorageAccessor } from '../core/storage';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { UpdateService } from '../core/update.service';
 
 @Component({
   selector: 'app-strands',
@@ -52,7 +53,12 @@ export class StrandsComponent {
 
   gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
 
-  constructor(private strandsService: StrandsService, private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private strandsService: StrandsService,
+    private updateService: UpdateService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     if (AppStorage.getSafe('firstVisit', true)) {
       AppStorage.set('firstVisit', false);
       this.router.navigate(['tutorial']);
@@ -72,61 +78,77 @@ export class StrandsComponent {
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
       this.dateISO = date.toISOString().substring(0, 10);
       this.isHistoryMode = !!dateParam;
-      this.strandsService.loadRiddle(this.dateISO).subscribe({
-        next: riddle => {
-          const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
-          this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, [], defaultGridCopy);
-          this.gameState.init();
-          const currentState = this.gameState.get();
-          this.theme = riddle.theme;
-          const riddleLetters: string[] = riddle.letters.flat();
-          this.letters = defaultGridCopy;
-          this.letters.forEach(letter => {
-            letter.isGuessActive = false;
-            letter.isSolutionActive = false;
-            letter.isSuperSolutionActive = false;
-            letter.hintTiming = -1;
-            letter.letter = riddleLetters.shift()!;
-          });
-          this.solutions = riddle.solutions.map(s => ({ ...s, found: false }));
-          this.nonSolutionWordsFound = currentState.nonSolutionWordsFound;
-          this.tipsUsed = currentState.tipsUsed;
-          this.finishedCount = currentState.solutionStates.filter(s => s.found).length;
-          this.gameEvents = currentState.gameEvents;
-          this.activeHint = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(currentState.activeHint?.locations)) || null;
-          this.activeHintInAnimation = currentState.activeHintInAnimation;
-          this.fixedConnections = currentState.fixedConnections;
-          this.tryConnections = [];
-          this.connections = [];
-          this.statusText = '';
-          this.statusColor = this.AUTO_TEXT_COLOR;
-          currentState.fixedConnections.forEach(connection => {
-            this.fixedConnections.push({ ...connection });
-          });
-          currentState.letterStates.forEach(letter => {
-            const currentLetter = this.letters.find(l => l.location.x === letter.location.x && l.location.y === letter.location.y);
-            if (currentLetter) {
-              currentLetter.isGuessActive = letter.isGuessActive;
-              currentLetter.isSolutionActive = letter.isSolutionActive;
-              currentLetter.isSuperSolutionActive = letter.isSuperSolutionActive;
-              currentLetter.hintTiming = letter.hintTiming;
-            }
-          });
-          currentState.solutionStates.forEach(solution => {
-            const currentSolution = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(solution.locations));
-            if (currentSolution) {
-              currentSolution.found = solution.found;
-            }
-          });
-          this.calculateConnections();
-          this.checkWin();
-          this.ready = true;
-          this.loading = false;
-        },
-        error: () => {
-          this.ready = false;
-          this.loading = false;
+      console.info('Checking for updates...');
+      this.updateService.checkForUpdate().subscribe(updateAvailable => {
+        if (updateAvailable) {
+          console.info('Update available, reloading');
+          this.updateService.installUpdate();
+          return;
         }
+        console.info('Running current version');
+        this.strandsService.loadRiddle(this.dateISO).subscribe({
+          next: riddle => {
+            if (riddle.configVersion !== 2) {
+              console.error('Incompatible riddle config version');
+              this.ready = false;
+              this.loading = false;
+              return;
+            }
+            const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
+            this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, [], defaultGridCopy);
+            this.gameState.init();
+            const currentState = this.gameState.get();
+            this.theme = riddle.theme;
+            const riddleLetters: string[] = riddle.letters.flat();
+            this.letters = defaultGridCopy;
+            this.letters.forEach(letter => {
+              letter.isGuessActive = false;
+              letter.isSolutionActive = false;
+              letter.isSuperSolutionActive = false;
+              letter.hintTiming = -1;
+              letter.letter = riddleLetters.shift()!;
+            });
+            this.solutions = riddle.solutions.map(s => ({ ...s, found: false }));
+            this.nonSolutionWordsFound = currentState.nonSolutionWordsFound;
+            this.tipsUsed = currentState.tipsUsed;
+            this.finishedCount = currentState.solutionStates.filter(s => s.found).length;
+            this.gameEvents = currentState.gameEvents;
+            this.activeHint = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(currentState.activeHint?.locations)) || null;
+            this.activeHintInAnimation = currentState.activeHintInAnimation;
+            this.fixedConnections = currentState.fixedConnections;
+            this.tryConnections = [];
+            this.connections = [];
+            this.statusText = '';
+            this.statusColor = this.AUTO_TEXT_COLOR;
+            currentState.fixedConnections.forEach(connection => {
+              this.fixedConnections.push({ ...connection });
+            });
+            currentState.letterStates.forEach(letter => {
+              const currentLetter = this.letters.find(l => l.location.x === letter.location.x && l.location.y === letter.location.y);
+              if (currentLetter) {
+                currentLetter.isGuessActive = letter.isGuessActive;
+                currentLetter.isSolutionActive = letter.isSolutionActive;
+                currentLetter.isSuperSolutionActive = letter.isSuperSolutionActive;
+                currentLetter.hintTiming = letter.hintTiming;
+              }
+            });
+            currentState.solutionStates.forEach(solution => {
+              const currentSolution = this.solutions.find(s => JSON.stringify(s.locations) === JSON.stringify(solution.locations));
+              if (currentSolution) {
+                currentSolution.found = solution.found;
+              }
+            });
+            this.calculateConnections();
+            this.checkWin();
+            this.ready = true;
+            this.loading = false;
+          },
+          error: () => {
+            this.ready = false;
+            this.loading = false;
+          }
+        });
+
       });
     });
   }
