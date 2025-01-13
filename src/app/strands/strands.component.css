@@ -25,7 +25,7 @@ h1 {
 }
 .theme-box {
   width: 320px;
-  background: light-dark(var(--guess-brighter), var(--guess));
+  background: var(--guess);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -33,7 +33,8 @@ h1 {
   align-items: center;
   margin: 0;
 }
-.theme-box .theme-title {
+.theme-box .theme-title,
+.update-box .update-title {
   font-size: 12px;
   width: 100%;
   text-align: center;
@@ -49,6 +50,45 @@ h1 {
   background: light-dark(var(--light-bg), var(--dark-bg));
   border-radius: 0 0 10px 10px;
   margin-bottom: 2px;
+}
+.update-box {
+  width: 320px;
+  background: var(--info);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+.update-box .update-info {
+  width: calc(100% - 20px);
+  text-align: center;
+  padding: 8px;
+  font-weight: normal;
+  background: light-dark(var(--light-bg), var(--dark-bg));
+  border-radius: 0 0 10px 10px;
+  margin-bottom: 2px;
+}
+.update-button {
+  border-radius: 100%;
+  border: 2px solid light-dark(var(--info), var(--info-brighter));
+  background: none;
+  color: light-dark(var(--info), var(--info-brighter));
+  font-weight: bold;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.update-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 .current-guess {
   font-size: 28px;

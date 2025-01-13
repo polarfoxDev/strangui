@@ -7,6 +7,17 @@
     <a class="info-button smaller-text" [routerLink]="['/history']"> 📅 </a>
     <a class="info-button" [routerLink]="['tutorial']"> ? </a>
   </div>
+  @if (updateAvailable) {
+  <p class="update-box">
+    <span class="update-title">Update</span>
+    <span class="update-info">
+      <span>Ein App-Update ist verfügbar, bitte neu laden zum Aktivieren.</span>
+      <button class="update-button" (click)="updateService.installUpdate()">
+        ↻
+      </button>
+    </span>
+  </p>
+  }
   <p class="theme-box">
     <span class="theme-title">Thema des Tages</span>
     <span class="theme-content">{{ theme }}</span>
