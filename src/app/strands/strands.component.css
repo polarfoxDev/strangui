@@ -76,9 +76,13 @@ h1 {
   background: none;
   color: light-dark(var(--info), var(--info-brighter));
   font-weight: bold;
-  font-size: 18px;
+  font-size: 15px;
   width: 30px;
+  min-width: 30px;
+  max-width: 30px;
   height: 30px;
+  min-height: 30px;
+  max-height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
