@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { firstRiddleDateISO } from '../core/constants';
 
 @Component({
   selector: 'app-date-selector',
@@ -9,8 +10,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './date-selector.component.css'
 })
 export class DateSelectorComponent {
-  readonly minISODate = '2025-01-05';
-  readonly minDateString = '05.01.2025';
+  readonly minISODate = firstRiddleDateISO;
+  readonly minDateString = new Date(firstRiddleDateISO).toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });;
   readonly todayISODate = new Date().toISOString().substring(0, 10);
   readonly todayDateString = new Date().toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
@@ -20,7 +21,6 @@ export class DateSelectorComponent {
   outOfRangeOrInvalid: boolean = false;
 
   setDate(date: string): void {
-    console.log(date);
     this.displayedDate = this.getDisplayedDate(date);
   }
 

@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { getRiddleIndex } from '../core/utils';
 
 @Component({
   selector: 'app-results',
@@ -29,7 +30,7 @@ export class ResultsComponent {
   readonly SUPER_SOLUTION_ICON = '🟣';
   readonly LINE_BREAK = '\n';
 
-  constructor(private route: ActivatedRoute, private strandsService: StrandsService, private router: Router) {
+  constructor(private route: ActivatedRoute, private strandsService: StrandsService) {
     this.route.params.subscribe(params => {
       this.dateISO = params['date'];
       if (this.dateISO !== new Date().toISOString().substring(0, 10)) {
@@ -46,7 +47,7 @@ export class ResultsComponent {
           this.tickTimer();
         }
         this.gameEvents = gameState.gameEvents;
-        this.title = 'Stränge.de #' + riddle.index;
+        this.title = 'Stränge.de #' + getRiddleIndex(this.dateISO);
         this.subTitle = "„" + riddle.theme + "“";
         this.calculateEmojis();
         this.loading = false;

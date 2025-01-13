@@ -37,7 +37,7 @@ export interface SolutionConfig {
 }
 
 export interface RiddleConfig {
-  index: number;
+  configVersion: number;
   theme: string;
   letters: string[][];
   solutions: SolutionConfig[];

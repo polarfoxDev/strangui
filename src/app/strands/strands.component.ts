@@ -78,7 +78,6 @@ export class StrandsComponent {
           this.gameState = this.strandsService.getGameStateAccessor(this.dateISO, [], defaultGridCopy);
           this.gameState.init();
           const currentState = this.gameState.get();
-          console.log(currentState.letterStates);
           this.theme = riddle.theme;
           const riddleLetters: string[] = riddle.letters.flat();
           this.letters = defaultGridCopy;
