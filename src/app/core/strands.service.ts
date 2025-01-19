@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { GameState, Letter, RiddleConfig, Solution } from '../strands/models';
 import { AppStorage, SafeStorageAccessor } from './storage';
 import packageJson from '../../../package.json';
