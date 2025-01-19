@@ -1,0 +1,16 @@
+<div
+  class="date"
+  [class.today]="date.isToday"
+  [class.disabled]="date.gameStatus === GameStatus.NotAvailable"
+  [class.finished]="date.gameStatus === GameStatus.Finished"
+  [class.active]="date.gameStatus === GameStatus.InProgress"
+  [class.available]="date.gameStatus === GameStatus.NotStarted"
+>
+  <button
+    [disabled]="date.gameStatus === GameStatus.NotAvailable"
+    (click)="selectDate()"
+    class="date-content"
+  >
+    {{ date.date | date : "d" }}
+  </button>
+</div>

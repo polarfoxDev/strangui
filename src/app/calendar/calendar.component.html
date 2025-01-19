@@ -1,0 +1,30 @@
+<div #calendar class="calendar">
+  <div class="calendar-header">
+    <button
+      class="info-button"
+      [disabled]="!activeMonth.previousAvailable"
+      (click)="previousMonth()"
+    >
+      ‹
+    </button>
+    <h2>{{ activeMonth.dates[0].date | date : "MMMM yyyy" : undefined }}</h2>
+    <button
+      class="info-button"
+      [disabled]="!activeMonth.nextAvailable"
+      (click)="nextMonth()"
+    >
+      ›
+    </button>
+  </div>
+
+  @for(day of weekdays; track day) {
+  <div class="weekday">{{ day }}</div>
+  }
+  <div
+    class="date-offset"
+    [style.grid-column]="'1 / span ' + activeMonth.gridOffset"
+  ></div>
+  @for (date of activeMonth.dates; track $index) {
+  <app-calendar-date [date]="date"></app-calendar-date>
+  }
+</div>

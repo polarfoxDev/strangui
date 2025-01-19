@@ -1,21 +1,30 @@
 <div class="dates">
   <h1>Vergangene Puzzles</h1>
 
-  <p>Wähle ein Datum, um ein vergangenes Puzzle zu spielen.</p>
+  <p>
+    Wähle ein Datum, um ein vergangenes
+    <br />
+    Puzzle zu spielen. Verfügbarer Zeitraum:
+    <br />
+    {{ minDateString }} &ndash; {{ todayDateString }}
+  </p>
 
-  <p>Verfügbarer Zeitraum: {{ minDateString }} &ndash; {{ todayDateString }}</p>
+  <app-calendar></app-calendar>
 
-  <input
-    type="date"
-    [(ngModel)]="selectedDate"
-    (ngModelChange)="setDate($event)"
-    [min]="minISODate"
-    [max]="todayISODate"
-  />
+  <div class="key">
+    <div class="key-item">
+      <div class="date available"></div>
+      Verfügbar
+    </div>
+    <div class="key-item">
+      <div class="date active"></div>
+      Bereits begonnen
+    </div>
+    <div class="key-item">
+      <div class="date finished"></div>
+      Bereits gelöst
+    </div>
+  </div>
 
-  @if(outOfRangeOrInvalid) {
-  <button disabled>Ungültiges Datum gewählt</button>
-  } @else {
-  <a [routerLink]="['/', selectedDate]"> Puzzle {{ displayedDate }} spielen </a>
-  }
+  <a [routerLink]="['/']"> Puzzle von heute spielen </a>
 </div>

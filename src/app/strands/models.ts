@@ -50,6 +50,13 @@ export enum MouseAction {
   Click
 }
 
+export enum GameStatus {
+  NotAvailable,
+  NotStarted,
+  InProgress,
+  Finished,
+}
+
 export interface GameState {
   solutionStates: Solution[];
   nonSolutionWordsFound: string[];

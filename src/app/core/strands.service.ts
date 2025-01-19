@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
-import { GameState, Letter, RiddleConfig, Solution } from '../strands/models';
+import { catchError, forkJoin, map, Observable, of } from 'rxjs';
+import { GameState, GameStatus, Letter, RiddleConfig, Solution } from '../strands/models';
 import { AppStorage, SafeStorageAccessor } from './storage';
 import packageJson from '../../../package.json';
 
@@ -27,6 +27,18 @@ export class StrandsService {
 
   wordExists(word: string): boolean {
     return this.allWords.includes(word);
+  }
+
+  getRiddleStatus(date: string): GameStatus {
+    const gameState = AppStorage.get<GameState>(`game-state-${date}`);
+    const status = gameState ?
+      gameState.solutionStates.length > 0 && gameState.solutionStates.every(s => s.found) ?
+        GameStatus.Finished
+        : gameState.solutionStates.length > 0 && gameState.solutionStates.some(s => s.found) || gameState.nonSolutionWordsFound.length > 0 ?
+          GameStatus.InProgress
+          : GameStatus.NotStarted
+      : GameStatus.NotStarted;
+    return status;
   }
 
   loadRiddle(date: string): Observable<RiddleConfig> {

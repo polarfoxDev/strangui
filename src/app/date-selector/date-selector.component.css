@@ -50,3 +50,28 @@ button:disabled {
   color: light-dark(var(--dark-text), var(--light-text));
   border: 2px solid var(--guess);
 }
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.key-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.date {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background: var(--guess);
+}
+.date.active {
+  background: var(--solution);
+}
+.date.finished {
+  background: var(--super-solution);
+}
