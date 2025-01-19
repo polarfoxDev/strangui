@@ -68,6 +68,16 @@ button:active {
   font-size: 16px;
   background: var(--solution);
 }
+.beforenext-button {
+  font-size: 16px;
+  background: var(--solution);
+  display: flex;
+  flex-direction: row;
+}
+.beforenext-button .direction {
+  font-size: 35px;
+  margin-right: 20px;
+}
 .copy-button * {
   transition: all 0.2s ease-in-out;
 }

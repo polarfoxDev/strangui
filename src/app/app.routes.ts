@@ -12,10 +12,26 @@ export const routes: Routes = [
   },
   {
     path: 'tutorial',
-    component: TutorialComponent
+    redirectTo: 'anleitung'
   },
   {
     path: 'history',
+    redirectTo: 'vergangenheit'
+  },
+  {
+    path: ':date/tutorial',
+    redirectTo: ':date/anleitung'
+  },
+  {
+    path: ':date/results',
+    redirectTo: ':date/ergebnis'
+  },
+  {
+    path: 'anleitung',
+    component: TutorialComponent
+  },
+  {
+    path: 'vergangenheit',
     component: DateSelectorComponent
   },
   {
@@ -23,11 +39,11 @@ export const routes: Routes = [
     component: StrandsComponent
   },
   {
-    path: ':date/tutorial',
+    path: ':date/anleitung',
     component: TutorialComponent
   },
   {
-    path: ':date/results',
+    path: ':date/ergebnis',
     component: ResultsComponent
   },
 ];

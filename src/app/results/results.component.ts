@@ -4,10 +4,12 @@ import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { getRiddleIndex } from '../core/utils';
+import { DatePipe } from '@angular/common';
+import { firstRiddleDateISO } from '../core/constants';
 
 @Component({
   selector: 'app-results',
-  imports: [RouterModule, SpinnerComponent],
+  imports: [RouterModule, SpinnerComponent, DatePipe],
   templateUrl: './results.component.html',
   styleUrl: './results.component.css'
 })
@@ -24,6 +26,8 @@ export class ResultsComponent {
   isHistoric = false;
   canShare = navigator.share !== undefined;
   copyButtonConfirmation = false;
+  dateBefore?: Date;
+  dateAfter?: Date;
 
   readonly HINT_ICON = '💡';
   readonly SOLUTION_ICON = '🔵';
@@ -35,6 +39,15 @@ export class ResultsComponent {
       this.dateISO = params['date'];
       if (this.dateISO !== new Date().toISOString().substring(0, 10)) {
         this.isHistoric = true;
+        if (this.dateISO !== firstRiddleDateISO) {
+          this.dateBefore = new Date(this.dateISO);
+          this.dateBefore.setDate(this.dateBefore.getDate() - 1);
+        }
+        this.dateAfter = new Date(this.dateISO);
+        this.dateAfter.setDate(this.dateAfter.getDate() + 1);
+        if (this.dateAfter.toISOString().substring(0, 10) === new Date().toISOString().substring(0, 10)) {
+          this.dateAfter = undefined;
+        }
       }
       const gameState = strandsService.getCurrentGameState(this.dateISO);
       if (!gameState) {

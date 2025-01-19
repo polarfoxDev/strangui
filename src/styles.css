@@ -31,17 +31,20 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-button {
+button,
+a {
   border: none;
   cursor: pointer;
   outline: none;
   font-family: "Poppins", sans-serif;
+  padding: 5px;
 }
 button:disabled {
   cursor: not-allowed;
 }
 
 .info-button {
+  padding: 0;
   border-radius: 100%;
   border: 2px solid light-dark(var(--guess), var(--guess-brighter));
   background: none;

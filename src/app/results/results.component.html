@@ -17,7 +17,30 @@
   <p class="timer">
     {{ timeLeft }}
   </p>
-  } @else {
+  <a class="current-button" [routerLink]="['/history']">Vergangene Puzzles</a>
+  } @else { @if(dateBefore) {
+  <a
+    class="beforenext-button"
+    [routerLink]="['/', dateBefore | date : 'yyyy-MM-dd']"
+  >
+    <span class="direction">‹</span>
+    <span>
+      Puzzle vom <br />
+      {{ dateBefore | date }} spielen
+    </span>
+  </a>
+  } @if(dateAfter) {
+  <a
+    class="beforenext-button"
+    [routerLink]="['/', dateAfter | date : 'yyyy-MM-dd']"
+  >
+    <span class="direction">›</span>
+    <span>
+      Puzzle vom <br />
+      {{ dateAfter | date }} spielen
+    </span>
+  </a>
+  }
   <a class="current-button" [routerLink]="['/']"> Puzzle von heute spielen </a>
   } @if(canShare){
   <button (click)="share()">Ergebnisse teilen</button>
