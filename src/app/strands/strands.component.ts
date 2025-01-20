@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
 import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './models';
 import { StrandsService } from '../core/strands.service';
@@ -18,6 +18,10 @@ export class StrandsComponent {
   readonly AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
   readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
   readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
+  private strandsService = inject(StrandsService);
+  protected updateService = inject(UpdateService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   touchCoordinateScaleFactor = 1;
 
@@ -62,12 +66,7 @@ export class StrandsComponent {
     });
   }
 
-  constructor(
-    private strandsService: StrandsService,
-    protected updateService: UpdateService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
+  constructor() {
     this.setScreenSize();
     if (AppStorage.getSafe('firstVisit', true)) {
       AppStorage.set('firstVisit', false);

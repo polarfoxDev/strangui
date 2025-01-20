@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import packageJson from '../../package.json';
 import { UpdateService } from './core/update.service';
@@ -11,8 +11,8 @@ import { UpdateService } from './core/update.service';
 })
 export class AppComponent {
   version = packageJson.version;
-  constructor(updateService: UpdateService) {
+  constructor() {
     console.info('App version:', this.version);
-    updateService.lastCheck.set(new Date(0).toISOString());
+    inject(UpdateService).lastCheck.set(new Date(0).toISOString());
   }
 }

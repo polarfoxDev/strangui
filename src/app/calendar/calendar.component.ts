@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CalendarDateComponent } from './calendar-date/calendar-date.component';
 import { CalendarDate, CalendarMonth } from './calendar.models';
 import { DatePipe } from '@angular/common';
@@ -13,12 +13,11 @@ import { GameStatus } from '../strands/models';
   styleUrl: './calendar.component.css'
 })
 export class CalendarComponent {
-  activeMonth: CalendarMonth;
   readonly weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
-  constructor(private strandsService: StrandsService) {
-    this.activeMonth = this.createMonth(new Date());
-  }
+  private strandsService = inject(StrandsService);
+
+  activeMonth: CalendarMonth = this.createMonth(new Date());
 
   private createMonth(date: Date): CalendarMonth {
     const start = new Date(date.getFullYear(), date.getMonth(), 1);

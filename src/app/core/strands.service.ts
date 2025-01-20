@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { GameState, GameStatus, Letter, RiddleConfig, Solution } from '../strands/models';
 import { AppStorage, SafeStorageAccessor } from './storage';
 import packageJson from '../../../package.json';
@@ -9,11 +9,12 @@ import packageJson from '../../../package.json';
   providedIn: 'root'
 })
 export class StrandsService {
+  private http = inject(HttpClient);
 
   private allWords: string[] = [];
   private readonly BASE_URL = 'https://rätsel.stränge.de';
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.prepareWords('wordlist_de.txt');
   }
 

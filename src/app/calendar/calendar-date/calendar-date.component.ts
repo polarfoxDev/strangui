@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, inject, Input } from '@angular/core';
 import { CalendarDate } from '../calendar.models';
 import { DatePipe } from '@angular/common';
 import { GameStatus } from '../../strands/models';
@@ -12,9 +12,9 @@ import { Router } from '@angular/router';
 })
 export class CalendarDateComponent {
   GameStatus = GameStatus;
-  @Input() date!: CalendarDate;
+  private router = inject(Router);
 
-  constructor(private router: Router) { }
+  @Input() date!: CalendarDate;
 
   selectDate(): void {
     if (this.date.gameStatus !== GameStatus.NotAvailable) {

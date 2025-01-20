@@ -1,15 +1,16 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { from, Observable, of, tap } from "rxjs";
 import { AppStorage } from "./storage";
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
+  private updates = inject(SwUpdate);
   lastCheck = AppStorage.safeAccessor<string>('lastUpdateCheckDate', '1970-01-01T00:00:00.000Z');
   lastResult = AppStorage.safeAccessor<boolean>('lastUpdateCheckResult', false);
 
-  constructor(private updates: SwUpdate) {
-    updates.unrecoverable.subscribe(() => {
+  constructor() {
+    this.updates.unrecoverable.subscribe(() => {
       this.installUpdate();
     });
   }

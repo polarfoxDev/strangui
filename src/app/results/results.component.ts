@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
@@ -14,6 +14,9 @@ import { firstRiddleDateISO } from '../core/constants';
   styleUrl: './results.component.css'
 })
 export class ResultsComponent {
+  private route = inject(ActivatedRoute);
+  private strandsService = inject(StrandsService);
+
   hintsUsed = 0;
   timeLeft = '';
   title = '';
@@ -34,7 +37,7 @@ export class ResultsComponent {
   readonly SUPER_SOLUTION_ICON = '🟣';
   readonly LINE_BREAK = '\n';
 
-  constructor(private route: ActivatedRoute, private strandsService: StrandsService) {
+  constructor() {
     this.route.params.subscribe(params => {
       this.dateISO = params['date'];
       if (this.dateISO !== new Date().toISOString().substring(0, 10)) {
@@ -49,7 +52,7 @@ export class ResultsComponent {
           this.dateAfter = undefined;
         }
       }
-      const gameState = strandsService.getCurrentGameState(this.dateISO);
+      const gameState = this.strandsService.getCurrentGameState(this.dateISO);
       if (!gameState) {
         this.loading = false;
         return;
