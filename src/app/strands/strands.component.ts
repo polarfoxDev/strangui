@@ -19,6 +19,8 @@ export class StrandsComponent {
   readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
   readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
 
+  touchCoordinateScaleFactor = 1;
+
   letters: Letter[] = [];
 
   fixedConnections: Connection[] = [];
@@ -66,6 +68,7 @@ export class StrandsComponent {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.setScreenSize();
     if (AppStorage.getSafe('firstVisit', true)) {
       AppStorage.set('firstVisit', false);
       this.router.navigate(['tutorial']);
@@ -353,14 +356,23 @@ export class StrandsComponent {
     }
   }
 
+  @HostListener('window:resize')
+  setScreenSize() {
+    if (window.innerWidth < 365) {
+      this.touchCoordinateScaleFactor = 0.8;
+      return;
+    }
+    this.touchCoordinateScaleFactor = 1;
+  }
+
   private findLetterByPixelLocation(x: number, y: number): Letter | undefined {
     // basic idea: { x: Math.floor(x / 60), y: Math.floor(y / 60) };
     // but only if x and y are within the bounds of the letter circle (letter coordinates are the center of the circle, radius is 42px)
     // so the distance from the center of the circle to the point (x, y) must be less than 42px
-    const letterX = Math.floor(x / 60);
-    const letterY = Math.floor(y / 60);
-    const letterCenterX = letterX * 60 + 30;
-    const letterCenterY = letterY * 60 + 30;
+    const letterX = Math.floor(x / 60 / this.touchCoordinateScaleFactor);
+    const letterY = Math.floor(y / 60 / this.touchCoordinateScaleFactor);
+    const letterCenterX = (letterX * 60 + 30) * this.touchCoordinateScaleFactor;
+    const letterCenterY = (letterY * 60 + 30) * this.touchCoordinateScaleFactor;
     const distance = Math.sqrt(Math.pow(x - letterCenterX, 2) + Math.pow(y - letterCenterY, 2));
     if (distance < 30) {
       return this.letters.find(l => l.location.x === letterX && l.location.y === letterY);

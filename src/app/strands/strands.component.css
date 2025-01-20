@@ -176,3 +176,65 @@ h1 {
 .counter-box {
   font-size: 18px;
 }
+.mini-header,
+.screen-too-small {
+  display: none;
+}
+
+@media screen and (max-height: 800px) {
+  .strands > .mini-header {
+    order: 0;
+    display: block;
+    font-size: 15px;
+    margin-top: 5px;
+  }
+  .strands > .update-box {
+    order: 1;
+  }
+  .strands > .current-guess {
+    order: 2;
+    margin-top: -16px;
+  }
+  .strands > .letterbox {
+    order: 3;
+  }
+  .strands > .connections {
+    order: 4;
+  }
+  .strands > .hint-box {
+    order: 5;
+  }
+  .strands > .theme-box {
+    order: 6;
+  }
+  .strands > .header {
+    order: 7;
+  }
+}
+@media screen and (max-height: 640px) {
+  .strands > .mini-header {
+    display: none;
+  }
+  .strands > .current-guess {
+    margin-top: 2px;
+    margin-bottom: -25px;
+  }
+}
+
+@media screen and (max-width: 365px) {
+  .strands {
+    transform: scale(0.8);
+  }
+}
+
+@media screen and (max-width: 300px), screen and (max-height: 560px) {
+  .strands {
+    display: none;
+  }
+  .screen-too-small {
+    display: block;
+    width: calc(100% - 20px);
+    text-align: center;
+    padding: 10px;
+  }
+}
