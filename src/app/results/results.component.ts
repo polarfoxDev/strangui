@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
@@ -15,6 +15,7 @@ import { firstRiddleDateISO } from '../core/constants';
 })
 export class ResultsComponent {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private strandsService = inject(StrandsService);
 
   hintsUsed = 0;
@@ -40,6 +41,16 @@ export class ResultsComponent {
   constructor() {
     this.route.params.subscribe(params => {
       this.dateISO = params['date'];
+      try {
+        const a = new Date(this.dateISO);
+        if (a.toString() === 'Invalid Date') {
+          throw new Error();
+        }
+      } catch {
+        console.error('Invalid date parameter');
+        this.router.navigate(['/']);
+        return;
+      }
       if (this.dateISO !== new Date().toISOString().substring(0, 10)) {
         this.isHistoric = true;
         if (this.dateISO !== firstRiddleDateISO) {
@@ -53,8 +64,10 @@ export class ResultsComponent {
         }
       }
       const gameState = this.strandsService.getCurrentGameState(this.dateISO);
-      if (!gameState) {
+      if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
         this.loading = false;
+        console.error('Game state not found or not finished');
+        this.router.navigate(['..'], { relativeTo: this.route });
         return;
       }
       this.strandsService.loadRiddle(this.dateISO).subscribe(riddle => {

@@ -7,6 +7,7 @@ import { defaultLetterGrid } from '../core/constants';
 import { AppStorage, SafeStorageAccessor } from '../core/storage';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { UpdateService } from '../core/update.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-strands',
@@ -77,12 +78,27 @@ export class StrandsComponent {
     this.route.params.subscribe(params => {
       const dateParam = params['date'];
       if (dateParam) {
-        const newDate = new Date(dateParam);
-        if (date.toISOString().substring(0, 10) === newDate.toISOString().substring(0, 10)) {
+        try {
+          const newDate = new Date(dateParam);
+          if (newDate.toString() === 'Invalid Date') {
+            throw new Error();
+          }
+          if (date.toISOString().substring(0, 10) === newDate.toISOString().substring(0, 10)) {
+            this.router.navigate(['']);
+            return;
+          }
+          // disable future dates
+          if (environment.production && newDate.getTime() > new Date().getTime()) {
+            console.error('Future date requested');
+            this.router.navigate(['']);
+            return;
+          }
+          date = newDate;
+        } catch {
+          console.error('Invalid date parameter');
           this.router.navigate(['']);
           return;
         }
-        date = newDate;
       }
       this.checkForUpdate();
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
