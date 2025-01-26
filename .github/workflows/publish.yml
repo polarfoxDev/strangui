@@ -13,14 +13,17 @@ jobs:
       - name: lowercase github.repository
         run: |
           echo "IMAGE_NAME=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >>${GITHUB_ENV}
-      - name: Checkout Repository
+      - name: determine version
+        run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >>${GITHUB_ENV}
+      - name: checkout Repository
         uses: actions/checkout@v3
-      - name: Docker Login
+      - name: docker login
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Build and Publish
+      - name: build and publish
         run: |
           docker build . \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:latest \
-            --tag ghcr.io/${{ env.IMAGE_NAME }}:v${{ github.run_number }}
+            --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ env.PACKAGE_VERSION }}
+            --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ghcr.io/${{ env.IMAGE_NAME }} --all-tags
