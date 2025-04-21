@@ -33,6 +33,7 @@ export class ChangelogComponent {
       changes: [
         { type: 'Neu', description: 'Unterstützung für eine neue Version der Rätsel-Konfigurations-Dateien' },
         { type: 'Neu', description: 'Neuigkeiten bei Updates können jetzt eingesehen werden' },
+        { type: 'Geändert', description: 'Updates verwendeter Bibliotheken' },
       ]
     },
     {
