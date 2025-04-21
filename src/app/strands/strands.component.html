@@ -38,8 +38,8 @@
     @for (letter of letters; track $index) {
     <app-letter
       [letter]="letter"
-      [row]="letter.location.x"
-      [column]="letter.location.y"
+      [row]="letter.location.row"
+      [column]="letter.location.col"
       [hintAnimationDelay]="letter.hintFoundDelay"
       [isDisabled]="finished"
       (mouseEvent)="onLetterMouseEvent($event, letter)"
@@ -49,10 +49,10 @@
   <svg class="connections" (touchstart)="$event.preventDefault()">
     @for (connection of connections; track $index) {
     <line
-      [attr.x1]="connection.from.y * 60 + 30"
-      [attr.y1]="connection.from.x * 60 + 30"
-      [attr.x2]="connection.to.y * 60 + 30"
-      [attr.y2]="connection.to.x * 60 + 30"
+      [attr.x1]="connection.from.col * 60 + 30"
+      [attr.y1]="connection.from.row * 60 + 30"
+      [attr.x2]="connection.to.col * 60 + 30"
+      [attr.y2]="connection.to.row * 60 + 30"
       [attr.stroke]="
         connection.isGuessActive
           ? 'var(--guess-brighter)'

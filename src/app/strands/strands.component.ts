@@ -8,6 +8,7 @@ import { AppStorage, SafeStorageAccessor } from '../core/storage';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { UpdateService } from '../core/update.service';
 import { environment } from '../../environments/environment';
+import { upgradeConfigVersion } from '../core/utils';
 
 @Component({
   selector: 'app-strands',
@@ -106,8 +107,10 @@ export class StrandsComponent {
       this.isHistoryMode = !!dateParam;
       this.strandsService.loadRiddle(this.dateISO).subscribe({
         next: riddle => {
-          if (riddle.configVersion !== 2) {
-            console.error('Incompatible riddle config version');
+          try {
+            riddle = upgradeConfigVersion(riddle);
+          } catch (error) {
+            console.error('Error upgrading riddle config version', error);
             this.ready = false;
             this.loading = false;
             return;
@@ -142,7 +145,7 @@ export class StrandsComponent {
             this.fixedConnections.push({ ...connection });
           });
           currentState.letterStates.forEach(letter => {
-            const currentLetter = this.letters.find(l => l.location.x === letter.location.x && l.location.y === letter.location.y);
+            const currentLetter = this.letters.find(l => l.location.row === letter.location.row && l.location.col === letter.location.col);
             if (currentLetter) {
               currentLetter.isGuessActive = letter.isGuessActive;
               currentLetter.isSolutionActive = letter.isSolutionActive;
@@ -203,13 +206,13 @@ export class StrandsComponent {
 
   private getSolutionCompareString(letters: Letter[]): string {
     const printedWord = letters.map(l => l.letter).join('');
-    const sortedLetterLocations = letters.map(l => l.location).sort((a, b) => a.x - b.x || a.y - b.y);
+    const sortedLetterLocations = letters.map(l => l.location).sort((a, b) => a.row - b.row || a.col - b.col);
     const compareString = JSON.stringify([printedWord, sortedLetterLocations]);
     return compareString;
   }
 
   private getSolutionCompareStringByLocations(locations: LetterLocation[]): string {
-    const letters = locations.map(location => this.letters.find(l => l.location.x === location.x && l.location.y === location.y)!);
+    const letters = locations.map(location => this.letters.find(l => l.location.row === location.row && l.location.col === location.col)!);
     return this.getSolutionCompareString(letters);
   }
 
@@ -238,7 +241,7 @@ export class StrandsComponent {
       this.untry();
       if (this.getSolutionCompareStringByLocations(this.activeHint?.locations ?? []) === tryPath) {
         this.activeHint?.locations.forEach(location => {
-          const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
+          const letter = this.letters.find(l => l.location.row === location.row && l.location.col === location.col);
           letter!.hintTiming = -1;
         });
         this.activeHint = null;
@@ -298,7 +301,7 @@ export class StrandsComponent {
     // require coordinates of latest try point and current letter to touch on sides or corners
     if (this.currentTry.length > 0) {
       const lastLetter = this.currentTry[this.currentTry.length - 1];
-      if (Math.abs(lastLetter.location.x - letter.location.x) <= 1 && Math.abs(lastLetter.location.y - letter.location.y) <= 1) {
+      if (Math.abs(lastLetter.location.row - letter.location.row) <= 1 && Math.abs(lastLetter.location.col - letter.location.col) <= 1) {
         this.currentTry.push(letter);
         this.setStatus(this.currentTry.map(l => l.letter).join(''));
         this.calculateConnections();
@@ -348,7 +351,7 @@ export class StrandsComponent {
       this.tipsUsed++;
       this.gameEvents.push(GameEvent.HintUsed);
       this.activeHint.locations.forEach((location, index) => {
-        const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
+        const letter = this.letters.find(l => l.location.row === location.row && l.location.col === location.col);
         letter!.hintTiming = index + 1;
       });
       this.gameState.partialUpdate(() => ({ tipsUsed: this.tipsUsed, activeHintInAnimation: true, letterStates: this.letters, gameEvents: this.gameEvents }));
@@ -360,7 +363,7 @@ export class StrandsComponent {
     }
     if (selectedSolution) {
       selectedSolution.locations.forEach(location => {
-        const letter = this.letters.find(l => l.location.x === location.x && l.location.y === location.y);
+        const letter = this.letters.find(l => l.location.row === location.row && l.location.col === location.col);
         letter!.hintTiming = 0;
       });
       this.activeHint = selectedSolution;
@@ -390,7 +393,7 @@ export class StrandsComponent {
     const letterCenterY = (letterY * 60 + 30) * this.touchCoordinateScaleFactor;
     const distance = Math.sqrt(Math.pow(x - letterCenterX, 2) + Math.pow(y - letterCenterY, 2));
     if (distance < 30) {
-      return this.letters.find(l => l.location.x === letterX && l.location.y === letterY);
+      return this.letters.find(l => l.location.row === letterX && l.location.col === letterY);
     }
     return undefined;
   }

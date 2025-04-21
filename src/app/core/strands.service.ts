@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GameState, GameStatus, Letter, RiddleConfig, Solution } from '../strands/models';
+import { GameState, GameStatus, Letter, RiddleConfigUnknownVersion, Solution } from '../strands/models';
 import { AppStorage, SafeStorageAccessor } from './storage';
 import packageJson from '../../../package.json';
 
@@ -42,8 +42,8 @@ export class StrandsService {
     return status;
   }
 
-  loadRiddle(date: string): Observable<RiddleConfig> {
-    return this.http.get<RiddleConfig>(`${this.BASE_URL}/riddle-${date}.json?appVersion=` + packageJson.version);
+  loadRiddle(date: string): Observable<RiddleConfigUnknownVersion> {
+    return this.http.get<RiddleConfigUnknownVersion>(`${this.BASE_URL}/riddle-${date}.json?appVersion=` + packageJson.version);
   }
 
   getGameStateAccessor(date: string, solutionFallback: Solution[], letterFallback: Letter[]): SafeStorageAccessor<GameState> {

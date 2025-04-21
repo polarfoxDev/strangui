@@ -9,8 +9,8 @@
         @for (letter of figure1.letters; track $index) {
         <app-letter
           [letter]="letter"
-          [row]="letter.location.x"
-          [column]="letter.location.y"
+          [row]="letter.location.row"
+          [column]="letter.location.col"
           [hintAnimationDelay]="letter.hintFoundDelay"
           [isDisabled]="true"
         ></app-letter>
@@ -29,10 +29,10 @@
         @if(connection.isGuessActive || connection.isSuperSolutionActive ||
         connection.isSolutionActive) {
         <line
-          [attr.x1]="connection.from.y * 60 + 30"
-          [attr.y1]="connection.from.x * 60 + 30 - 60 * 3"
-          [attr.x2]="connection.to.y * 60 + 30"
-          [attr.y2]="connection.to.x * 60 + 30 - 60 * 3"
+          [attr.x1]="connection.from.col * 60 + 30"
+          [attr.y1]="connection.from.row * 60 + 30 - 60 * 3"
+          [attr.x2]="connection.to.col * 60 + 30"
+          [attr.y2]="connection.to.row * 60 + 30 - 60 * 3"
           [attr.stroke]="
             connection.isGuessActive
               ? 'var(--guess-brighter)'
@@ -80,8 +80,8 @@
         @for (letter of figure2.letters; track $index) {
         <app-letter
           [letter]="letter"
-          [row]="letter.location.x"
-          [column]="letter.location.y"
+          [row]="letter.location.row"
+          [column]="letter.location.col"
           [hintAnimationDelay]="letter.hintFoundDelay"
           [isDisabled]="true"
         ></app-letter>
@@ -100,10 +100,10 @@
         @if(connection.isGuessActive || connection.isSuperSolutionActive ||
         connection.isSolutionActive) {
         <line
-          [attr.x1]="connection.from.y * 60 + 30"
-          [attr.y1]="connection.from.x * 60 + 30 - 60 * 3"
-          [attr.x2]="connection.to.y * 60 + 30"
-          [attr.y2]="connection.to.x * 60 + 30 - 60 * 3"
+          [attr.x1]="connection.from.col * 60 + 30"
+          [attr.y1]="connection.from.row * 60 + 30 - 60 * 3"
+          [attr.x2]="connection.to.col * 60 + 30"
+          [attr.y2]="connection.to.row * 60 + 30 - 60 * 3"
           [attr.stroke]="
             connection.isGuessActive
               ? 'var(--guess-brighter)'

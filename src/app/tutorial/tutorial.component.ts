@@ -211,7 +211,7 @@ export class TutorialComponent implements AfterViewInit {
           isSuperSolutionActive: false,
           hintTiming: -1,
           hintFoundDelay: 0,
-          location: { x: row + 3, y: col }
+          location: { row: row + 3, col }
         };
       }));
     });

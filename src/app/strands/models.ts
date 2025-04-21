@@ -17,8 +17,8 @@ export interface Letter {
 }
 
 export interface LetterLocation {
-  x: number;
-  y: number;
+  row: number;
+  col: number;
 }
 
 export enum GameEvent {
@@ -36,12 +36,27 @@ export interface SolutionConfig {
   isSuperSolution: boolean;
 }
 
+export interface RiddleConfigV2 {
+  configVersion: 2;
+  theme: string;
+  letters: string[][];
+  solutions: {
+    locations: {
+      x: number;
+      y: number;
+    }[];
+    isSuperSolution: boolean;
+  }[];
+}
+
 export interface RiddleConfig {
-  configVersion: number;
+  configVersion: 3;
   theme: string;
   letters: string[][];
   solutions: SolutionConfig[];
 }
+
+export type RiddleConfigUnknownVersion = RiddleConfigV2 | RiddleConfig;
 
 export enum MouseAction {
   Down,
