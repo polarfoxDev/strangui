@@ -3,6 +3,7 @@ import { StrandsComponent } from './strands/strands.component';
 import { ResultsComponent } from './results/results.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { DateSelectorComponent } from './date-selector/date-selector.component';
+import { ChangelogComponent } from './changelog/changelog.component';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,10 @@ export const routes: Routes = [
   {
     path: 'tutorial',
     redirectTo: 'anleitung'
+  },
+  {
+    path: 'news',
+    redirectTo: 'neuigkeiten'
   },
   {
     path: 'history',
@@ -29,6 +34,10 @@ export const routes: Routes = [
   {
     path: 'anleitung',
     component: TutorialComponent
+  },
+  {
+    path: 'neuigkeiten',
+    component: ChangelogComponent
   },
   {
     path: 'vergangenheit',

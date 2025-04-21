@@ -1,7 +1,17 @@
 <div class="app">
   <router-outlet></router-outlet>
   <div class="info">
-    <p>stränge.de v{{ version }}</p>
+    <p class="version-info">
+      <span>stränge.de</span>
+      <a
+        [routerLink]="['news']"
+        class="version-info-button"
+        [class.new]="changelogSeenFor !== version"
+      >
+        v {{ version }}
+        <span class="info-circle"> i </span>
+      </a>
+    </p>
     <p>
       <a target="_blank" href="https://r.polarnight.eu/impressum">Impressum</a>
     </p>

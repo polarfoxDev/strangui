@@ -1,0 +1,22 @@
+<div class="changelog">
+  <div class="header">
+    <h1>Änderungsverlauf</h1>
+    <a class="info-button close-button" [routerLink]="['..']">&#215;</a>
+  </div>
+  @for (item of changeLog; track item.version) {
+  <section class="section">
+    <h2 class="version" [class.new]="item.isNew">
+      Version {{ item.version }}
+      <div class="date">{{ item.date | date : "dd.MM.yyyy" }}</div>
+    </h2>
+    <ul class="list">
+      @for (change of item.changes; track change) {
+      <li class="item">
+        <span class="type">{{ change.type }}:</span>
+        <span class="description">{{ change.description }}</span>
+      </li>
+      }
+    </ul>
+  </section>
+  }
+</div>
