@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
 import { from, Observable, of, tap } from "rxjs";
 import { AppStorage } from "./storage";
+import { GameState } from "../strands/models";
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
@@ -32,5 +33,37 @@ export class UpdateService {
     this.lastCheck.set(new Date().toISOString());
     this.lastResult.set(false);
     document.location.reload();
+  }
+
+  migrateData(from: string, to: string): void {
+    // TODO: improve before next release
+    if (from === '0.0.0') {
+      Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
+        const gameState = AppStorage.get<GameState>(key);
+        if (!gameState) return;
+        gameState.activeHint?.locations.forEach(l => {
+          l.row = (l as any).x;
+          l.col = (l as any).y
+        });
+        gameState.fixedConnections.forEach(c => {
+          c.from.row = (c.from as any).x;
+          c.from.col = (c.from as any).y;
+          c.to.row = (c.to as any).x;
+          c.to.col = (c.to as any).y;
+        });
+        gameState.letterStates.forEach(l => {
+          l.location.row = (l.location as any).x;
+          l.location.col = (l.location as any).y;
+        });
+        gameState.solutionStates.forEach(s => {
+          s.locations.forEach(l => {
+            l.row = (l as any).x;
+            l.col = (l as any).y
+          })
+        });
+        AppStorage.set<GameState>(key, gameState);
+      });
+      AppStorage.set<string>('storageVersion', to);
+    }
   }
 }

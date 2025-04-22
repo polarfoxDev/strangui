@@ -27,6 +27,14 @@ export class ChangelogComponent {
 
   changeLog: VersionChanges[] = [
     {
+      version: '1.10.1',
+      date: '2025-04-22',
+      isNew: false,
+      changes: [
+        { type: 'Repariert', description: 'Alte Spielstände werden wieder korrekt geladen' },
+      ]
+    },
+    {
       version: '1.10.0',
       date: '2025-04-21',
       isNew: false,

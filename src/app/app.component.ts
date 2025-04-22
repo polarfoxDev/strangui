@@ -13,8 +13,10 @@ import { AppStorage } from './core/storage';
 export class AppComponent {
   version = packageJson.version;
   changelogSeenFor = AppStorage.getSafe<string>('changelogSeenFor', '0.0.0');
+  updateService = inject(UpdateService);
   constructor() {
     console.info('App version:', this.version);
-    inject(UpdateService).lastCheck.set(new Date(0).toISOString());
+    this.updateService.lastCheck.set(new Date(0).toISOString());
+    this.updateService.migrateData(AppStorage.getSafe<string>('storageVersion', '0.0.0'), this.version);
   }
 }
