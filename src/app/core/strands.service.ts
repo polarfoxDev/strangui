@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { GameState, GameStatus, Letter, RiddleConfigUnknownVersion, Solution } from '../strands/models';
+import { map, Observable } from 'rxjs';
+import { GameState, GameStateV1, GameStatus, Letter, RiddleConfigUnknownVersion, Solution } from '../strands/models';
 import { AppStorage, SafeStorageAccessor } from './storage';
 import packageJson from '../../../package.json';
 
@@ -16,6 +16,14 @@ export class StrandsService {
 
   constructor() {
     this.prepareWords('wordlist_de.txt');
+  }
+
+  getAcceptableTryWords(): Observable<string[]> {
+    return this.http.get('wordlist_de.txt', { responseType: 'text' }).pipe(
+      map((data: string) =>
+        data.toUpperCase().split('\n')
+      )
+    );
   }
 
   private prepareWords(remoteFileUrl: string): void {
@@ -46,8 +54,8 @@ export class StrandsService {
     return this.http.get<RiddleConfigUnknownVersion>(`${this.BASE_URL}/riddle-${date}.json?appVersion=` + packageJson.version);
   }
 
-  getGameStateAccessor(date: string, solutionFallback: Solution[], letterFallback: Letter[]): SafeStorageAccessor<GameState> {
-    return AppStorage.safeAccessor<GameState>(`game-state-${date}`, {
+  getGameStateAccessor(date: string, solutionFallback: Solution[], letterFallback: Letter[]): SafeStorageAccessor<GameStateV1> {
+    return AppStorage.safeAccessor<GameStateV1>(`game-state-${date}`, {
       solutionStates: solutionFallback,
       nonSolutionWordsFound: [],
       tipsUsed: 0,

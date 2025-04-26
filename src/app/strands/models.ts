@@ -72,7 +72,7 @@ export enum GameStatus {
   Finished,
 }
 
-export interface GameState {
+export interface GameStateV1 {
   solutionStates: Solution[];
   nonSolutionWordsFound: string[];
   tipsUsed: number;
@@ -81,4 +81,20 @@ export interface GameState {
   activeHintInAnimation: boolean;
   fixedConnections: Connection[];
   letterStates: Letter[];
+}
+
+export interface GameState {
+  solutionStates: Solution[];
+  nonSolutionWordsFound: string[];
+  tipsUsed: number;
+  gameEvents: GameEvent[];
+  activeHintIndex: number | null;
+  activeHintInAnimation: boolean;
+  fixedConnections: Connection[];
+  tryConnections: Connection[];
+  currentTry: LetterLocation[];
+  letterStates: Letter[];
+  theme: string;
+  statusText: string;
+  statusColor: string;
 }
