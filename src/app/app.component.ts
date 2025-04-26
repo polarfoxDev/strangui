@@ -17,6 +17,6 @@ export class AppComponent {
   constructor() {
     console.info('App version:', this.version);
     this.updateService.lastCheck.set(new Date(0).toISOString());
-    this.updateService.migrateData(AppStorage.getSafe<string>('storageVersion', '0.0.0'), this.version);
+    this.updateService.migrateData(AppStorage.getSafe<string>('storageVersion', '0.0.0'));
   }
 }

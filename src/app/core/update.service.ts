@@ -3,6 +3,7 @@ import { SwUpdate } from "@angular/service-worker";
 import { from, Observable, of, tap } from "rxjs";
 import { AppStorage } from "./storage";
 import { GameState } from "../strands/models";
+import { isVersionNewer } from "./utils";
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
@@ -35,35 +36,35 @@ export class UpdateService {
     document.location.reload();
   }
 
-  migrateData(from: string, to: string): void {
-    // TODO: improve before next release
-    if (from === '0.0.0') {
+  migrateData(from: string): void {
+    if (isVersionNewer('1.10.0', from)) { // first migration, needed for 1.10.0 and later
+      console.info('Migrating data from version', from, 'to 1.10.0');
       Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
         const gameState = AppStorage.get<GameState>(key);
         if (!gameState) return;
         gameState.activeHint?.locations.forEach(l => {
-          l.row = (l as any).x;
-          l.col = (l as any).y
+          l.row = l.row ?? (l as any).x;
+          l.col = l.col ?? (l as any).y
         });
         gameState.fixedConnections.forEach(c => {
-          c.from.row = (c.from as any).x;
-          c.from.col = (c.from as any).y;
-          c.to.row = (c.to as any).x;
-          c.to.col = (c.to as any).y;
+          c.from.row = c.from.row ?? (c.from as any).x;
+          c.from.col = c.from.col ?? (c.from as any).y;
+          c.to.row = c.to.row ?? (c.to as any).x;
+          c.to.col = c.to.col ?? (c.to as any).y;
         });
         gameState.letterStates.forEach(l => {
-          l.location.row = (l.location as any).x;
-          l.location.col = (l.location as any).y;
+          l.location.row = l.location.row ?? (l.location as any).x;
+          l.location.col = l.location.col ?? (l.location as any).y;
         });
         gameState.solutionStates.forEach(s => {
           s.locations.forEach(l => {
-            l.row = (l as any).x;
-            l.col = (l as any).y
+            l.row = l.row ?? (l as any).x;
+            l.col = l.col ?? (l as any).y
           })
         });
         AppStorage.set<GameState>(key, gameState);
       });
-      AppStorage.set<string>('storageVersion', to);
+      AppStorage.set<string>('storageVersion', '1.10.0');
     }
   }
 }
