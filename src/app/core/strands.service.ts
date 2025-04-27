@@ -38,18 +38,6 @@ export class StrandsService {
     return this.allWords.includes(word);
   }
 
-  getRiddleStatus(date: string): GameStatus {
-    const gameState = AppStorage.get<GameState>(`game-state-${date}`);
-    const status = gameState ?
-      gameState.solutionStates.length > 0 && gameState.solutionStates.every(s => s.found) ?
-        GameStatus.Finished
-        : gameState.solutionStates.length > 0 && gameState.solutionStates.some(s => s.found) || gameState.nonSolutionWordsFound.length > 0 ?
-          GameStatus.InProgress
-          : GameStatus.NotStarted
-      : GameStatus.NotStarted;
-    return status;
-  }
-
   loadRiddle(date: string): Observable<RiddleConfigUnknownVersion> {
     return this.http.get<RiddleConfigUnknownVersion>(`${this.BASE_URL}/riddle-${date}.json?appVersion=` + packageJson.version);
   }

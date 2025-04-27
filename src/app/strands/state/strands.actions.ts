@@ -9,15 +9,11 @@ export enum ActionTypes {
   CURRENT_TRY_SUBMIT = '[Current Game] Submit current try',
   CURRENT_TRY_CANCEL = '[Current Game] Cancel current try',
   UPDATE_LETTER_STATE = '[Current Game] Update letter state',
+  COMPLETE = '[Current Game] Complete',
 }
 
 export const useHint = createAction(
   ActionTypes.USE_HINT
-);
-
-export const initializeGame = createAction(
-  ActionTypes.INITIALIZE,
-  (riddleConfig: RiddleConfig, isoDate: string) => ({ riddleConfig, isoDate })
 );
 
 export const loadExistingGame = createAction(
@@ -42,4 +38,8 @@ export const cancelCurrentTry = createAction(
 export const updateLetterState = createAction(
   ActionTypes.UPDATE_LETTER_STATE,
   (letterUpdate: Partial<Letter> & { location: LetterLocation }) => ({ letterUpdate })
+);
+
+export const completeGame = createAction(
+  ActionTypes.COMPLETE
 );

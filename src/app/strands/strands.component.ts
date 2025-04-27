@@ -1,18 +1,19 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
-import { Connection, GameEvent, GameState, Letter, LetterLocation, MouseAction, Solution } from './models';
+import { LetterLocation, MouseAction } from './models';
 import { StrandsService } from '../core/strands.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
-import { AppStorage, SafeStorageAccessor } from '../core/storage';
+import { AppStorage } from '../core/storage';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { UpdateService } from '../core/update.service';
 import { environment } from '../../environments/environment';
-import { upgradeConfigVersion } from '../core/utils';
 import { Store } from '@ngrx/store';
-import { appendToCurrentTry, initializeGame, submitCurrentTry, useHint } from './state/strands.actions';
-import { allConnectionsSelector, finishedSelector, finishedSolutionCountSelector, letterStatesSelector, solutionCountSelector, statusColorSelector, statusTextSelector, themeSelector, unusedHintWordCountSelector } from './state/strands.selectors';
+import { appendToCurrentTry, submitCurrentTry, useHint } from './state/strands.actions';
+import { allConnectionsSelector, completedSelector, currentGameState, finishedSelector, finishedSolutionCountSelector, letterStatesSelector, solutionCountSelector, statusColorSelector, statusTextSelector, themeSelector, unusedHintWordCountSelector } from './state/strands.selectors';
 import { AsyncPipe } from '@angular/common';
+import { loadGameByDate } from '../core/state/core.actions';
+import { gameLoadingErrorSelector, loadingSelector } from '../core/state/core.selectors';
 
 @Component({
   selector: 'app-strands',
@@ -39,6 +40,10 @@ export class StrandsComponent {
   unusedHintWordCount$ = this.store.select(unusedHintWordCountSelector);
   solutionCount$ = this.store.select(solutionCountSelector);
   finishedSolutionCount$ = this.store.select(finishedSolutionCountSelector);
+  loading$ = this.store.select(loadingSelector);
+  gameLoadingError$ = this.store.select(gameLoadingErrorSelector);
+  gameState$ = this.store.select(currentGameState);
+  readonly = false;
 
   touchCoordinateScaleFactor = 1;
 
@@ -47,15 +52,11 @@ export class StrandsComponent {
   date = '';
   dateISO = '';
   isHistoryMode = false;
-  ready = false;
-  loading = true;
   updateAvailable = false;
 
   lastMouseLocation: LetterLocation | undefined;
 
   acceptableWords: string[] = [];
-
-  gameState: SafeStorageAccessor<GameState> = AppStorage.inMemorySafeAccessor({} as GameState);
 
   checkForUpdate(): void {
     this.updateService.checkForUpdate().subscribe(updateAvailable => {
@@ -64,6 +65,9 @@ export class StrandsComponent {
   }
 
   constructor() {
+    this.store.select(completedSelector).subscribe(completed => {
+      this.readonly = completed;
+    });
     this.setScreenSize();
     if (AppStorage.getSafe('firstVisit', true)) {
       AppStorage.set('firstVisit', false);
@@ -108,39 +112,25 @@ export class StrandsComponent {
       this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
       this.dateISO = date.toISOString().substring(0, 10);
       this.isHistoryMode = !!dateParam;
-      this.strandsService.loadRiddle(this.dateISO).subscribe({
-        next: riddle => {
-          try {
-            riddle = upgradeConfigVersion(riddle);
-          } catch (error) {
-            console.error('Error upgrading riddle config version', error);
-            this.ready = false;
-            this.loading = false;
-            return;
-          }
-          this.store.dispatch(initializeGame(riddle, this.dateISO));
-          this.ready = true;
-          this.loading = false;
-        },
-        error: () => {
-          this.ready = false;
-          this.loading = false;
-        }
-      });
+      this.store.dispatch(loadGameByDate(this.dateISO));
     });
   }
 
   @HostListener('mouseup')
   onMouseup() {
+    if (this.readonly) {
+      this.dragTryActive = false;
+      return;
+    }
     this.dragTryActive = false;
     this.store.dispatch(submitCurrentTry(this.acceptableWords));
   }
 
   onLetterMouseEvent(mouseAction: MouseAction, location: LetterLocation): void {
-    // if (this.finished) {
-    //   this.dragTryActive = false;
-    //   return;
-    // }
+    if (this.readonly) {
+      this.dragTryActive = false;
+      return;
+    }
     if (mouseAction === MouseAction.Click) {
       this.dragTryActive = false;
       this.store.dispatch(appendToCurrentTry(location));

@@ -98,4 +98,11 @@ export interface GameState {
   statusText: string;
   statusColor: string;
   date: string;
+  readonly: boolean;
+}
+
+export interface PersistentGameState {
+  id: string;
+  lastChanged: string;
+  gameState: GameState;
 }

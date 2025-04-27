@@ -1,11 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { StrandsService } from '../core/strands.service';
 import { GameEvent } from '../strands/models';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { getRiddleIndex } from '../core/utils';
 import { DatePipe } from '@angular/common';
 import { firstRiddleDateISO } from '../core/constants';
+import { Store } from '@ngrx/store';
+import { currentGameState } from '../strands/state/strands.selectors';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-results',
@@ -16,7 +18,7 @@ import { firstRiddleDateISO } from '../core/constants';
 export class ResultsComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private strandsService = inject(StrandsService);
+  private store = inject(Store);
 
   hintsUsed = 0;
   timeLeft = '';
@@ -63,26 +65,25 @@ export class ResultsComponent {
           this.dateAfter = undefined;
         }
       }
-      const gameState = this.strandsService.getCurrentGameState(this.dateISO);
-      if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
-        this.loading = false;
-        console.error('Game state not found or not finished');
-        this.router.navigate(['..'], { relativeTo: this.route });
-        return;
-      }
-      this.strandsService.loadRiddle(this.dateISO).subscribe(riddle => {
+      this.tryShare();
+      this.store.select(currentGameState).pipe(take(1)).subscribe(gameState => {
+        if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
+          this.loading = false;
+          console.error('Game state not found or not finished');
+          this.router.navigate(['..'], { relativeTo: this.route });
+          return;
+        }
         this.hintsUsed = gameState.tipsUsed;
         if (this.calculateTimeLeft() > 0) {
           this.tickTimer();
         }
         this.gameEvents = gameState.gameEvents;
         this.title = 'Stränge.de #' + getRiddleIndex(this.dateISO);
-        this.subTitle = "„" + riddle.theme + "“";
+        this.subTitle = "„" + gameState.theme + "“";
         this.calculateEmojis();
         this.loading = false;
         this.ready = true;
       });
-      this.tryShare();
     });
   }
 

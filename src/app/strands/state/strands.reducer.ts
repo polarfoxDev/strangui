@@ -1,7 +1,7 @@
-import { GameEvent, GameState, Letter } from "../models";
+import { GameEvent, GameState } from "../models";
 import { defaultLetterGrid } from "../../core/constants";
 import { createReducer, on } from "@ngrx/store";
-import { initializeGame, loadExistingGame, useHint, cancelCurrentTry, submitCurrentTry, appendToCurrentTry, updateLetterState } from "./strands.actions";
+import { loadExistingGame, useHint, cancelCurrentTry, submitCurrentTry, appendToCurrentTry, updateLetterState, completeGame } from "./strands.actions";
 import { AUTO_TEXT_COLOR_SOLUTION, AUTO_TEXT_COLOR_SUPER_SOLUTION, getSolutionCompareString, letterAt, status } from "../strands.helpers";
 
 export const initialState: GameState = {
@@ -19,6 +19,7 @@ export const initialState: GameState = {
   tryConnections: [],
   currentTry: [],
   date: '',
+  readonly: false,
 }
 
 export const getCurrentGameReducer = createReducer(
@@ -29,22 +30,10 @@ export const getCurrentGameReducer = createReducer(
       ...gameState,
     } satisfies GameState;
   }),
-  on(initializeGame, (_state, { riddleConfig, isoDate }) => {
-    const riddleLetters: string[] = riddleConfig.letters.flat();
-    const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
+  on(completeGame, (state) => {
     return {
-      ...initialState,
-      theme: riddleConfig.theme,
-      letterStates: defaultGridCopy.map((letterState) => ({
-        ...letterState,
-        letter: riddleLetters.shift()!,
-      })),
-      solutionStates: riddleConfig.solutions.map((solution) => ({
-        ...solution,
-        found: false,
-      })),
-      tryConnections: [],
-      date: isoDate
+      ...state,
+      readonly: true,
     } satisfies GameState;
   }),
   on(useHint, (state) => {
@@ -142,6 +131,11 @@ export const getCurrentGameReducer = createReducer(
     } satisfies GameState;
   }),
   on(submitCurrentTry, (state, { acceptableTryWords }) => {
+    if (state.currentTry.length < 1) {
+      return {
+        ...state,
+      } satisfies GameState;
+    }
     const tryPath = getSolutionCompareString(state.letterStates, state.currentTry);
     const solutionPaths = state.solutionStates.map(s => ({
       solution: s,
@@ -175,7 +169,7 @@ export const getCurrentGameReducer = createReducer(
           }
           return s;
         }),
-        gameEvents: [...state.gameEvents, GameEvent.SolutionFound],
+        gameEvents: [...state.gameEvents, solutionMatch.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound],
         ...(state.solutionStates.every(s => s.found || s === solutionMatch)
           ? status('GEWONNEN!', AUTO_TEXT_COLOR_SUPER_SOLUTION)
           : (solutionMatch.isSuperSolution

@@ -5,6 +5,7 @@ export const FeatureKey = 'CURRENT_GAME_STATE'
 export const currentGameState = createFeatureSelector<GameState>(FeatureKey);
 export const tipsUsedSelector = createSelector(currentGameState, (state) => state.tipsUsed);
 export const finishedSelector = createSelector(currentGameState, (state) => state.solutionStates.every(s => s.found));
+export const completedSelector = createSelector(currentGameState, (state) => state.readonly);
 export const allConnectionsSelector = createSelector(currentGameState, (state) => state.fixedConnections.concat(state.tryConnections));
 export const themeSelector = createSelector(currentGameState, (state) => state.theme);
 export const statusTextSelector = createSelector(currentGameState, (state) => state.statusText);
