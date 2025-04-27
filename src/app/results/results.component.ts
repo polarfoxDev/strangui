@@ -99,7 +99,8 @@ export class ResultsComponent {
   }
 
   private calculateTimeLeft(): number {
-    const timeUntilNextDay = 24 * 60 * 60 * 1000 - (new Date().getTime() % (24 * 60 * 60 * 1000));
+    const now = new Date();
+    const timeUntilNextDay = (24 * 60 * 60 * 1000) - (now.getHours() * 60 * 60 * 1000 + now.getMinutes() * 60 * 1000 + now.getSeconds() * 1000 + now.getMilliseconds());
     // format timeLeft as HH:MM:SS
     const date = new Date(timeUntilNextDay);
     const hours = date.getUTCHours().toString().padStart(2, '0');

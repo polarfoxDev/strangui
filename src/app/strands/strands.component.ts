@@ -14,6 +14,7 @@ import { allConnectionsSelector, completedSelector, currentGameState, finishedSe
 import { AsyncPipe } from '@angular/common';
 import { loadGameByDate } from '../core/state/core.actions';
 import { gameLoadingErrorSelector, loadingSelector } from '../core/state/core.selectors';
+import { toLocaleISODate } from '../core/utils';
 
 @Component({
   selector: 'app-strands',
@@ -83,6 +84,7 @@ export class StrandsComponent {
       }
     });
     let date = new Date();
+    let dateISOString = toLocaleISODate(date);
     this.route.params.subscribe(params => {
       const dateParam = params['date'];
       if (dateParam) {
@@ -91,17 +93,20 @@ export class StrandsComponent {
           if (newDate.toString() === 'Invalid Date') {
             throw new Error();
           }
-          if (date.toISOString().substring(0, 10) === newDate.toISOString().substring(0, 10)) {
+          if (dateISOString === newDate.toISOString().substring(0, 10)) {
             this.router.navigate(['']);
             return;
           }
           // disable future dates
-          if (environment.production && newDate.getTime() > new Date().getTime()) {
+          if (toLocaleISODate(newDate) > dateISOString) {
             console.error('Future date requested');
-            this.router.navigate(['']);
-            return;
+            if (environment.production) {
+              this.router.navigate(['']);
+              return;
+            }
           }
           date = newDate;
+          dateISOString = newDate.toISOString().substring(0, 10);
         } catch {
           console.error('Invalid date parameter');
           this.router.navigate(['']);
