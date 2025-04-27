@@ -6,7 +6,7 @@
       <a
         [routerLink]="['news']"
         class="version-info-button"
-        [class.new]="changelogSeenFor !== version"
+        [class.new]="(changelogSeenFor$ | async) !== version"
       >
         v {{ version }}
         <span class="info-circle"> i </span>

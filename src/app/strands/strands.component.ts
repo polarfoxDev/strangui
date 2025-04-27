@@ -1,10 +1,9 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy } from '@angular/core';
 import { LetterComponent } from './letter/letter.component';
 import { LetterLocation, MouseAction } from './models';
 import { StrandsService } from '../core/strands.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { defaultLetterGrid } from '../core/constants';
-import { AppStorage } from '../core/storage';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { UpdateService } from '../core/update.service';
 import { environment } from '../../environments/environment';
@@ -12,9 +11,10 @@ import { Store } from '@ngrx/store';
 import { appendToCurrentTry, submitCurrentTry, useHint } from './state/strands.actions';
 import { allConnectionsSelector, completedSelector, currentGameState, finishedSelector, finishedSolutionCountSelector, letterStatesSelector, solutionCountSelector, statusColorSelector, statusTextSelector, themeSelector, unusedHintWordCountSelector } from './state/strands.selectors';
 import { AsyncPipe } from '@angular/common';
-import { loadGameByDate } from '../core/state/core.actions';
-import { gameLoadingErrorSelector, loadingSelector } from '../core/state/core.selectors';
+import { loadGameByDate, setVisited } from '../core/state/core.actions';
+import { firstVisitSelector, gameLoadingErrorSelector, loadingSelector } from '../core/state/core.selectors';
 import { toLocaleISODate } from '../core/utils';
+import { Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-strands',
@@ -22,7 +22,7 @@ import { toLocaleISODate } from '../core/utils';
   templateUrl: './strands.component.html',
   styleUrl: './strands.component.css'
 })
-export class StrandsComponent {
+export class StrandsComponent implements OnDestroy {
   readonly AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
   readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
   readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
@@ -31,6 +31,8 @@ export class StrandsComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private store = inject(Store);
+
+  private subscriptions = new Subscription();
 
   theme$ = this.store.select(themeSelector);
   statusText$ = this.store.select(statusTextSelector);
@@ -66,26 +68,30 @@ export class StrandsComponent {
   }
 
   constructor() {
-    this.store.select(completedSelector).subscribe(completed => {
+    this.subscriptions.add(this.store.select(completedSelector).subscribe(completed => {
       this.readonly = completed;
-    });
+    }));
     this.setScreenSize();
-    if (AppStorage.getSafe('firstVisit', true)) {
-      AppStorage.set('firstVisit', false);
-      this.router.navigate(['tutorial']);
-      return;
-    }
-    this.strandsService.getAcceptableTryWords().subscribe({
+    this.store.select(firstVisitSelector).pipe(take(1)).subscribe(firstVisit => {
+      if (firstVisit) {
+        this.store.dispatch(setVisited());
+        setTimeout(() => {
+          this.router.navigate(['tutorial']);
+        }, 200);
+        return;
+      }
+    });
+    this.subscriptions.add(this.strandsService.getAcceptableTryWords().subscribe({
       next: words => {
         this.acceptableWords = words;
       },
       error: () => {
         console.error('Error loading word list');
       }
-    });
+    }));
     let date = new Date();
     let dateISOString = toLocaleISODate(date);
-    this.route.params.subscribe(params => {
+    this.subscriptions.add(this.route.params.subscribe(params => {
       const dateParam = params['date'];
       if (dateParam) {
         try {
@@ -118,7 +124,7 @@ export class StrandsComponent {
       this.dateISO = date.toISOString().substring(0, 10);
       this.isHistoryMode = !!dateParam;
       this.store.dispatch(loadGameByDate(this.dateISO));
-    });
+    }));
   }
 
   @HostListener('mouseup')
@@ -210,5 +216,9 @@ export class StrandsComponent {
     if (location) {
       this.onLetterMouseEvent(MouseAction.Down, location);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

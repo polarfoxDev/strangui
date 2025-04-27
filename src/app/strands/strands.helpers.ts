@@ -1,6 +1,6 @@
 import { GameState, Letter, LetterLocation } from "./models";
 
-const AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
+export const AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
 export const AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
 export const AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
 

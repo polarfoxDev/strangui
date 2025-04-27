@@ -1,16 +1,33 @@
 import { createReducer, on } from "@ngrx/store";
-import { CoreState } from "./core.statemodel";
-import { addGame, loadGameByDate, loadGameFailure, loadGameList, loadGameListSuccess, loadGameSuccess, updateGame } from "./core.actions";
+import { initialState } from "./core.statemodel";
+import { addGame, loadCoreState, loadCoreStateSuccess, loadGameByDate, loadGameFailure, loadGameList, loadGameListSuccess, loadGameSuccess, setChangelogSeenForVersion, setStorageVersion, setUpdateCheck, setVisited, updateGame } from "./core.actions";
 import { Letter } from "../../strands/models";
-
-export const initialState: CoreState = {
-  activeGame: null,
-  availableGames: {},
-  loading: false,
-};
 
 export const getCoreReducer = createReducer(
   initialState,
+  /* Core Actions */
+  on(loadCoreStateSuccess, (state, { coreState }) => ({
+    ...state,
+    ...coreState,
+  })),
+  on(setUpdateCheck, (state, { lastUpdateCheck, lastUpdateCheckResult }) => ({
+    ...state,
+    lastUpdateCheck: lastUpdateCheck ?? state.lastUpdateCheck,
+    lastUpdateCheckResult: lastUpdateCheckResult ?? state.lastUpdateCheckResult,
+  })),
+  on(setStorageVersion, (state, { storageVersion }) => ({
+    ...state,
+    storageVersion,
+  })),
+  on(setChangelogSeenForVersion, (state, { changelogSeenForVersion }) => ({
+    ...state,
+    changelogSeenForVersion,
+  })),
+  on(setVisited, (state) => ({
+    ...state,
+    firstVisit: false,
+  })),
+  /* Game Related Actions */
   on(loadGameList, (state) => ({
     ...state,
     loading: true,

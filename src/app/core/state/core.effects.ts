@@ -1,16 +1,47 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { addGame, loadGameByDate, loadGameFailure, loadGameList, loadGameListSuccess, loadGameSuccess, updateGame } from "./core.actions";
-import { switchMap, map, withLatestFrom, catchError } from "rxjs";
-import { GameMetadataByDateMap } from "./core.statemodel";
-import { activeGameSelector, availableGamesSelector } from "./core.selectors";
+import { addGame, loadCoreState, loadCoreStateSuccess, loadGameByDate, loadGameFailure, loadGameList, loadGameListSuccess, loadGameSuccess, setChangelogSeenForVersion, setStorageVersion, setUpdateCheck, setVisited, updateGame } from "./core.actions";
+import { switchMap, map, withLatestFrom, catchError, tap } from "rxjs";
+import { corePropsToPersist, CoreState, GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
+import { activeGameSelector, availableGamesSelector, coreStateSelector } from "./core.selectors";
 import { StrandsService } from "../strands.service";
 import { upgradeConfigVersion } from "../utils";
 import { defaultLetterGrid } from "../constants";
 import { Letter, PersistentGameState } from "../../strands/models";
 import { initialState as initialGameState } from "../../strands/state/strands.reducer";
 import { loadExistingGame } from "../../strands/state/strands.actions";
+
+/* Effects for Core State Management */
+
+export const loadCoreState$ = createEffect(
+  ((actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(loadCoreState),
+      switchMap(() => {
+        const coreState: PersistentCoreState = JSON.parse(localStorage.getItem('peristentCoreState') || '{}');
+        return [loadCoreStateSuccess(coreState)];
+      }),
+    );
+  }),
+  { functional: true }
+);
+
+export const saveCoreState$ = createEffect(
+  ((actions$ = inject(Actions), store = inject(Store)) => {
+    return actions$.pipe(
+      ofType(setUpdateCheck, setStorageVersion, setChangelogSeenForVersion, setVisited),
+      withLatestFrom(store.select(coreStateSelector)),
+      tap(([, coreState]) => {
+        console.log(coreState);
+        localStorage.setItem('peristentCoreState', JSON.stringify(corePropsToPersist(coreState)));
+      }),
+    );
+  }),
+  { functional: true, dispatch: false }
+);
+
+/* Game Related Effects */
 
 export const loadGameListLocal$ = createEffect(
   ((actions$ = inject(Actions)) => {
