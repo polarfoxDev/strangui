@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { merge, timer } from 'rxjs';
-import { map, withLatestFrom, mergeMap, tap, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, mergeMap, switchMap } from 'rxjs/operators';
 import { completeGame, submitCurrentTry, updateLetterState } from './strands.actions';
 import { Store } from '@ngrx/store';
 import { currentGameState, dateSelector, finishedSelector, letterStatesSelector } from './strands.selectors';

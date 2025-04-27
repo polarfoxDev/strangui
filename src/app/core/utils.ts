@@ -34,6 +34,7 @@ export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): Riddle
         })),
       };
     default:
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       throw new Error(`Unsupported config version: ${(config as any).configVersion}`);
   }
 }

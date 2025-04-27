@@ -1,5 +1,5 @@
 import { createAction } from "@ngrx/store";
-import { GameState, Letter, LetterLocation, RiddleConfig } from "../models";
+import { GameState, Letter, LetterLocation } from "../models";
 
 export enum ActionTypes {
   INITIALIZE = '[Current Game] Initialize',

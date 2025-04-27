@@ -1,6 +1,6 @@
 import { createAction } from "@ngrx/store";
 import { GameState, PersistentGameState } from "../../strands/models";
-import { CoreState, GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
+import { GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
 
 export enum ActionTypes {
   /* Core Actions */
@@ -78,7 +78,7 @@ export const loadGameSuccess = createAction(
 
 export const loadGameFailure = createAction(
   ActionTypes.LOAD_GAME_FAILURE,
-  (error: any) => ({ error })
+  (error: unknown) => ({ error })
 );
 
 export const loadGameList = createAction(

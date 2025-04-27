@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
-import { concatMap, forkJoin, from, map, mergeMap, Observable, of, switchMap, take, tap } from "rxjs";
+import { forkJoin, from, map, Observable, of, switchMap, take, tap } from "rxjs";
 import { GameState, GameStateV1, PersistentGameState } from "../strands/models";
 import { isVersionNewer } from "./utils";
 import { Store } from "@ngrx/store";
@@ -68,22 +68,32 @@ export class UpdateService {
             const gameState: GameStateV1 = JSON.parse(localStorage.getItem(key) || 'null');
             if (!gameState) return;
             gameState.activeHint?.locations.forEach(l => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.row = l.row ?? (l as any).x;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.col = l.col ?? (l as any).y
             });
             gameState.fixedConnections.forEach(c => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.from.row = c.from.row ?? (c.from as any).x;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.from.col = c.from.col ?? (c.from as any).y;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.to.row = c.to.row ?? (c.to as any).x;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.to.col = c.to.col ?? (c.to as any).y;
             });
             gameState.letterStates.forEach(l => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.location.row = l.location.row ?? (l.location as any).x;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.location.col = l.location.col ?? (l.location as any).y;
             });
             gameState.solutionStates.forEach(s => {
               s.locations.forEach(l => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 l.row = l.row ?? (l as any).x;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 l.col = l.col ?? (l as any).y
               })
             });

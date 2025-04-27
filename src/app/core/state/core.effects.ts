@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { addGame, loadCoreState, loadCoreStateSuccess, loadGameByDate, loadGameFailure, loadGameList, loadGameListSuccess, loadGameSuccess, setChangelogSeenForVersion, setStorageVersion, setUpdateCheck, setVisited, updateGame } from "./core.actions";
 import { switchMap, map, withLatestFrom, catchError, tap } from "rxjs";
-import { corePropsToPersist, CoreState, GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
+import { corePropsToPersist, GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
 import { activeGameSelector, availableGamesSelector, coreStateSelector } from "./core.selectors";
 import { StrandsService } from "../strands.service";
 import { upgradeConfigVersion } from "../utils";

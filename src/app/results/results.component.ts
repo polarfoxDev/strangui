@@ -124,7 +124,7 @@ export class ResultsComponent {
     if (events[events.length - 1] === null) {
       events.pop();
     }
-    let gameResult = events.map(event => {
+    const gameResult = events.map(event => {
       switch (event) {
         case GameEvent.SolutionFound:
           return this.SOLUTION_ICON;

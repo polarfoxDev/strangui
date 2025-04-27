@@ -35,9 +35,7 @@ export const corePropsToPersist = (state: CoreState): PersistentCoreState => {
   };
 }
 
-export type GameMetadataByDateMap = {
-  [date: string]: GameMetadata;
-};
+export type GameMetadataByDateMap = Record<string, GameMetadata>;
 
 export interface GameMetadata {
   id: string;
