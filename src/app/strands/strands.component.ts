@@ -80,51 +80,51 @@ export class StrandsComponent implements OnDestroy {
         }, 200);
         return;
       }
-    });
-    this.subscriptions.add(this.strandsService.getAcceptableTryWords().subscribe({
-      next: words => {
-        this.acceptableWords = words;
-      },
-      error: () => {
-        console.error('Error loading word list');
-      }
-    }));
-    let date = new Date();
-    let dateISOString = toLocaleISODate(date);
-    this.subscriptions.add(this.route.params.subscribe(params => {
-      const dateParam = params['date'];
-      if (dateParam) {
-        try {
-          const newDate = new Date(dateParam);
-          if (newDate.toString() === 'Invalid Date') {
-            throw new Error();
-          }
-          if (dateISOString === newDate.toISOString().substring(0, 10)) {
-            this.router.navigate(['']);
-            return;
-          }
-          // disable future dates
-          if (toLocaleISODate(newDate) > dateISOString) {
-            console.error('Future date requested');
-            if (environment.production) {
+      this.subscriptions.add(this.strandsService.getAcceptableTryWords().subscribe({
+        next: words => {
+          this.acceptableWords = words;
+        },
+        error: () => {
+          console.error('Error loading word list');
+        }
+      }));
+      let date = new Date();
+      let dateISOString = toLocaleISODate(date);
+      this.subscriptions.add(this.route.params.subscribe(params => {
+        const dateParam = params['date'];
+        if (dateParam) {
+          try {
+            const newDate = new Date(dateParam);
+            if (newDate.toString() === 'Invalid Date') {
+              throw new Error();
+            }
+            if (dateISOString === newDate.toISOString().substring(0, 10)) {
               this.router.navigate(['']);
               return;
             }
+            // disable future dates
+            if (toLocaleISODate(newDate) > dateISOString) {
+              console.error('Future date requested');
+              if (environment.production) {
+                this.router.navigate(['']);
+                return;
+              }
+            }
+            date = newDate;
+            dateISOString = newDate.toISOString().substring(0, 10);
+          } catch {
+            console.error('Invalid date parameter');
+            this.router.navigate(['']);
+            return;
           }
-          date = newDate;
-          dateISOString = newDate.toISOString().substring(0, 10);
-        } catch {
-          console.error('Invalid date parameter');
-          this.router.navigate(['']);
-          return;
         }
-      }
-      this.checkForUpdate();
-      this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
-      this.dateISO = date.toISOString().substring(0, 10);
-      this.isHistoryMode = !!dateParam;
-      this.store.dispatch(loadGameByDate(this.dateISO));
-    }));
+        this.checkForUpdate();
+        this.date = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        this.dateISO = date.toISOString().substring(0, 10);
+        this.isHistoryMode = !!dateParam;
+        this.store.dispatch(loadGameByDate(this.dateISO));
+      }));
+    });
   }
 
   @HostListener('mouseup')

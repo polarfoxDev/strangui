@@ -163,6 +163,9 @@ export class UpdateService {
           this.moveToLocalStorageBackup('firstVisit', '1_12_0');
           this.moveToLocalStorageBackup('lastUpdateCheckDate', '1_12_0');
           this.moveToLocalStorageBackup('lastUpdateCheckResult', '1_12_0');
+          if (Object.keys(metadataMap).length === 0) {
+            return of('1.12.0');
+          }
           return forkJoin(
             Object.keys(metadataMap)
               .map(date => [date, metadataMap[date].id])
@@ -182,7 +185,11 @@ export class UpdateService {
   }
 
   private moveToLocalStorageBackup(key: string, migrationToVersion: string): void {
-    localStorage.setItem(`before_migration_${migrationToVersion}_${key}`, localStorage.getItem(key) ?? '');
+    const oldValue = localStorage.getItem(key);
+    if (oldValue === null) {
+      return;
+    }
+    localStorage.setItem(`before_migration_${migrationToVersion}_${key}`, oldValue);
     localStorage.removeItem(key);
   }
 

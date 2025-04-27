@@ -33,7 +33,6 @@ export const saveCoreState$ = createEffect(
       ofType(setUpdateCheck, setStorageVersion, setChangelogSeenForVersion, setVisited),
       withLatestFrom(store.select(coreStateSelector)),
       tap(([, coreState]) => {
-        console.log(coreState);
         localStorage.setItem('peristentCoreState', JSON.stringify(corePropsToPersist(coreState)));
       }),
     );
@@ -92,7 +91,7 @@ export const loadGameLocal$ = createEffect(
               const riddleLetters: string[] = riddleConfig.letters.flat();
               const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
               return addGame({
-                id: action.dateISO,
+                id: crypto.randomUUID(),
                 lastChanged: new Date().toISOString(),
                 gameState: {
                   ...initialGameState,
@@ -134,6 +133,14 @@ export const saveGameChangesLocal$ = createEffect(
       withLatestFrom(store.select(activeGameSelector)),
       switchMap(([, game]) => {
         if (game) {
+          if (
+            game.gameState.activeHintIndex === null &&
+            game.gameState.fixedConnections.length === 0 &&
+            game.gameState.gameEvents.length === 0 &&
+            game.gameState.nonSolutionWordsFound.length === 0
+          ) {
+            return []; // nothing important has happened yet in this game
+          }
           localStorage.setItem(`game_${game.id}`, JSON.stringify(game));
           const gameOverview: GameMetadataByDateMap = JSON.parse(localStorage.getItem('gameOverview') || '{}');
           if (game.gameState.solutionStates.every(s => s.found)) {
