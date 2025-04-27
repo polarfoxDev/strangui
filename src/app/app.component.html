@@ -1,5 +1,12 @@
 <div class="app">
+  @if(!migrationRunning) {
   <router-outlet></router-outlet>
+  } @else {
+  <div class="loading">
+    <span>Datenmigration läuft, bitte warten...</span>
+    <app-spinner></app-spinner>
+  </div>
+  }
   <div class="info">
     <p class="version-info">
       <span>stränge.de</span>
