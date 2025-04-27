@@ -17,7 +17,7 @@ export const useHint = createAction(
 
 export const initializeGame = createAction(
   ActionTypes.INITIALIZE,
-  (riddleConfig: RiddleConfig) => ({ riddleConfig })
+  (riddleConfig: RiddleConfig, isoDate: string) => ({ riddleConfig, isoDate })
 );
 
 export const loadExistingGame = createAction(

@@ -14,3 +14,4 @@ export const nonSolutionWordsFoundLengthSelector = createSelector(currentGameSta
 export const unusedHintWordCountSelector = createSelector(currentGameState, (state) => state.nonSolutionWordsFound.length - state.tipsUsed * 3);
 export const solutionCountSelector = createSelector(currentGameState, (state) => state.solutionStates.length);
 export const finishedSolutionCountSelector = createSelector(currentGameState, (state) => state.solutionStates.filter(s => s.found).length);
+export const dateSelector = createSelector(currentGameState, (state) => state.date);

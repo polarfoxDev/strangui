@@ -97,4 +97,5 @@ export interface GameState {
   theme: string;
   statusText: string;
   statusColor: string;
+  date: string;
 }

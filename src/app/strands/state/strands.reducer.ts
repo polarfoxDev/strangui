@@ -18,6 +18,7 @@ export const initialState: GameState = {
   statusColor: '',
   tryConnections: [],
   currentTry: [],
+  date: '',
 }
 
 export const getCurrentGameReducer = createReducer(
@@ -28,7 +29,7 @@ export const getCurrentGameReducer = createReducer(
       ...gameState,
     } satisfies GameState;
   }),
-  on(initializeGame, (_state, { riddleConfig }) => {
+  on(initializeGame, (_state, { riddleConfig, isoDate }) => {
     const riddleLetters: string[] = riddleConfig.letters.flat();
     const defaultGridCopy: Letter[] = JSON.parse(JSON.stringify(defaultLetterGrid));
     return {
@@ -43,6 +44,7 @@ export const getCurrentGameReducer = createReducer(
         found: false,
       })),
       tryConnections: [],
+      date: isoDate
     } satisfies GameState;
   }),
   on(useHint, (state) => {
@@ -161,6 +163,7 @@ export const getCurrentGameReducer = createReducer(
           }),
         } satisfies GameState;
       }
+      // new solution found
       return {
         ...state,
         solutionStates: state.solutionStates.map(s => {
@@ -173,7 +176,13 @@ export const getCurrentGameReducer = createReducer(
           return s;
         }),
         gameEvents: [...state.gameEvents, GameEvent.SolutionFound],
-        ...(solutionMatch.isSuperSolution ? status('DURCHGANGSWORT!', AUTO_TEXT_COLOR_SUPER_SOLUTION) : status(state.currentTry.map(loc => letterAt(state.letterStates, loc).letter).join(''), AUTO_TEXT_COLOR_SOLUTION)),
+        ...(state.solutionStates.every(s => s.found || s === solutionMatch)
+          ? status('GEWONNEN!', AUTO_TEXT_COLOR_SUPER_SOLUTION)
+          : (solutionMatch.isSuperSolution
+            ? status('DURCHGANGSWORT!', AUTO_TEXT_COLOR_SUPER_SOLUTION)
+            : status(state.currentTry.map(loc => letterAt(state.letterStates, loc).letter).join(''), AUTO_TEXT_COLOR_SOLUTION)
+          )
+        ),
         currentTry: [],
         tryConnections: [],
         fixedConnections: [

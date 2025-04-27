@@ -118,7 +118,7 @@ export class StrandsComponent {
             this.loading = false;
             return;
           }
-          this.store.dispatch(initializeGame(riddle));
+          this.store.dispatch(initializeGame(riddle, this.dateISO));
           this.ready = true;
           this.loading = false;
         },
