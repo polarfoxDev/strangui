@@ -9,6 +9,13 @@ export const getRiddleIndex = (dateISO: string): number => {
   return diffDays + 1;
 }
 
+export const toLocaleISODate = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return date.getFullYear() +
+    '-' + pad(date.getMonth() + 1) +
+    '-' + pad(date.getDate());
+}
+
 export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): RiddleConfig => {
   switch (config.configVersion) {
     case 3:
@@ -27,6 +34,7 @@ export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): Riddle
         })),
       };
     default:
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       throw new Error(`Unsupported config version: ${(config as any).configVersion}`);
   }
 }

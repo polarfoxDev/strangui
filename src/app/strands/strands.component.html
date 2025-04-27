@@ -1,4 +1,5 @@
-@if(ready) {
+@if((gameState$ | async) && ((loading$ | async) === false) && (gameLoadingError$
+| async) === false) {
 <div class="strands">
   <div class="mini-header">
     Stränge <span class="date">{{ date }}</span>
@@ -23,10 +24,10 @@
   }
   <p class="theme-box">
     <span class="theme-title">Thema des Tages</span>
-    <span class="theme-content">{{ theme }}</span>
+    <span class="theme-content">{{ theme$ | async }}</span>
   </p>
-  <p class="current-guess" [style.color]="statusColor">
-    &nbsp;{{ statusText }}&nbsp;
+  <p class="current-guess" [style.color]="statusColor$ | async">
+    &nbsp;{{ statusText$ | async }}&nbsp;
   </p>
   <div
     #letterbox
@@ -35,19 +36,19 @@
     (touchend)="onTouchEnd($event)"
     (touchstart)="onTouchStart($event, letterbox.getBoundingClientRect())"
   >
-    @for (letter of letters; track $index) {
+    @for (letter of letterStates$ | async; track $index) {
     <app-letter
       [letter]="letter"
       [row]="letter.location.row"
       [column]="letter.location.col"
       [hintAnimationDelay]="letter.hintFoundDelay"
-      [isDisabled]="finished"
-      (mouseEvent)="onLetterMouseEvent($event, letter)"
+      [isDisabled]="(finished$ | async) === true"
+      (mouseEvent)="onLetterMouseEvent($event, letter.location)"
     ></app-letter>
     }
   </div>
   <svg class="connections" (touchstart)="$event.preventDefault()">
-    @for (connection of connections; track $index) {
+    @for (connection of connections$ | async; track $index) {
     <line
       [attr.x1]="connection.from.col * 60 + 30"
       [attr.y1]="connection.from.row * 60 + 30"
@@ -66,20 +67,18 @@
   </svg>
 
   <div class="hint-box">
-    @if(!finished) {
+    @if((finished$ | async) === false) {
     <button
-      class="hint level-{{ nonSolutionWordsFound.length - tipsUsed * 3 }}"
-      [disabled]="nonSolutionWordsFound.length - tipsUsed * 3 < 3"
+      class="hint level-{{ unusedHintWordCount$ | async }}"
+      [disabled]="((unusedHintWordCount$ | async) ?? 0) < 3"
       (click)="useHint()"
     >
       Hinweis
-      <span class="hint-numbers">
-        {{ nonSolutionWordsFound.length - tipsUsed * 3 }} / 3
-      </span>
+      <span class="hint-numbers"> {{ unusedHintWordCount$ | async }} / 3 </span>
     </button>
     <div class="counter-box">
-      <b>{{ finishedCount }}</b> von
-      <b>{{ solutions.length }}</b> Themen-<br />Wörtern gefunden
+      <b>{{ finishedSolutionCount$ | async }}</b> von
+      <b>{{ solutionCount$ | async }}</b> Themen-<br />Wörtern gefunden
     </div>
     } @else {
     <div class="game-over-box">
@@ -95,7 +94,7 @@
     }
   </div>
 </div>
-} @else if (loading) {
+} @else if (loading$ | async) {
 <div class="loading">
   <app-spinner></app-spinner>
 </div>

@@ -3,8 +3,10 @@ import { CalendarDateComponent } from './calendar-date/calendar-date.component';
 import { CalendarDate, CalendarMonth } from './calendar.models';
 import { DatePipe } from '@angular/common';
 import { firstRiddleDateISO } from '../core/constants';
-import { StrandsService } from '../core/strands.service';
 import { GameStatus } from '../strands/models';
+import { Store } from '@ngrx/store';
+import { availableGamesSelector } from '../core/state/core.selectors';
+import { GameMetadataByDateMap } from '../core/state/core.statemodel';
 
 @Component({
   selector: 'app-calendar',
@@ -13,11 +15,19 @@ import { GameStatus } from '../strands/models';
   styleUrl: './calendar.component.css'
 })
 export class CalendarComponent {
+  store = inject(Store);
+
   readonly weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
-  private strandsService = inject(StrandsService);
-
   activeMonth: CalendarMonth = this.createMonth(new Date());
+  private availableGames: GameMetadataByDateMap = {};
+
+  constructor() {
+    this.store.select(availableGamesSelector).subscribe(availableGames => {
+      this.availableGames = availableGames;
+      this.activeMonth = this.createMonth(this.activeMonth.dates[0].date);
+    });
+  }
 
   private createMonth(date: Date): CalendarMonth {
     const start = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -38,7 +48,14 @@ export class CalendarComponent {
       const day = i + 1;
       const date = new Date(Date.UTC(year, month, day));
       const isToday = date.toDateString() === today;
-      const gameStatus = this.isSelectable(date) ? this.strandsService.getRiddleStatus(date.toISOString().slice(0, 10)) : GameStatus.NotAvailable;
+      const gameMetadata = this.availableGames?.[date.toISOString().slice(0, 10)];
+      const gameStatus = this.isSelectable(date)
+        ? gameMetadata
+          ? gameMetadata.finished
+            ? GameStatus.Finished
+            : GameStatus.InProgress
+          : GameStatus.NotStarted
+        : GameStatus.NotAvailable;
       dates.push({ date, isToday, gameStatus });
     }
     return dates;

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CalendarDate } from '../calendar.models';
 import { DatePipe } from '@angular/common';
 import { GameStatus } from '../../strands/models';
