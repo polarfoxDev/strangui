@@ -117,7 +117,7 @@ export class UpdateService {
           const metadataMap: GameMetadataByDateMap = {};
           Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
             const gameState: GameStateV1 = JSON.parse(localStorage.getItem(key) || 'null');
-            if (!gameState) return;
+            if (!gameState || gameState.solutionStates.length === 0) return;
             const dateFromKey = key.split('-').slice(2).join('-');
             const gameId = crypto.randomUUID();
             const gameStateV2: PersistentGameState = {
