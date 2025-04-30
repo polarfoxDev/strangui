@@ -1,7 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { LetterComponent } from '../strands/letter/letter.component';
-import { Connection, Letter } from '../strands/models';
+import { LetterComponent } from '@game/letter/letter.component';
+import { Connection, Letter } from '@game/models';
 import { Figure, FigureEvent } from './models';
 
 @Component({

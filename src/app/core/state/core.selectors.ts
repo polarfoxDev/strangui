@@ -1,8 +1,9 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { CoreState } from "./core.statemodel";
+import { CoreState } from "./core.state";
 
-export const FeatureKey = 'CORE_STATE';
-export const coreState = createFeatureSelector<CoreState>(FeatureKey);
+export const FEATURE_KEY = 'CORE_STATE';
+export const coreState = createFeatureSelector<CoreState>(FEATURE_KEY);
+
 export const coreStateSelector = createSelector(coreState, (state => state));
 export const activeGameSelector = createSelector(coreState, (state => state.activeGame));
 export const availableGamesSelector = createSelector(coreState, (state => state.availableGames));

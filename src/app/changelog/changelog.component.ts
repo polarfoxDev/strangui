@@ -1,14 +1,17 @@
-import { Component, inject, OnDestroy } from '@angular/core';
-import packageJson from '../../../package.json';
-import { RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { isVersionNewer } from '../core/utils';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription, take } from 'rxjs';
+import * as CoreAction from '@core-state/core.actions';
+import { changelogSeenForVersionSelector } from '@core-state/core.selectors';
+import { isVersionNewer } from '@core/utils';
+import packageJson from '../../../package.json';
 import { changeLog } from './changelog';
 import { VersionChanges } from './changelogs.models';
-import { Store } from '@ngrx/store';
-import { changelogSeenForVersionSelector } from '../core/state/core.selectors';
-import { setChangelogSeenForVersion } from '../core/state/core.actions';
-import { Subscription, take } from 'rxjs';
+
+
+
 
 @Component({
   selector: 'app-changelog',
@@ -28,7 +31,7 @@ export class ChangelogComponent implements OnDestroy {
         ...versionChange,
         isNew: isVersionNewer(versionChange.version, changelogSeenFor),
       }));
-      this.store.dispatch(setChangelogSeenForVersion(packageJson.version));
+      this.store.dispatch(CoreAction.setChangelogSeenForVersion(packageJson.version));
     });
     this.subscriptions.add(subscription);
   }

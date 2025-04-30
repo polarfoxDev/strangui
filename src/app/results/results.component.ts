@@ -1,13 +1,13 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { GameEvent } from '../strands/models';
-import { SpinnerComponent } from '../spinner/spinner.component';
-import { getRiddleIndex } from '../core/utils';
-import { DatePipe } from '@angular/common';
-import { firstRiddleDateISO } from '../core/constants';
 import { Store } from '@ngrx/store';
-import { currentGameState } from '../strands/state/strands.selectors';
 import { take } from 'rxjs';
+import { firstRiddleDateISO } from '@core/constants';
+import { getRiddleIndex } from '@core/utils';
+import { GameEvent } from '@game/models';
+import { currentGameState } from '@game/state/strands.selectors';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-results',

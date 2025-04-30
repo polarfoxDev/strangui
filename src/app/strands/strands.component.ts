@@ -1,20 +1,20 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, HostListener, inject, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription, take } from 'rxjs';
+import { environment } from '@env/environment';
+import { loadGameByDate, setVisited } from '@core-state/core.actions';
+import * as CoreSelector from '@core-state/core.selectors';
+import { defaultLetterGrid } from '@core/constants';
+import { StrandsService } from '@core/strands.service';
+import { UpdateService } from '@core/update.service';
+import { toLocaleISODate } from '@core/utils';
+import * as GameAction from '@game-state/strands.actions';
+import * as GameSelector from '@game-state/strands.selectors';
+import { SpinnerComponent } from '../spinner/spinner.component';
 import { LetterComponent } from './letter/letter.component';
 import { LetterLocation, MouseAction } from './models';
-import { StrandsService } from '../core/strands.service';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { defaultLetterGrid } from '../core/constants';
-import { SpinnerComponent } from '../spinner/spinner.component';
-import { UpdateService } from '../core/update.service';
-import { environment } from '../../environments/environment';
-import { Store } from '@ngrx/store';
-import { appendToCurrentTry, submitCurrentTry, useHint } from './state/strands.actions';
-import { allConnectionsSelector, completedSelector, currentGameState, finishedSelector, finishedSolutionCountSelector, letterStatesSelector, solutionCountSelector, statusColorSelector, statusTextSelector, themeSelector, unusedHintWordCountSelector } from './state/strands.selectors';
-import { AsyncPipe } from '@angular/common';
-import { loadGameByDate, setVisited } from '../core/state/core.actions';
-import { firstVisitSelector, gameLoadingErrorSelector, loadingSelector } from '../core/state/core.selectors';
-import { toLocaleISODate } from '../core/utils';
-import { Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-strands',
@@ -34,19 +34,20 @@ export class StrandsComponent implements OnDestroy {
 
   private subscriptions = new Subscription();
 
-  theme$ = this.store.select(themeSelector);
-  statusText$ = this.store.select(statusTextSelector);
-  statusColor$ = this.store.select(statusColorSelector);
-  letterStates$ = this.store.select(letterStatesSelector);
-  finished$ = this.store.select(finishedSelector);
-  connections$ = this.store.select(allConnectionsSelector);
-  unusedHintWordCount$ = this.store.select(unusedHintWordCountSelector);
-  solutionCount$ = this.store.select(solutionCountSelector);
-  finishedSolutionCount$ = this.store.select(finishedSolutionCountSelector);
-  loading$ = this.store.select(loadingSelector);
-  gameLoadingError$ = this.store.select(gameLoadingErrorSelector);
-  gameState$ = this.store.select(currentGameState);
+  theme$ = this.store.select(GameSelector.themeSelector);
+  statusText$ = this.store.select(GameSelector.statusTextSelector);
+  statusColor$ = this.store.select(GameSelector.statusColorSelector);
+  letterStates$ = this.store.select(GameSelector.letterStatesSelector);
+  finished$ = this.store.select(GameSelector.finishedSelector);
+  connections$ = this.store.select(GameSelector.allConnectionsSelector);
+  unusedHintWordCount$ = this.store.select(GameSelector.unusedHintWordCountSelector);
+  solutionCount$ = this.store.select(GameSelector.solutionCountSelector);
+  finishedSolutionCount$ = this.store.select(GameSelector.finishedSolutionCountSelector);
+  gameState$ = this.store.select(GameSelector.currentGameState);
   readonly = false;
+
+  loading$ = this.store.select(CoreSelector.loadingSelector);
+  gameLoadingError$ = this.store.select(CoreSelector.gameLoadingErrorSelector);
 
   touchCoordinateScaleFactor = 1;
 
@@ -68,11 +69,11 @@ export class StrandsComponent implements OnDestroy {
   }
 
   constructor() {
-    this.subscriptions.add(this.store.select(completedSelector).subscribe(completed => {
+    this.subscriptions.add(this.store.select(GameSelector.completedSelector).subscribe(completed => {
       this.readonly = completed;
     }));
     this.setScreenSize();
-    this.store.select(firstVisitSelector).pipe(take(1)).subscribe(firstVisit => {
+    this.store.select(CoreSelector.firstVisitSelector).pipe(take(1)).subscribe(firstVisit => {
       if (firstVisit) {
         this.store.dispatch(setVisited());
         setTimeout(() => {
@@ -134,7 +135,7 @@ export class StrandsComponent implements OnDestroy {
       return;
     }
     this.dragTryActive = false;
-    this.store.dispatch(submitCurrentTry(this.acceptableWords));
+    this.store.dispatch(GameAction.submitCurrentTry(this.acceptableWords));
   }
 
   onLetterMouseEvent(mouseAction: MouseAction, location: LetterLocation): void {
@@ -144,27 +145,27 @@ export class StrandsComponent implements OnDestroy {
     }
     if (mouseAction === MouseAction.Click) {
       this.dragTryActive = false;
-      this.store.dispatch(appendToCurrentTry(location));
-      this.store.dispatch(submitCurrentTry(this.acceptableWords));
+      this.store.dispatch(GameAction.appendToCurrentTry(location));
+      this.store.dispatch(GameAction.submitCurrentTry(this.acceptableWords));
     } else if (mouseAction === MouseAction.Down) {
-      this.store.dispatch(appendToCurrentTry(location));
+      this.store.dispatch(GameAction.appendToCurrentTry(location));
       this.dragTryActive = true;
     } else if (mouseAction === MouseAction.Up && !this.dragTryActive) {
       this.dragTryActive = false;
-      this.store.dispatch(submitCurrentTry(this.acceptableWords));
+      this.store.dispatch(GameAction.submitCurrentTry(this.acceptableWords));
     } else if (mouseAction === MouseAction.Move) {
       if (this.lastMouseLocation && this.lastMouseLocation.row === location.row && this.lastMouseLocation.col === location.col) {
         return;
       }
       this.lastMouseLocation = location;
       if (this.dragTryActive) {
-        this.store.dispatch(appendToCurrentTry(location));
+        this.store.dispatch(GameAction.appendToCurrentTry(location));
       }
     }
   }
 
   useHint(): void {
-    this.store.dispatch(useHint());
+    this.store.dispatch(GameAction.useHint());
   }
 
   @HostListener('window:resize')

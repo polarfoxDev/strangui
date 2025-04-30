@@ -1,4 +1,4 @@
-import { PersistentGameState } from "../../strands/models";
+import { PersistentGameState } from "@game/models";
 
 export const initialState: CoreState = {
   loading: false,

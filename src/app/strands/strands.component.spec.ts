@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StrandsComponent } from './strands.component';
 
 describe('StrandsComponent', () => {

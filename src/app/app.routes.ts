@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { StrandsComponent } from './strands/strands.component';
-import { ResultsComponent } from './results/results.component';
-import { TutorialComponent } from './tutorial/tutorial.component';
-import { DateSelectorComponent } from './date-selector/date-selector.component';
 import { ChangelogComponent } from './changelog/changelog.component';
+import { DateSelectorComponent } from './date-selector/date-selector.component';
+import { ResultsComponent } from './results/results.component';
+import { StrandsComponent } from './strands/strands.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
 
 export const routes: Routes = [
   {
