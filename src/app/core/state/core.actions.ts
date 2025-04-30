@@ -1,8 +1,8 @@
 import { createAction } from "@ngrx/store";
 import { GameState, PersistentGameState } from "../../strands/models";
-import { GameMetadataByDateMap, PersistentCoreState } from "./core.statemodel";
+import { GameMetadataByDateMap, PersistentCoreState } from "./core.state";
 
-export enum ActionTypes {
+enum ActionType {
   /* Core Actions */
   LOAD_CORE_STATE = '[Core] Load Core State from Storage',
   LOAD_CORE_STATE_SUCCESS = '[Core] Load Core State Success',
@@ -24,16 +24,16 @@ export enum ActionTypes {
 /* Core Actions */
 
 export const loadCoreState = createAction(
-  ActionTypes.LOAD_CORE_STATE
+  ActionType.LOAD_CORE_STATE
 );
 
 export const loadCoreStateSuccess = createAction(
-  ActionTypes.LOAD_CORE_STATE_SUCCESS,
+  ActionType.LOAD_CORE_STATE_SUCCESS,
   (coreState: PersistentCoreState) => ({ coreState })
 );
 
 export const setUpdateCheck = createAction(
-  ActionTypes.SET_UPDATE_CHECK,
+  ActionType.SET_UPDATE_CHECK,
   (lastUpdateCheck?: string, lastUpdateCheckResult?: boolean) => ({
     lastUpdateCheck,
     lastUpdateCheckResult,
@@ -41,51 +41,51 @@ export const setUpdateCheck = createAction(
 );
 
 export const setStorageVersion = createAction(
-  ActionTypes.SET_STORAGE_VERSION,
+  ActionType.SET_STORAGE_VERSION,
   (storageVersion: string) => ({ storageVersion })
 );
 
 export const setChangelogSeenForVersion = createAction(
-  ActionTypes.SET_CHANGELOG_SEEN_FOR_VERSION,
+  ActionType.SET_CHANGELOG_SEEN_FOR_VERSION,
   (changelogSeenForVersion: string) => ({ changelogSeenForVersion })
 );
 
 export const setVisited = createAction(
-  ActionTypes.SET_VISITED
+  ActionType.SET_VISITED
 );
 
 /* Game Related Actions */
 
 export const addGame = createAction(
-  ActionTypes.ADD_GAME,
+  ActionType.ADD_GAME,
   (game: PersistentGameState) => ({ game })
 );
 
 export const updateGame = createAction(
-  ActionTypes.UPDATE_GAME,
+  ActionType.UPDATE_GAME,
   (gameState: GameState) => ({ gameState })
 );
 
 export const loadGameByDate = createAction(
-  ActionTypes.LOAD_GAME_BY_DATE,
+  ActionType.LOAD_GAME_BY_DATE,
   (dateISO: string) => ({ dateISO })
 );
 
 export const loadGameSuccess = createAction(
-  ActionTypes.LOAD_GAME_SUCCESS,
+  ActionType.LOAD_GAME_SUCCESS,
   (game: PersistentGameState) => ({ game })
 );
 
 export const loadGameFailure = createAction(
-  ActionTypes.LOAD_GAME_FAILURE,
+  ActionType.LOAD_GAME_FAILURE,
   (error: unknown) => ({ error })
 );
 
 export const loadGameList = createAction(
-  ActionTypes.LOAD_GAME_LIST
+  ActionType.LOAD_GAME_LIST
 );
 
 export const loadGameListSuccess = createAction(
-  ActionTypes.LOAD_GAME_LIST_SUCCESS,
+  ActionType.LOAD_GAME_LIST_SUCCESS,
   (gameMetadataMap: GameMetadataByDateMap) => ({ gameMetadataMap })
 );

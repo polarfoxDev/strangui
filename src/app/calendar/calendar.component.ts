@@ -1,12 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { firstRiddleDateISO } from '@core/constants';
+import { availableGamesSelector } from '@core/state/core.selectors';
+import { GameMetadataByDateMap } from '@core/state/core.state';
+import { GameStatus } from '@game/models';
 import { CalendarDateComponent } from './calendar-date/calendar-date.component';
 import { CalendarDate, CalendarMonth } from './calendar.models';
-import { DatePipe } from '@angular/common';
-import { firstRiddleDateISO } from '../core/constants';
-import { GameStatus } from '../strands/models';
-import { Store } from '@ngrx/store';
-import { availableGamesSelector } from '../core/state/core.selectors';
-import { GameMetadataByDateMap } from '../core/state/core.statemodel';
 
 @Component({
   selector: 'app-calendar',

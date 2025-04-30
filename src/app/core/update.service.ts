@@ -1,14 +1,14 @@
 import { inject, Injectable } from "@angular/core";
 import { SwUpdate } from "@angular/service-worker";
-import { forkJoin, from, map, Observable, of, switchMap, take, tap } from "rxjs";
-import { GameState, GameStateV1, PersistentGameState } from "../strands/models";
-import { isVersionNewer } from "./utils";
 import { Store } from "@ngrx/store";
+import { forkJoin, from, map, Observable, of, switchMap, take, tap } from "rxjs";
+import * as CoreAction from "@core-state/core.actions";
+import { initialState as initialGameState } from "@game-state/strands.state";
+import { GameState, GameStateV1, PersistentGameState } from "../strands/models";
 import { lastUpdateCheckResultSelector, lastUpdateCheckSelector, storageVersionSelector } from "./state/core.selectors";
-import { loadGameList, setChangelogSeenForVersion, setStorageVersion, setUpdateCheck, setVisited } from "./state/core.actions";
-import { initialState as initialGameState } from "../strands/state/strands.reducer";
-import { GameMetadataByDateMap } from "./state/core.statemodel";
+import { GameMetadataByDateMap } from "./state/core.state";
 import { StrandsService } from "./strands.service";
+import { isVersionNewer } from "./utils";
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
@@ -37,15 +37,15 @@ export class UpdateService {
       return of(this.lastResult);
     }
     console.info('Checking for updates...');
-    this.store.dispatch(setUpdateCheck(new Date().toISOString()));
+    this.store.dispatch(CoreAction.setUpdateCheck(new Date().toISOString()));
     if (!this.updates.isEnabled) {
-      return of(false).pipe(tap((result) => this.store.dispatch(setUpdateCheck(undefined, result))));
+      return of(false).pipe(tap((result) => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
     }
-    return from(this.updates.checkForUpdate()).pipe(tap((result) => this.store.dispatch(setUpdateCheck(undefined, result))));
+    return from(this.updates.checkForUpdate()).pipe(tap((result) => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
   }
 
   installUpdate() {
-    this.store.dispatch(setUpdateCheck(new Date().toISOString(), false));
+    this.store.dispatch(CoreAction.setUpdateCheck(new Date().toISOString(), false));
     setTimeout(() => {
       document.location.reload();
     }, 200);
@@ -56,7 +56,7 @@ export class UpdateService {
     return this.store.select(storageVersionSelector).pipe(take(1)).pipe(
       map(storageVersion => {
         if (storageVersionV1) {
-          this.store.dispatch(setStorageVersion(storageVersionV1));
+          this.store.dispatch(CoreAction.setStorageVersion(storageVersionV1));
           return storageVersionV1;
         }
         return storageVersion;
@@ -108,11 +108,11 @@ export class UpdateService {
           console.info('Migrating data from version', storageVersion, 'to 1.12.0');
           const changelogSeenForVersion: string | null = JSON.parse(localStorage.getItem('changelogSeenFor') ?? 'null');
           if (changelogSeenForVersion !== null) {
-            this.store.dispatch(setChangelogSeenForVersion(changelogSeenForVersion));
+            this.store.dispatch(CoreAction.setChangelogSeenForVersion(changelogSeenForVersion));
           }
           const firstVisit: boolean | null = JSON.parse(localStorage.getItem('firstVisit') ?? 'null');
           if (firstVisit === false) {
-            this.store.dispatch(setVisited());
+            this.store.dispatch(CoreAction.setVisited());
           }
           const metadataMap: GameMetadataByDateMap = {};
           Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
@@ -157,7 +157,7 @@ export class UpdateService {
             };
           });
           localStorage.setItem('gameOverview', JSON.stringify(metadataMap));
-          this.store.dispatch(loadGameList());
+          this.store.dispatch(CoreAction.loadGameList());
           this.moveToLocalStorageBackup('storageVersion', '1_12_0');
           this.moveToLocalStorageBackup('changelogSeenFor', '1_12_0');
           this.moveToLocalStorageBackup('firstVisit', '1_12_0');

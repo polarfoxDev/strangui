@@ -16,7 +16,24 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "paths": {
+      "@env/*": [
+        "./src/environments/*"
+      ],
+      "@core-state/*": [
+        "./src/app/core/state/*"
+      ],
+      "@core/*": [
+        "./src/app/core/*"
+      ],
+      "@game-state/*": [
+        "./src/app/strands/state/*"
+      ],
+      "@game/*": [
+        "./src/app/strands/*"
+      ],
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

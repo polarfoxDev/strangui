@@ -1,42 +1,24 @@
-import { GameEvent, GameState } from "../models";
-import { defaultLetterGrid } from "../../core/constants";
 import { createReducer, on } from "@ngrx/store";
-import { loadExistingGame, useHint, cancelCurrentTry, submitCurrentTry, appendToCurrentTry, updateLetterState, completeGame } from "./strands.actions";
-import { AUTO_TEXT_COLOR_SOLUTION, AUTO_TEXT_COLOR_SUPER_SOLUTION, getSolutionCompareString, letterAt, status } from "../strands.helpers";
+import { AUTO_TEXT_COLOR_SOLUTION, AUTO_TEXT_COLOR_SUPER_SOLUTION, getSolutionCompareString, letterAt, status } from "@game/strands.helpers";
+import { GameEvent, GameState } from "../models";
+import * as Action from "./strands.actions";
+import { initialState } from "./strands.state";
 
-export const initialState: GameState = {
-  solutionStates: [],
-  nonSolutionWordsFound: [],
-  tipsUsed: 0,
-  gameEvents: [],
-  activeHintIndex: null,
-  activeHintInAnimation: false,
-  fixedConnections: [],
-  letterStates: JSON.parse(JSON.stringify(defaultLetterGrid)),
-  theme: '',
-  statusText: '',
-  statusColor: '',
-  tryConnections: [],
-  currentTry: [],
-  date: '',
-  readonly: false,
-}
-
-export const getCurrentGameReducer = createReducer(
+export const reducer = createReducer(
   initialState,
-  on(loadExistingGame, (_state, { gameState }) => {
+  on(Action.loadExistingGame, (_state, { gameState }) => {
     return {
       ...initialState,
       ...gameState,
     } satisfies GameState;
   }),
-  on(completeGame, (state) => {
+  on(Action.completeGame, (state) => {
     return {
       ...state,
       readonly: true,
     } satisfies GameState;
   }),
-  on(useHint, (state) => {
+  on(Action.useHint, (state) => {
     if (state.activeHintIndex !== null) {
       if (state.activeHintInAnimation) {
         return state;
@@ -80,7 +62,7 @@ export const getCurrentGameReducer = createReducer(
       activeHintInAnimation: false,
     } satisfies GameState;
   }),
-  on(appendToCurrentTry, (state, { locationToAppend }) => {
+  on(Action.appendToCurrentTry, (state, { locationToAppend }) => {
     let updatedCurrentTry = state.currentTry;
     const currentTryLetterStates = state.currentTry.map(loc => letterAt(state.letterStates, loc));
     const letterAlreadyInTryAt = currentTryLetterStates.findIndex(l => l.location.row === locationToAppend.row && l.location.col === locationToAppend.col);
@@ -123,14 +105,14 @@ export const getCurrentGameReducer = createReducer(
       }),
     } satisfies GameState;
   }),
-  on(cancelCurrentTry, (state) => {
+  on(Action.cancelCurrentTry, (state) => {
     return {
       ...state,
       currentTry: [],
       tryConnections: [],
     } satisfies GameState;
   }),
-  on(submitCurrentTry, (state, { acceptableTryWords }) => {
+  on(Action.submitCurrentTry, (state, { acceptableTryWords }) => {
     if (state.currentTry.length < 1) {
       return {
         ...state,
@@ -277,7 +259,7 @@ export const getCurrentGameReducer = createReducer(
       tryConnections: [],
     } satisfies GameState;
   }),
-  on(updateLetterState, (state, { letterUpdate }) => {
+  on(Action.updateLetterState, (state, { letterUpdate }) => {
     return {
       ...state,
       letterStates: state.letterStates.map(l => {

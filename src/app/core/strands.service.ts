@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { RiddleConfigUnknownVersion } from '../strands/models';
+import { RiddleConfigUnknownVersion } from '@game/models';
 import packageJson from '../../../package.json';
 
 @Injectable({

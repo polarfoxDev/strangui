@@ -1,8 +1,9 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { GameState } from "../models";
 
-export const FeatureKey = 'CURRENT_GAME_STATE'
-export const currentGameState = createFeatureSelector<GameState>(FeatureKey);
+export const FEATURE_KEY = 'CURRENT_GAME_STATE'
+export const currentGameState = createFeatureSelector<GameState>(FEATURE_KEY);
+
 export const tipsUsedSelector = createSelector(currentGameState, (state) => state.tipsUsed);
 export const finishedSelector = createSelector(currentGameState, (state) => state.solutionStates.every(s => s.found));
 export const completedSelector = createSelector(currentGameState, (state) => state.readonly);
