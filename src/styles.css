@@ -13,6 +13,7 @@
   --warn-brighter: #f55f5f;
   --info: #2e8b57;
   --info-brighter: #4dbf8f;
+  --highlight-hint: rgba(212, 129, 248, 0.2);
 
   --dark-bg: #11111b;
   --light-bg: #f6f8fa;

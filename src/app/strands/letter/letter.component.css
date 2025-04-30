@@ -43,15 +43,19 @@
 @keyframes hintHighlighting {
   0% {
     border-color: var(--solution-brighter);
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
   }
   10% {
     border-color: var(--super-solution-brighter);
+    background-color: var(--highlight-hint);
   }
   20% {
     border-color: var(--solution-brighter);
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
   }
   100% {
     border-color: var(--solution-brighter);
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
   }
 }
 @keyframes solutionHighlighting {
@@ -85,5 +89,5 @@
 }
 .letter.guess .letter-content {
   color: var(--light-text);
-  background-color: var(--guess);
+  background-color: var(--guess) !important;
 }
