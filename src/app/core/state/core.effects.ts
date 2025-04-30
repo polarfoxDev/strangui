@@ -143,12 +143,10 @@ export const saveGameChangesLocal$ = createEffect(
           }
           localStorage.setItem(`game_${game.id}`, JSON.stringify(game));
           const gameOverview: GameMetadataByDateMap = JSON.parse(localStorage.getItem('gameOverview') || '{}');
+          gameOverview[game.gameState.date].started = true;
           if (game.gameState.solutionStates.every(s => s.found)) {
-            gameOverview[game.gameState.date] = {
-              id: game.id,
-              finished: true,
-            };
-          };
+            gameOverview[game.gameState.date].finished = true;
+          }
           localStorage.setItem('gameOverview', JSON.stringify(gameOverview));
           return [Action.loadGameList()];
         }
@@ -171,6 +169,7 @@ export const addGameLocal$ = createEffect(
           gameOverview[game.gameState.date] = {
             id: game.id,
             finished: game.gameState.solutionStates.every(s => s.found),
+            started: false,
           };
           localStorage.setItem('gameOverview', JSON.stringify(gameOverview));
           return [Action.loadGameSuccess(game)];

@@ -40,4 +40,5 @@ export type GameMetadataByDateMap = Record<string, GameMetadata>;
 export interface GameMetadata {
   id: string;
   finished: boolean;
+  started: boolean;
 }

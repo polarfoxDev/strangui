@@ -53,7 +53,9 @@ export class CalendarComponent {
         ? gameMetadata
           ? gameMetadata.finished
             ? GameStatus.Finished
-            : GameStatus.InProgress
+            : gameMetadata.started
+              ? GameStatus.InProgress
+              : GameStatus.NotStarted
           : GameStatus.NotStarted
         : GameStatus.NotAvailable;
       dates.push({ date, isToday, gameStatus });

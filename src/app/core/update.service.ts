@@ -154,6 +154,7 @@ export class UpdateService {
             metadataMap[dateFromKey] = {
               id: gameId,
               finished: gameStateV2.gameState.readonly,
+              started: true,
             };
           });
           localStorage.setItem('gameOverview', JSON.stringify(metadataMap));
