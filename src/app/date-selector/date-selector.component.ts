@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { firstRiddleDateISO } from '../core/constants';
+import { RouterModule } from '@angular/router';
+import { firstRiddleDateISO } from '@core/constants';
 import { CalendarComponent } from "../calendar/calendar.component";
 
 @Component({

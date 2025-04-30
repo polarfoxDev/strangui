@@ -2,6 +2,17 @@ import { ChangeType, VersionChanges } from "./changelogs.models";
 
 export const changeLog: VersionChanges[] = [
   {
+    version: '1.12.0',
+    date: '2025-04-30',
+    isNew: false,
+    changes: [
+      { type: ChangeType.Change, description: 'technischer Umbau auf besseres System zur Verwaltung von Zuständen (vereinfacht Implementierung geplanter Funktionen für spätere Versionen)' },
+      { type: ChangeType.Bugfix, description: 'Kontrast bei sekundären Hinweisen wurde verbessert' },
+      { type: ChangeType.Bugfix, description: 'Datumswechsel sollten nun zur lokalen Zeit erfolgen antstatt zu UTC' },
+      { type: ChangeType.Bugfix, description: 'Sobald diese Änderungshistorie angesehen wurde, wird die Hervorhebung in der Fußzeile jetzt sofort entfernt' }
+    ]
+  },
+  {
     version: '1.11.0',
     date: '2025-04-26',
     isNew: false,

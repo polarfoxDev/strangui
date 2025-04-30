@@ -1,11 +1,13 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { StrandsService } from '../core/strands.service';
-import { GameEvent } from '../strands/models';
+import { Store } from '@ngrx/store';
+import { take } from 'rxjs';
+import { firstRiddleDateISO } from '@core/constants';
+import { getRiddleIndex } from '@core/utils';
+import { GameEvent } from '@game/models';
+import { currentGameState } from '@game/state/strands.selectors';
 import { SpinnerComponent } from '../spinner/spinner.component';
-import { getRiddleIndex } from '../core/utils';
-import { DatePipe } from '@angular/common';
-import { firstRiddleDateISO } from '../core/constants';
 
 @Component({
   selector: 'app-results',
@@ -16,7 +18,7 @@ import { firstRiddleDateISO } from '../core/constants';
 export class ResultsComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private strandsService = inject(StrandsService);
+  private store = inject(Store);
 
   hintsUsed = 0;
   timeLeft = '';
@@ -63,26 +65,25 @@ export class ResultsComponent {
           this.dateAfter = undefined;
         }
       }
-      const gameState = this.strandsService.getCurrentGameState(this.dateISO);
-      if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
-        this.loading = false;
-        console.error('Game state not found or not finished');
-        this.router.navigate(['..'], { relativeTo: this.route });
-        return;
-      }
-      this.strandsService.loadRiddle(this.dateISO).subscribe(riddle => {
+      this.tryShare();
+      this.store.select(currentGameState).pipe(take(1)).subscribe(gameState => {
+        if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
+          this.loading = false;
+          console.error('Game state not found or not finished');
+          this.router.navigate(['..'], { relativeTo: this.route });
+          return;
+        }
         this.hintsUsed = gameState.tipsUsed;
         if (this.calculateTimeLeft() > 0) {
           this.tickTimer();
         }
         this.gameEvents = gameState.gameEvents;
         this.title = 'Stränge.de #' + getRiddleIndex(this.dateISO);
-        this.subTitle = "„" + riddle.theme + "“";
+        this.subTitle = "„" + gameState.theme + "“";
         this.calculateEmojis();
         this.loading = false;
         this.ready = true;
       });
-      this.tryShare();
     });
   }
 
@@ -98,7 +99,8 @@ export class ResultsComponent {
   }
 
   private calculateTimeLeft(): number {
-    const timeUntilNextDay = 24 * 60 * 60 * 1000 - (new Date().getTime() % (24 * 60 * 60 * 1000));
+    const now = new Date();
+    const timeUntilNextDay = (24 * 60 * 60 * 1000) - (now.getHours() * 60 * 60 * 1000 + now.getMinutes() * 60 * 1000 + now.getSeconds() * 1000 + now.getMilliseconds());
     // format timeLeft as HH:MM:SS
     const date = new Date(timeUntilNextDay);
     const hours = date.getUTCHours().toString().padStart(2, '0');
@@ -122,7 +124,7 @@ export class ResultsComponent {
     if (events[events.length - 1] === null) {
       events.pop();
     }
-    let gameResult = events.map(event => {
+    const gameResult = events.map(event => {
       switch (event) {
         case GameEvent.SolutionFound:
           return this.SOLUTION_ICON;

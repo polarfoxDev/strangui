@@ -1,22 +1,34 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { Store } from '@ngrx/store';
+import * as CoreAction from '@core-state/core.actions';
+import { changelogSeenForVersionSelector } from '@core-state/core.selectors';
+import { UpdateService } from '@core/update.service';
 import packageJson from '../../package.json';
-import { UpdateService } from './core/update.service';
-import { AppStorage } from './core/storage';
+import { SpinnerComponent } from "./spinner/spinner.component";
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, AsyncPipe, SpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   version = packageJson.version;
-  changelogSeenFor = AppStorage.getSafe<string>('changelogSeenFor', '0.0.0');
   updateService = inject(UpdateService);
+  store = inject(Store);
+  changelogSeenFor$ = this.store.select(changelogSeenForVersionSelector);
+  migrationRunning = true;
+
   constructor() {
-    console.info('App version:', this.version);
-    this.updateService.lastCheck.set(new Date(0).toISOString());
-    this.updateService.migrateData(AppStorage.getSafe<string>('storageVersion', '0.0.0'));
+    this.store.dispatch(CoreAction.loadCoreState());
+    this.updateService.migrateData().subscribe(migratedTo => {
+      this.store.dispatch(CoreAction.setStorageVersion(migratedTo));
+      this.migrationRunning = false;
+      this.store.dispatch(CoreAction.setUpdateCheck(new Date(0).toISOString()));
+      this.store.dispatch(CoreAction.loadGameList());
+    })
   }
 }

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CalendarDateComponent } from './calendar-date.component';
 
 describe('CalendarDateComponent', () => {
