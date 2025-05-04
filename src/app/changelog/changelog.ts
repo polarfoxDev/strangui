@@ -2,6 +2,14 @@ import { ChangeType, VersionChanges } from "./changelogs.models";
 
 export const changeLog: VersionChanges[] = [
   {
+    version: '1.12.1',
+    date: '2025-05-04',
+    isNew: false,
+    changes: [
+      { type: ChangeType.Bugfix, description: 'Die Ergebnisseite wird in Firefox jetzt wieder korrekt dargestellt und zeigt keine unendliche Ladeanimation mehr an' }
+    ]
+  },
+  {
     version: '1.12.0',
     date: '2025-04-30',
     isNew: false,
