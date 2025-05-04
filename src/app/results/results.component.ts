@@ -140,7 +140,7 @@ export class ResultsComponent {
   }
 
   tryShare() {
-    this.canShare = navigator.canShare({ title: this.title, text: this.getShareText() });
+    this.canShare = typeof navigator.canShare === 'function' && navigator.canShare({ title: this.title, text: this.getShareText() });
   }
 
   private getShareText(): string {
