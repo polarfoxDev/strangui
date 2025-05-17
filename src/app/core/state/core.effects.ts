@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { switchMap, map, withLatestFrom, catchError, tap } from "rxjs";
-import { defaultLetterGrid } from "@core/constants";
+import { defaultLetterGrid, unavailableDates } from "@core/constants";
 import { StrandsService } from "@core/strands.service";
 import { upgradeConfigVersion } from "@core/utils";
 import * as GameAction from "@game-state/strands.actions";
@@ -78,6 +78,9 @@ export const loadGameLocal$ = createEffect(
       ofType(Action.loadGameByDate),
       withLatestFrom(store.select(availableGamesSelector)),
       switchMap(([action, availableGames]) => {
+        if (unavailableDates.includes(action.dateISO)) {
+          return [Action.loadGameFailure('Das Rätsel für diesen Tag ist aus technischen Gründen leider nicht mehr verfügbar. Komm gern morgen wieder oder spiele in der Zwischenzeit ein altes Rätsel.', true)];
+        }
         const gameMetadata = availableGames[action.dateISO];
         if (!gameMetadata) {
           // create a new game

@@ -8,6 +8,7 @@ export const coreStateSelector = createSelector(coreState, (state => state));
 export const activeGameSelector = createSelector(coreState, (state => state.activeGame));
 export const availableGamesSelector = createSelector(coreState, (state => state.availableGames));
 export const loadingSelector = createSelector(coreState, (state => state.loading));
+export const gameLoadingErrorDetailsSelector = createSelector(coreState, (state => state.gameLoadingError));
 export const gameLoadingErrorSelector = createSelector(coreState, (state => !state.loading && !state.activeGame));
 
 export const lastUpdateCheckSelector = createSelector(coreState, (state => state.lastUpdateCheck));

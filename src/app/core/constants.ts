@@ -2,6 +2,10 @@ import { Letter } from "../strands/models";
 
 export const firstRiddleDateISO = '2025-01-05';
 
+export const unavailableDates = [
+  '2025-05-17',
+];
+
 export const defaultLetterGrid: Letter[] = [
   { letter: '', location: { row: 0, col: 0 }, hintFoundDelay: 0, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },
   { letter: '', location: { row: 0, col: 1 }, hintFoundDelay: 0, isGuessActive: false, isSolutionActive: false, isSuperSolutionActive: false, hintTiming: -1 },

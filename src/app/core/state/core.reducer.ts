@@ -50,9 +50,10 @@ export const reducer = createReducer(
     activeGame: game,
     loading: false,
   })),
-  on(Action.loadGameFailure, (state) => ({
+  on(Action.loadGameFailure, (state, { error, displayError }) => ({
     ...state,
     activeGame: null,
+    gameLoadingError: displayError ? error : '',
     loading: false,
   })),
   on(Action.updateGame, (state, { gameState }) => ({

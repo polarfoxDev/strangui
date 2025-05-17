@@ -3,6 +3,7 @@ import { PersistentGameState } from "@game/models";
 export const initialState: CoreState = {
   loading: false,
   activeGame: null,
+  gameLoadingError: null,
   availableGames: {},
   lastUpdateCheck: '1970-01-01T00:00:00.000Z',
   lastUpdateCheckResult: false,
@@ -15,6 +16,7 @@ export interface CoreState extends PersistentCoreState {
   availableGames: GameMetadataByDateMap;
   activeGame: PersistentGameState | null;
   loading: boolean;
+  gameLoadingError: string | null;
 }
 
 export interface PersistentCoreState {
