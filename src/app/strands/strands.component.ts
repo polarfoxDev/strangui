@@ -47,6 +47,7 @@ export class StrandsComponent implements OnDestroy {
   readonly = false;
 
   loading$ = this.store.select(CoreSelector.loadingSelector);
+  gameLoadingErrorDetails$ = this.store.select(CoreSelector.gameLoadingErrorDetailsSelector);
   gameLoadingError$ = this.store.select(CoreSelector.gameLoadingErrorSelector);
 
   touchCoordinateScaleFactor = 1;

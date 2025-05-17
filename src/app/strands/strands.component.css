@@ -7,6 +7,14 @@
   align-items: center;
   gap: 20px;
 }
+.error > .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 80dvw;
+  text-align: center;
+}
 .header {
   display: flex;
   justify-content: center;

@@ -78,7 +78,7 @@ export const loadGameSuccess = createAction(
 
 export const loadGameFailure = createAction(
   ActionType.LOAD_GAME_FAILURE,
-  (error: unknown) => ({ error })
+  (error: string | null, displayError = false) => ({ error, displayError })
 );
 
 export const loadGameList = createAction(

@@ -2,6 +2,14 @@ import { ChangeType, VersionChanges } from "./changelogs.models";
 
 export const changeLog: VersionChanges[] = [
   {
+    version: '1.12.2',
+    date: '2025-05-17',
+    isNew: false,
+    changes: [
+      { type: ChangeType.Bugfix, description: 'Für defekte bzw. nicht mehr verfügbare Rätsel wird eine entsprechende Fehlermeldung angezeigt' }
+    ]
+  },
+  {
     version: '1.12.1',
     date: '2025-05-04',
     isNew: false,

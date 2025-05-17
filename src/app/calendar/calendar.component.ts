@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { firstRiddleDateISO } from '@core/constants';
+import { firstRiddleDateISO, unavailableDates } from '@core/constants';
 import { availableGamesSelector } from '@core/state/core.selectors';
 import { GameMetadataByDateMap } from '@core/state/core.state';
 import { GameStatus } from '@game/models';
@@ -64,6 +64,9 @@ export class CalendarComponent {
   }
 
   private isSelectable(date: Date): boolean {
+    if (unavailableDates.includes(date.toISOString().slice(0, 10))) {
+      return false;
+    }
     const firstAvailableDate = new Date(firstRiddleDateISO);
     const today = new Date();
     return date >= firstAvailableDate && date <= today;
