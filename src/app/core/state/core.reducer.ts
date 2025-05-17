@@ -53,7 +53,7 @@ export const reducer = createReducer(
   on(Action.loadGameFailure, (state, { error, displayError }) => ({
     ...state,
     activeGame: null,
-    gameLoadingError: displayError ? error : '',
+    gameLoadingError: displayError ? error : null,
     loading: false,
   })),
   on(Action.updateGame, (state, { gameState }) => ({
