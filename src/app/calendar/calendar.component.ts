@@ -31,7 +31,7 @@ export class CalendarComponent {
 
   private createMonth(date: Date): CalendarMonth {
     const start = new Date(date.getFullYear(), date.getMonth(), 1);
-    const gridOffset = start.getDay() - 1;
+    const gridOffset = (start.getDay() - 1 + 7) % 7; // adjust for Monday as the first day of the week
     const dates = this.createDates(start);
     const previousAvailable = this.isSelectable(new Date(start.getFullYear(), start.getMonth(), 0));
     const nextAvailable = this.isSelectable(new Date(start.getFullYear(), start.getMonth() + 1, 1));
