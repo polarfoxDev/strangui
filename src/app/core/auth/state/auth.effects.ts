@@ -9,70 +9,20 @@ export const checkCredentials$ = createEffect(
     return actions$.pipe(
       ofType(Action.checkCredentials),
       switchMap(() => {
-        const userId = localStorage.getItem('auth_userId');
-        const hasStoredSecret = localStorage.getItem('auth_secret') !== null;
-        const hasStoredAccessToken = localStorage.getItem('auth_accessToken') !== null;
-        if (!userId) {
+        const accessToken = localStorage.getItem('auth_accessToken');
+        const accessTokenPayload = accessToken ? JSON.parse(atob(accessToken.split('.')[1])) : null;
+        const hasValidAccessToken = accessToken && accessTokenPayload && accessTokenPayload.exp * 1000 > Date.now();
+
+        const refreshToken = localStorage.getItem('auth_refreshToken');
+        const refreshTokenPayload = refreshToken ? JSON.parse(atob(refreshToken.split('.')[1])) : null;
+        const hasValidRefreshToken = refreshToken && refreshTokenPayload && refreshTokenPayload.exp * 1000 > Date.now();
+
+        if (!hasValidAccessToken && !hasValidRefreshToken) {
           localStorage.removeItem('auth_accessToken');
-          return [Action.checkCredentialsSuccess(null, false, false), Action.registerAnonymousAccount()];
+          localStorage.removeItem('auth_refreshToken');
+          return [Action.checkCredentialsSuccess(false, false)];
         }
-        return [Action.checkCredentialsSuccess(userId, hasStoredSecret, hasStoredAccessToken)];
-      }),
-    );
-  }, { functional: true },
-);
-
-export const login$ = createEffect(
-  (actions$ = inject(Actions), authService = inject(AuthService)) => {
-    return actions$.pipe(
-      ofType(Action.requestToken),
-      switchMap(({ secret }) => {
-        const userId = localStorage.getItem('auth_userId');
-        if (!userId) {
-          return [Action.requestTokenFailure('No user ID found')];
-        }
-        return authService.signIn(userId, secret).pipe(
-          switchMap(() => {
-            return [
-              Action.requestTokenSuccess(),
-              Action.requestUser(),
-            ];
-          }),
-          // Handle errors
-          catchError((error) => {
-            return [Action.requestTokenFailure(error)];
-          }),
-        );
-      }),
-    );
-  }, { functional: true },
-);
-
-export const loginWithStoredCredentials$ = createEffect(
-  (actions$ = inject(Actions), authService = inject(AuthService)) => {
-    return actions$.pipe(
-      ofType(Action.requestTokenWithStoredCredentials),
-      switchMap(() => {
-        const userId = localStorage.getItem('auth_userId');
-        if (!userId) {
-          return [Action.requestTokenFailure('No user ID found')];
-        }
-        const secret = localStorage.getItem('auth_secret');
-        if (!secret) {
-          return [Action.requestTokenFailure('No secret found')];
-        }
-        return authService.signIn(userId, secret).pipe(
-          switchMap(() => {
-            return [
-              Action.requestTokenSuccess(),
-              Action.requestUser(),
-            ];
-          }),
-          // Handle errors
-          catchError((error) => {
-            return [Action.requestTokenFailure(error)];
-          }),
-        );
+        return [Action.checkCredentialsSuccess(hasValidAccessToken, hasValidRefreshToken), Action.requestUser()];
       }),
     );
   }, { functional: true },
@@ -90,27 +40,6 @@ export const getUser$ = createEffect(
           // Handle errors
           catchError((error) => {
             return [Action.requestUserFailure(error)];
-          }),
-        );
-      }),
-    );
-  }, { functional: true },
-);
-
-export const registerAnonymousAccount$ = createEffect(
-  (actions$ = inject(Actions), authService = inject(AuthService)) => {
-    return actions$.pipe(
-      ofType(Action.registerAnonymousAccount),
-      switchMap(() => {
-        return authService.createAnonymousAccount().pipe(
-          switchMap(({ id, secret }) => {
-            localStorage.setItem('auth_userId', id);
-            localStorage.setItem('auth_secret', secret);
-            return [Action.registerAnonymousAccountSuccess(id)];
-          }),
-          // Handle errors
-          catchError((error) => {
-            return [Action.registerAnonymousAccountFailure(error)];
           }),
         );
       }),

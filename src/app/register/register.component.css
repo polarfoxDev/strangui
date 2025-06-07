@@ -1,0 +1,86 @@
+.register {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+h1,
+h2 {
+  margin: 0;
+}
+.close-button {
+  content: "\00d7";
+  font-size: 20px;
+}
+section {
+  width: 80%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}
+.form-control {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+}
+.form-control input {
+  padding: 8px;
+  background-color: light-dark(var(--guess-brightest), var(--guess-darkest));
+  border: 1px solid light-dark(var(--guess-brighter), var(--guess));
+  border-radius: 4px;
+  font-size: 16px;
+}
+.form-control label {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.submit-button {
+  margin-top: 10px;
+  display: block;
+  height: 30px;
+  width: 160px;
+  border-radius: 10px;
+  background: var(--solution);
+  border: none;
+  color: var(--light-text);
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  gap: 2px;
+  transition: scale 0.2s ease-in-out;
+}
+.submit-button:active {
+  scale: 0.95;
+}
+
+.requirements {
+  color: light-dark(var(--guess), var(--guess-brighter));
+  font-size: 14px;
+}
+.error {
+  color: light-dark(var(--warn), var(--warn-brighter));
+}
