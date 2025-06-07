@@ -2,6 +2,14 @@ import { ChangeType, VersionChanges } from "./changelogs.models";
 
 export const changeLog: VersionChanges[] = [
   {
+    version: '1.12.3',
+    date: '2025-06-07',
+    isNew: false,
+    changes: [
+      { type: ChangeType.Bugfix, description: 'Der Kalender wird nun auch für Monate, die mit einem Sonntag beginnen, korrekt angezeigt' }
+    ]
+  },
+  {
     version: '1.12.2',
     date: '2025-05-17',
     isNew: false,
