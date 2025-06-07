@@ -62,7 +62,7 @@ export enum MouseAction {
   Down,
   Up,
   Move,
-  Click
+  Click,
 }
 
 export enum GameStatus {

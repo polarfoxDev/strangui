@@ -1,21 +1,21 @@
-import { inject } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
-import { switchMap, map, withLatestFrom, catchError, tap } from "rxjs";
-import { defaultLetterGrid, unavailableDates } from "@core/constants";
-import { StrandsService } from "@core/strands.service";
-import { upgradeConfigVersion } from "@core/utils";
-import * as GameAction from "@game-state/strands.actions";
-import { initialState as initialGameState } from "@game-state/strands.state";
-import { Letter, PersistentGameState } from "@game/models";
-import * as Action from "./core.actions";
-import { activeGameSelector, availableGamesSelector, coreStateSelector } from "./core.selectors";
-import { corePropsToPersist, GameMetadataByDateMap, PersistentCoreState } from "./core.state";
+import { inject } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { switchMap, map, withLatestFrom, catchError, tap } from 'rxjs';
+import { defaultLetterGrid, unavailableDates } from '@core/constants';
+import { StrandsService } from '@core/strands.service';
+import { upgradeConfigVersion } from '@core/utils';
+import * as GameAction from '@game-state/strands.actions';
+import { initialState as initialGameState } from '@game-state/strands.state';
+import { Letter, PersistentGameState } from '@game/models';
+import * as Action from './core.actions';
+import { activeGameSelector, availableGamesSelector, coreStateSelector } from './core.selectors';
+import { corePropsToPersist, GameMetadataByDateMap, PersistentCoreState } from './core.state';
 
 /* Effects for Core State Management */
 
 export const loadCoreState$ = createEffect(
-  ((actions$ = inject(Actions)) => {
+  (actions$ = inject(Actions)) => {
     return actions$.pipe(
       ofType(Action.loadCoreState),
       switchMap(() => {
@@ -23,12 +23,12 @@ export const loadCoreState$ = createEffect(
         return [Action.loadCoreStateSuccess(coreState)];
       }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const saveCoreState$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store)) => {
+  (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(
       ofType(Action.setUpdateCheck, Action.setStorageVersion, Action.setChangelogSeenForVersion, Action.setVisited),
       withLatestFrom(store.select(coreStateSelector)),
@@ -36,14 +36,14 @@ export const saveCoreState$ = createEffect(
         localStorage.setItem('peristentCoreState', JSON.stringify(corePropsToPersist(coreState)));
       }),
     );
-  }),
-  { functional: true, dispatch: false }
+  },
+  { functional: true, dispatch: false },
 );
 
 /* Game Related Effects */
 
 export const loadGameListLocal$ = createEffect(
-  ((actions$ = inject(Actions)) => {
+  (actions$ = inject(Actions)) => {
     return actions$.pipe(
       ofType(Action.loadGameList),
       switchMap(() => {
@@ -51,29 +51,30 @@ export const loadGameListLocal$ = createEffect(
         return [Action.loadGameListSuccess(gameMetadataMap)];
       }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const loadGameSuccess$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store)) => {
+  (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(
       ofType(Action.loadGameSuccess),
       withLatestFrom(store.select(activeGameSelector)),
       switchMap(([action, activeGame]) => {
         if (activeGame) {
           return [GameAction.loadExistingGame(action.game.gameState)];
-        } else {
+        }
+        else {
           return [Action.loadGameFailure('No active game found')];
         }
-      })
+      }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const loadGameLocal$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store), strandsService = inject(StrandsService)) => {
+  (actions$ = inject(Actions), store = inject(Store), strandsService = inject(StrandsService)) => {
     return actions$.pipe(
       ofType(Action.loadGameByDate),
       withLatestFrom(store.select(availableGamesSelector)),
@@ -85,10 +86,11 @@ export const loadGameLocal$ = createEffect(
         if (!gameMetadata) {
           // create a new game
           return strandsService.loadRiddle(action.dateISO).pipe(
-            map(riddleConfig => {
+            map((riddleConfig) => {
               try {
                 riddleConfig = upgradeConfigVersion(riddleConfig);
-              } catch (error) {
+              }
+              catch (error) {
                 return Action.loadGameFailure(`Failed to upgrade game config: ${error}`);
               }
               const riddleLetters: string[] = riddleConfig.letters.flat();
@@ -100,11 +102,11 @@ export const loadGameLocal$ = createEffect(
                   ...initialGameState,
                   date: action.dateISO,
                   theme: riddleConfig.theme,
-                  letterStates: defaultGridCopy.map((letterState) => ({
+                  letterStates: defaultGridCopy.map(letterState => ({
                     ...letterState,
                     letter: riddleLetters.shift()!,
                   })),
-                  solutionStates: riddleConfig.solutions.map((solution) => ({
+                  solutionStates: riddleConfig.solutions.map(solution => ({
                     ...solution,
                     found: false,
                   })),
@@ -120,27 +122,28 @@ export const loadGameLocal$ = createEffect(
         const game: PersistentGameState = JSON.parse(localStorage.getItem(`game_${gameMetadata.id}`) || 'null');
         if (game) {
           return [Action.loadGameSuccess(game)];
-        } else {
+        }
+        else {
           return [Action.loadGameFailure(`Game with ID ${gameMetadata.id} not found`)];
         }
       }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const saveGameChangesLocal$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store)) => {
+  (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(
       ofType(Action.updateGame),
       withLatestFrom(store.select(activeGameSelector)),
       switchMap(([, game]) => {
         if (game) {
           if (
-            game.gameState.activeHintIndex === null &&
-            game.gameState.fixedConnections.length === 0 &&
-            game.gameState.gameEvents.length === 0 &&
-            game.gameState.nonSolutionWordsFound.length === 0
+            game.gameState.activeHintIndex === null
+            && game.gameState.fixedConnections.length === 0
+            && game.gameState.gameEvents.length === 0
+            && game.gameState.nonSolutionWordsFound.length === 0
           ) {
             return []; // nothing important has happened yet in this game
           }
@@ -154,17 +157,17 @@ export const saveGameChangesLocal$ = createEffect(
           return [Action.loadGameList()];
         }
         return [];
-      })
+      }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const addGameLocal$ = createEffect(
-  ((actions$ = inject(Actions)) => {
+  (actions$ = inject(Actions)) => {
     return actions$.pipe(
       ofType(Action.addGame),
-      switchMap(action => {
+      switchMap((action) => {
         const game = action.game;
         if (game) {
           localStorage.setItem(`game_${game.id}`, JSON.stringify(game));
@@ -178,8 +181,8 @@ export const addGameLocal$ = createEffect(
           return [Action.loadGameSuccess(game)];
         }
         return [Action.loadGameFailure('Failed to add game')];
-      })
+      }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );

@@ -1,4 +1,4 @@
-import { GameStatus } from "../strands/models";
+import { GameStatus } from '../strands/models';
 
 export interface CalendarDate {
   date: Date;

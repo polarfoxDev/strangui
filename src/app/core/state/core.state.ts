@@ -1,4 +1,4 @@
-import { PersistentGameState } from "@game/models";
+import { PersistentGameState } from '@game/models';
 
 export const initialState: CoreState = {
   loading: false,
@@ -35,7 +35,7 @@ export const corePropsToPersist = (state: CoreState): PersistentCoreState => {
     changelogSeenForVersion: state.changelogSeenForVersion,
     firstVisit: state.firstVisit,
   };
-}
+};
 
 export type GameMetadataByDateMap = Record<string, GameMetadata>;
 

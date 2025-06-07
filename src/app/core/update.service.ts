@@ -1,22 +1,25 @@
-import { inject, Injectable } from "@angular/core";
-import { SwUpdate } from "@angular/service-worker";
-import { Store } from "@ngrx/store";
-import { forkJoin, from, map, Observable, of, switchMap, take, tap } from "rxjs";
-import * as CoreAction from "@core-state/core.actions";
-import { initialState as initialGameState } from "@game-state/strands.state";
-import { GameState, GameStateV1, PersistentGameState } from "../strands/models";
-import { lastUpdateCheckResultSelector, lastUpdateCheckSelector, storageVersionSelector } from "./state/core.selectors";
-import { GameMetadataByDateMap } from "./state/core.state";
-import { StrandsService } from "./strands.service";
-import { isVersionNewer } from "./utils";
+import { inject, Injectable } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
+import { Store } from '@ngrx/store';
+import { forkJoin, from, map, Observable, of, switchMap, take, tap } from 'rxjs';
+import * as CoreAction from '@core-state/core.actions';
+import { initialState as initialGameState } from '@game-state/strands.state';
+import { GameState, GameStateV1, PersistentGameState } from '../strands/models';
+import { lastUpdateCheckResultSelector, lastUpdateCheckSelector, storageVersionSelector } from './state/core.selectors';
+import { GameMetadataByDateMap } from './state/core.state';
+import { StrandsService } from './strands.service';
+import { isVersionNewer } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class UpdateService {
   private updates = inject(SwUpdate);
+
   private store = inject(Store);
+
   private strandsService = inject(StrandsService);
 
   private lastCheck = '';
+
   private lastResult = false;
 
   constructor() {
@@ -39,9 +42,9 @@ export class UpdateService {
     console.info('Checking for updates...');
     this.store.dispatch(CoreAction.setUpdateCheck(new Date().toISOString()));
     if (!this.updates.isEnabled) {
-      return of(false).pipe(tap((result) => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
+      return of(false).pipe(tap(result => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
     }
-    return from(this.updates.checkForUpdate()).pipe(tap((result) => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
+    return from(this.updates.checkForUpdate()).pipe(tap(result => this.store.dispatch(CoreAction.setUpdateCheck(undefined, result))));
   }
 
   installUpdate() {
@@ -54,26 +57,26 @@ export class UpdateService {
   migrateData(): Observable<string> {
     const storageVersionV1: string | null = JSON.parse(localStorage.getItem('storageVersion') ?? 'null');
     return this.store.select(storageVersionSelector).pipe(take(1)).pipe(
-      map(storageVersion => {
+      map((storageVersion) => {
         if (storageVersionV1) {
           this.store.dispatch(CoreAction.setStorageVersion(storageVersionV1));
           return storageVersionV1;
         }
         return storageVersion;
       }),
-      map(storageVersion => {
+      map((storageVersion) => {
         if (isVersionNewer('1.10.0', storageVersion)) {
           console.info('Migrating data from version', storageVersion, 'to 1.10.0');
-          Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
+          Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach((key) => {
             const gameState: GameStateV1 = JSON.parse(localStorage.getItem(key) || 'null');
             if (!gameState) return;
-            gameState.activeHint?.locations.forEach(l => {
+            gameState.activeHint?.locations.forEach((l) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.row = l.row ?? (l as any).x;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              l.col = l.col ?? (l as any).y
+              l.col = l.col ?? (l as any).y;
             });
-            gameState.fixedConnections.forEach(c => {
+            gameState.fixedConnections.forEach((c) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.from.row = c.from.row ?? (c.from as any).x;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,19 +86,19 @@ export class UpdateService {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               c.to.col = c.to.col ?? (c.to as any).y;
             });
-            gameState.letterStates.forEach(l => {
+            gameState.letterStates.forEach((l) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.location.row = l.location.row ?? (l.location as any).x;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               l.location.col = l.location.col ?? (l.location as any).y;
             });
-            gameState.solutionStates.forEach(s => {
-              s.locations.forEach(l => {
+            gameState.solutionStates.forEach((s) => {
+              s.locations.forEach((l) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 l.row = l.row ?? (l as any).x;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                l.col = l.col ?? (l as any).y
-              })
+                l.col = l.col ?? (l as any).y;
+              });
             });
             localStorage.setItem(key, JSON.stringify(gameState));
           });
@@ -103,7 +106,7 @@ export class UpdateService {
         }
         return storageVersion;
       }),
-      switchMap(storageVersion => {
+      switchMap((storageVersion) => {
         if (isVersionNewer('1.12.0', storageVersion)) {
           console.info('Migrating data from version', storageVersion, 'to 1.12.0');
           const changelogSeenForVersion: string | null = JSON.parse(localStorage.getItem('changelogSeenFor') ?? 'null');
@@ -115,7 +118,7 @@ export class UpdateService {
             this.store.dispatch(CoreAction.setVisited());
           }
           const metadataMap: GameMetadataByDateMap = {};
-          Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach(key => {
+          Object.keys(localStorage).filter(key => key.startsWith('game-state-')).forEach((key) => {
             const gameState: GameStateV1 = JSON.parse(localStorage.getItem(key) || 'null');
             if (!gameState || gameState.solutionStates.length === 0) return;
             const dateFromKey = key.split('-').slice(2).join('-');
@@ -133,16 +136,16 @@ export class UpdateService {
                 gameEvents: gameState.gameEvents,
                 activeHintIndex: gameState.activeHint
                   ? gameState.solutionStates.findIndex(
-                    solution => solution.locations.some(
-                      solutionLoc => gameState.activeHint?.locations.some(
-                        activeHintLoc => activeHintLoc.col === solutionLoc.col && activeHintLoc.row === solutionLoc.row
-                      )
+                      solution => solution.locations.some(
+                        solutionLoc => gameState.activeHint?.locations.some(
+                          activeHintLoc => activeHintLoc.col === solutionLoc.col && activeHintLoc.row === solutionLoc.row,
+                        ),
+                      ),
                     )
-                  )
                   : null,
                 activeHintInAnimation: gameState.activeHintInAnimation,
                 fixedConnections: gameState.fixedConnections,
-                letterStates: gameState.letterStates.map((letter) => ({
+                letterStates: gameState.letterStates.map(letter => ({
                   ...letter,
                   hintFoundDelay: 0,
                 })),
@@ -173,15 +176,15 @@ export class UpdateService {
               .map(([date, id]) => this.strandsService.loadRiddle(date).pipe(
                 tap(riddleConfig => localStorage.setItem(
                   `game_${id}`,
-                  localStorage.getItem(`game_${id}`)!.replace('::theme::', riddleConfig.theme)
-                ))
-              ))
+                  localStorage.getItem(`game_${id}`)!.replace('::theme::', riddleConfig.theme),
+                )),
+              )),
           ).pipe(
-            map(() => '1.12.0')
-          )
+            map(() => '1.12.0'),
+          );
         }
         return of(storageVersion);
-      })
+      }),
     );
   }
 
@@ -193,5 +196,4 @@ export class UpdateService {
     localStorage.setItem(`before_migration_${migrationToVersion}_${key}`, oldValue);
     localStorage.removeItem(key);
   }
-
 }

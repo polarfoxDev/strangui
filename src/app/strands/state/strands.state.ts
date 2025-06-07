@@ -1,5 +1,5 @@
-import { defaultLetterGrid } from "@core/constants";
-import { GameState } from "@game/models";
+import { defaultLetterGrid } from '@core/constants';
+import { GameState } from '@game/models';
 
 export const initialState: GameState = {
   solutionStates: [],
@@ -17,4 +17,4 @@ export const initialState: GameState = {
   currentTry: [],
   date: '',
   readonly: false,
-}
+};

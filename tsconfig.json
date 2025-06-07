@@ -21,6 +21,12 @@
       "@env/*": [
         "./src/environments/*"
       ],
+      "@auth-state/*": [
+        "./src/app/core/auth/state/*"
+      ],
+      "@auth/*": [
+        "./src/app/core/auth/*"
+      ],
       "@core-state/*": [
         "./src/app/core/state/*"
       ],

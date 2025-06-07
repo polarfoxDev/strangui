@@ -7,9 +7,9 @@ describe('ChangelogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangelogComponent]
+      imports: [ChangelogComponent],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ChangelogComponent);
     component = fixture.componentInstance;

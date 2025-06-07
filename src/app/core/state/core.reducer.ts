@@ -1,10 +1,11 @@
-import { createReducer, on } from "@ngrx/store";
-import { Letter } from "../../strands/models";
-import * as Action from "./core.actions";
-import { initialState } from "./core.state";
+import { createReducer, on } from '@ngrx/store';
+import { Letter } from '../../strands/models';
+import * as Action from './core.actions';
+import { initialState } from './core.state';
 
 export const reducer = createReducer(
   initialState,
+
   /* Core Actions */
   on(Action.loadCoreStateSuccess, (state, { coreState }) => ({
     ...state,
@@ -23,12 +24,13 @@ export const reducer = createReducer(
     ...state,
     changelogSeenForVersion,
   })),
-  on(Action.setVisited, (state) => ({
+  on(Action.setVisited, state => ({
     ...state,
     firstVisit: false,
   })),
+
   /* Game Related Actions */
-  on(Action.loadGameList, (state) => ({
+  on(Action.loadGameList, state => ({
     ...state,
     loading: true,
   })),
@@ -41,7 +43,7 @@ export const reducer = createReducer(
     ...state,
     activeGame: game,
   })),
-  on(Action.loadGameByDate, (state) => ({
+  on(Action.loadGameByDate, state => ({
     ...state,
     loading: true,
   })),
@@ -58,16 +60,18 @@ export const reducer = createReducer(
   })),
   on(Action.updateGame, (state, { gameState }) => ({
     ...state,
-    activeGame: state.activeGame ? {
-      ...state.activeGame,
-      gameState: {
-        ...gameState,
-        letterStates: gameState.letterStates.map((letter: Letter) => ({
-          ...letter,
-          hintFoundDelay: 0,
-        })),
-      },
-      lastChanged: (new Date()).toISOString(),
-    } : null,
+    activeGame: state.activeGame
+      ? {
+          ...state.activeGame,
+          gameState: {
+            ...gameState,
+            letterStates: gameState.letterStates.map((letter: Letter) => ({
+              ...letter,
+              hintFoundDelay: 0,
+            })),
+          },
+          lastChanged: new Date().toISOString(),
+        }
+      : null,
   })),
 );

@@ -8,10 +8,11 @@ import { CalendarDate } from '../calendar.models';
   selector: 'app-calendar-date',
   imports: [DatePipe],
   templateUrl: './calendar-date.component.html',
-  styleUrl: './calendar-date.component.css'
+  styleUrl: './calendar-date.component.css',
 })
 export class CalendarDateComponent {
   GameStatus = GameStatus;
+
   private router = inject(Router);
 
   @Input() date!: CalendarDate;

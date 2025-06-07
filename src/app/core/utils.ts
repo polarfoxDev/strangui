@@ -1,5 +1,5 @@
-import { RiddleConfig, RiddleConfigUnknownVersion } from "../strands/models";
-import { firstRiddleDateISO } from "./constants";
+import { RiddleConfig, RiddleConfigUnknownVersion } from '../strands/models';
+import { firstRiddleDateISO } from './constants';
 
 export const getRiddleIndex = (dateISO: string): number => {
   const date = new Date(dateISO);
@@ -7,14 +7,14 @@ export const getRiddleIndex = (dateISO: string): number => {
   const diffTime = Math.abs(date.getTime() - firstRiddleDate.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays + 1;
-}
+};
 
 export const toLocaleISODate = (date: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
-  return date.getFullYear() +
-    '-' + pad(date.getMonth() + 1) +
-    '-' + pad(date.getDate());
-}
+  return date.getFullYear()
+    + '-' + pad(date.getMonth() + 1)
+    + '-' + pad(date.getDate());
+};
 
 export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): RiddleConfig => {
   switch (config.configVersion) {
@@ -25,8 +25,8 @@ export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): Riddle
         configVersion: 3,
         theme: config.theme,
         letters: config.letters,
-        solutions: config.solutions.map((solution) => ({
-          locations: solution.locations.map((location) => ({
+        solutions: config.solutions.map(solution => ({
+          locations: solution.locations.map(location => ({
             row: location.x,
             col: location.y,
           })),
@@ -37,7 +37,7 @@ export const upgradeConfigVersion = (config: RiddleConfigUnknownVersion): Riddle
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       throw new Error(`Unsupported config version: ${(config as any).configVersion}`);
   }
-}
+};
 
 export const compareVersions = (v1: string, v2: string): number => {
   const v1Parts = v1.split('.').map(Number);
@@ -53,7 +53,7 @@ export const compareVersions = (v1: string, v2: string): number => {
   }
 
   return 0;
-}
+};
 export const isVersionNewer = (v1: string, v2: string): boolean => {
   return compareVersions(v1, v2) > 0;
-}
+};
