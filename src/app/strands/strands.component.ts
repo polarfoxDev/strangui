@@ -20,30 +20,47 @@ import { LetterLocation, MouseAction } from './models';
   selector: 'app-strands',
   imports: [LetterComponent, RouterModule, SpinnerComponent, AsyncPipe],
   templateUrl: './strands.component.html',
-  styleUrl: './strands.component.css'
+  styleUrl: './strands.component.css',
 })
 export class StrandsComponent implements OnDestroy {
   readonly AUTO_TEXT_COLOR = 'light-dark(var(--dark-text), var(--light-text))';
+
   readonly AUTO_TEXT_COLOR_SOLUTION = 'light-dark(var(--solution), var(--solution-brighter))';
+
   readonly AUTO_TEXT_COLOR_SUPER_SOLUTION = 'light-dark(var(--super-solution), var(--super-solution-brighter))';
+
   private strandsService = inject(StrandsService);
+
   protected updateService = inject(UpdateService);
+
   private route = inject(ActivatedRoute);
+
   private router = inject(Router);
+
   private store = inject(Store);
 
   private subscriptions = new Subscription();
 
   theme$ = this.store.select(GameSelector.themeSelector);
+
   statusText$ = this.store.select(GameSelector.statusTextSelector);
+
   statusColor$ = this.store.select(GameSelector.statusColorSelector);
+
   letterStates$ = this.store.select(GameSelector.letterStatesSelector);
+
   finished$ = this.store.select(GameSelector.finishedSelector);
+
   connections$ = this.store.select(GameSelector.allConnectionsSelector);
+
   unusedHintWordCount$ = this.store.select(GameSelector.unusedHintWordCountSelector);
+
   solutionCount$ = this.store.select(GameSelector.solutionCountSelector);
+
   finishedSolutionCount$ = this.store.select(GameSelector.finishedSolutionCountSelector);
+
   gameState$ = this.store.select(GameSelector.currentGameState);
+
   readonly = false;
 
   loading$ = this.store.select(CoreSelector.loadingSelector);
@@ -55,8 +72,11 @@ export class StrandsComponent implements OnDestroy {
   dragTryActive = false;
 
   date = '';
+
   dateISO = '';
+
   isHistoryMode = false;
+
   updateAvailable = false;
 
   lastMouseLocation: LetterLocation | undefined;
@@ -64,17 +84,17 @@ export class StrandsComponent implements OnDestroy {
   acceptableWords: string[] = [];
 
   checkForUpdate(): void {
-    this.updateService.checkForUpdate().subscribe(updateAvailable => {
+    this.updateService.checkForUpdate().subscribe((updateAvailable) => {
       this.updateAvailable = updateAvailable;
     });
   }
 
   constructor() {
-    this.subscriptions.add(this.store.select(GameSelector.completedSelector).subscribe(completed => {
+    this.subscriptions.add(this.store.select(GameSelector.completedSelector).subscribe((completed) => {
       this.readonly = completed;
     }));
     this.setScreenSize();
-    this.store.select(CoreSelector.firstVisitSelector).pipe(take(1)).subscribe(firstVisit => {
+    this.store.select(CoreSelector.firstVisitSelector).pipe(take(1)).subscribe((firstVisit) => {
       if (firstVisit) {
         this.store.dispatch(setVisited());
         setTimeout(() => {
@@ -83,16 +103,16 @@ export class StrandsComponent implements OnDestroy {
         return;
       }
       this.subscriptions.add(this.strandsService.getAcceptableTryWords().subscribe({
-        next: words => {
+        next: (words) => {
           this.acceptableWords = words;
         },
         error: () => {
           console.error('Error loading word list');
-        }
+        },
       }));
       let date = new Date();
       let dateISOString = toLocaleISODate(date);
-      this.subscriptions.add(this.route.params.subscribe(params => {
+      this.subscriptions.add(this.route.params.subscribe((params) => {
         const dateParam = params['date'];
         if (dateParam) {
           try {
@@ -114,7 +134,8 @@ export class StrandsComponent implements OnDestroy {
             }
             date = newDate;
             dateISOString = newDate.toISOString().substring(0, 10);
-          } catch {
+          }
+          catch {
             console.error('Invalid date parameter');
             this.router.navigate(['']);
             return;
@@ -148,13 +169,16 @@ export class StrandsComponent implements OnDestroy {
       this.dragTryActive = false;
       this.store.dispatch(GameAction.appendToCurrentTry(location));
       this.store.dispatch(GameAction.submitCurrentTry(this.acceptableWords));
-    } else if (mouseAction === MouseAction.Down) {
+    }
+    else if (mouseAction === MouseAction.Down) {
       this.store.dispatch(GameAction.appendToCurrentTry(location));
       this.dragTryActive = true;
-    } else if (mouseAction === MouseAction.Up && !this.dragTryActive) {
+    }
+    else if (mouseAction === MouseAction.Up && !this.dragTryActive) {
       this.dragTryActive = false;
       this.store.dispatch(GameAction.submitCurrentTry(this.acceptableWords));
-    } else if (mouseAction === MouseAction.Move) {
+    }
+    else if (mouseAction === MouseAction.Move) {
       if (this.lastMouseLocation && this.lastMouseLocation.row === location.row && this.lastMouseLocation.col === location.col) {
         return;
       }

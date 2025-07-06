@@ -13,42 +13,61 @@ import { SpinnerComponent } from '../spinner/spinner.component';
   selector: 'app-results',
   imports: [RouterModule, SpinnerComponent, DatePipe],
   templateUrl: './results.component.html',
-  styleUrl: './results.component.css'
+  styleUrl: './results.component.css',
 })
 export class ResultsComponent {
   private route = inject(ActivatedRoute);
+
   private router = inject(Router);
+
   private store = inject(Store);
 
   hintsUsed = 0;
+
   timeLeft = '';
+
   title = '';
+
   subTitle = '';
+
   emojiLines: string[] = [];
+
   loading = true;
+
   ready = false;
+
   gameEvents: GameEvent[] = [];
+
   dateISO = '';
+
   isHistoric = false;
+
   canShare = navigator.share !== undefined;
+
   copyButtonConfirmation = false;
+
   dateBefore?: Date;
+
   dateAfter?: Date;
 
   readonly HINT_ICON = '💡';
+
   readonly SOLUTION_ICON = '🔵';
+
   readonly SUPER_SOLUTION_ICON = '🟣';
+
   readonly LINE_BREAK = '\n';
 
   constructor() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.dateISO = params['date'];
       try {
         const a = new Date(this.dateISO);
         if (a.toString() === 'Invalid Date') {
           throw new Error();
         }
-      } catch {
+      }
+      catch {
         console.error('Invalid date parameter');
         this.router.navigate(['/']);
         return;
@@ -66,7 +85,7 @@ export class ResultsComponent {
         }
       }
       this.tryShare();
-      this.store.select(currentGameState).pipe(take(1)).subscribe(gameState => {
+      this.store.select(currentGameState).pipe(take(1)).subscribe((gameState) => {
         if (!gameState || gameState.solutionStates.length === 0 || gameState.solutionStates.some(s => !s.found)) {
           this.loading = false;
           console.error('Game state not found or not finished');
@@ -79,7 +98,7 @@ export class ResultsComponent {
         }
         this.gameEvents = gameState.gameEvents;
         this.title = 'Stränge.de #' + getRiddleIndex(this.dateISO);
-        this.subTitle = "„" + gameState.theme + "“";
+        this.subTitle = '„' + gameState.theme + '“';
         this.calculateEmojis();
         this.loading = false;
         this.ready = true;
@@ -100,7 +119,7 @@ export class ResultsComponent {
 
   private calculateTimeLeft(): number {
     const now = new Date();
-    const timeUntilNextDay = (24 * 60 * 60 * 1000) - (now.getHours() * 60 * 60 * 1000 + now.getMinutes() * 60 * 1000 + now.getSeconds() * 1000 + now.getMilliseconds());
+    const timeUntilNextDay = 24 * 60 * 60 * 1000 - (now.getHours() * 60 * 60 * 1000 + now.getMinutes() * 60 * 1000 + now.getSeconds() * 1000 + now.getMilliseconds());
     // format timeLeft as HH:MM:SS
     const date = new Date(timeUntilNextDay);
     const hours = date.getUTCHours().toString().padStart(2, '0');
@@ -124,7 +143,7 @@ export class ResultsComponent {
     if (events[events.length - 1] === null) {
       events.pop();
     }
-    const gameResult = events.map(event => {
+    const gameResult = events.map((event) => {
       switch (event) {
         case GameEvent.SolutionFound:
           return this.SOLUTION_ICON;

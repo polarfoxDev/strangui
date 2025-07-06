@@ -1,7 +1,10 @@
-export interface VersionChanges {
+export interface VersionChanges extends VersionChangeDefinition {
+  isNew: boolean;
+}
+
+export interface VersionChangeDefinition {
   version: string;
   date: string;
-  isNew: boolean;
   changes: Change[];
 }
 

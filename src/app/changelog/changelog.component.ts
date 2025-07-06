@@ -10,26 +10,24 @@ import packageJson from '../../../package.json';
 import { changeLog } from './changelog';
 import { VersionChanges } from './changelogs.models';
 
-
-
-
 @Component({
   selector: 'app-changelog',
   imports: [RouterModule, DatePipe],
   templateUrl: './changelog.component.html',
-  styleUrl: './changelog.component.css'
+  styleUrl: './changelog.component.css',
 })
 export class ChangelogComponent implements OnDestroy {
   private store = inject(Store);
+
   private subscriptions = new Subscription();
 
   changeLog: VersionChanges[] = [];
 
   constructor() {
     const subscription = this.store.select(changelogSeenForVersionSelector).pipe(take(1)).subscribe((changelogSeenFor) => {
-      this.changeLog = changeLog.map((versionChange) => ({
-        ...versionChange,
-        isNew: isVersionNewer(versionChange.version, changelogSeenFor),
+      this.changeLog = changeLog.map(versionChangeDef => ({
+        ...versionChangeDef,
+        isNew: isVersionNewer(versionChangeDef.version, changelogSeenFor),
       }));
       this.store.dispatch(CoreAction.setChangelogSeenForVersion(packageJson.version));
     });

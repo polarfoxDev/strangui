@@ -21,6 +21,7 @@ jobs:
       - name: build and publish
         run: |
           docker build . \
+            --build-arg CONFIGURATION=staging \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:staging \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ghcr.io/${{ env.IMAGE_NAME }} --all-tags

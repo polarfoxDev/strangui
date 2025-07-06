@@ -12,7 +12,7 @@ import { CalendarDate, CalendarMonth } from './calendar.models';
   selector: 'app-calendar',
   imports: [CalendarDateComponent, DatePipe],
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.css'
+  styleUrl: './calendar.component.css',
 })
 export class CalendarComponent {
   store = inject(Store);
@@ -20,10 +20,11 @@ export class CalendarComponent {
   readonly weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
   activeMonth: CalendarMonth = this.createMonth(new Date());
+
   private availableGames: GameMetadataByDateMap = {};
 
   constructor() {
-    this.store.select(availableGamesSelector).subscribe(availableGames => {
+    this.store.select(availableGamesSelector).subscribe((availableGames) => {
       this.availableGames = availableGames;
       this.activeMonth = this.createMonth(this.activeMonth.dates[0].date);
     });

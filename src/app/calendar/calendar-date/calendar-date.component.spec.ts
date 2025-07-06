@@ -7,9 +7,9 @@ describe('CalendarDateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CalendarDateComponent]
+      imports: [CalendarDateComponent],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CalendarDateComponent);
     component = fixture.componentInstance;

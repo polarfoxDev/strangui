@@ -1,4 +1,4 @@
-import { Letter, Connection } from "../strands/models";
+import { Letter, Connection } from '../strands/models';
 
 export interface Figure {
   letters: Letter[];
@@ -8,7 +8,7 @@ export interface Figure {
     opacity: number;
     x: number;
     y: number;
-  }
+  };
 }
 
 export type FigureEvent = UpdateLetterEvent | UpdateConnectionEvent | CursorEvent;
@@ -21,8 +21,8 @@ export interface UpdateLetterEvent {
 
 export interface UpdateConnectionEvent {
   delay: number;
-  from: { col: number, row: number },
-  to: { col: number, row: number },
+  from: { col: number, row: number };
+  to: { col: number, row: number };
   update: (connection: Connection) => void;
 }
 

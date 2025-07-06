@@ -9,26 +9,26 @@ import * as Action from './strands.actions';
 import * as Selector from './strands.selectors';
 
 export const resetHintFoundDelay$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store)) => {
+  (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(
       ofType(Action.submitCurrentTry),
       withLatestFrom(store.select(Selector.letterStatesSelector)),
       mergeMap(([, letterStates]) =>
         merge(
-          ...letterStates.filter(l => l.hintFoundDelay > 0).map(l => {
+          ...letterStates.filter(l => l.hintFoundDelay > 0).map((l) => {
             return timer(1000 + l.hintFoundDelay).pipe(map(() => Action.updateLetterState({
               location: l.location,
               hintFoundDelay: 0,
             })));
-          })
+          }),
         ),
       ));
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const finishGame$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store), router = inject(Router)) => {
+  (actions$ = inject(Actions), store = inject(Store), router = inject(Router)) => {
     return actions$.pipe(
       ofType(Action.submitCurrentTry),
       withLatestFrom(
@@ -48,21 +48,21 @@ export const finishGame$ = createEffect(
           return [Action.completeGame()];
         }
         return [];
-      })
+      }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );
 
 export const saveChanges$ = createEffect(
-  ((actions$ = inject(Actions), store = inject(Store)) => {
+  (actions$ = inject(Actions), store = inject(Store)) => {
     return actions$.pipe(
       ofType(Action.submitCurrentTry, Action.updateLetterState, Action.completeGame),
       withLatestFrom(store.select(Selector.currentGameState)),
       switchMap(([, currentGameState]) => {
         return [CoreAction.updateGame(currentGameState)];
-      })
+      }),
     );
-  }),
-  { functional: true }
+  },
+  { functional: true },
 );

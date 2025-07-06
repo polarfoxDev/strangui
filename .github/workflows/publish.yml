@@ -25,6 +25,7 @@ jobs:
       - name: build and publish
         run: |
           docker build . \
+            --build-arg CONFIGURATION=production \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:latest \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ env.PACKAGE_VERSION }} \
             --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
