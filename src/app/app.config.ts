@@ -7,6 +7,9 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideEffects } from '@ngrx/effects';
 import { provideState, provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import * as authEffects from '@auth-state/auth.effects';
+import { reducer as authReducer } from '@auth-state/auth.reducer';
+import { FEATURE_KEY as AUTH_FEATURE_KEY } from '@auth-state/auth.selectors';
 import * as coreEffects from '@core-state/core.effects';
 import { reducer as coreReducer } from '@core-state/core.reducer';
 import { FEATURE_KEY as CORE_FEATURE_KEY } from '@core-state/core.selectors';
@@ -38,8 +41,9 @@ export const appConfig: ApplicationConfig = {
           connectInZone: true, // If set to true, the connection is established within the Angular zone
         })]
       : [],
+    provideState({ name: AUTH_FEATURE_KEY, reducer: authReducer }),
     provideState({ name: CORE_FEATURE_KEY, reducer: coreReducer }),
     provideState({ name: CURRENT_GAME_FEATURE_KEY, reducer: currentGameReducer }),
-    provideEffects(coreEffects, strandsEffects),
+    provideEffects(authEffects, coreEffects, strandsEffects),
   ],
 };
