@@ -9,27 +9,11 @@ export const reducer = createReducer(
     loading: true,
     isAuthenticated: false,
   })),
-  on(Action.checkCredentialsSuccess, (state, { userId, hasStoredSecret, hasStoredAccessToken }) => ({
+  on(Action.checkCredentialsSuccess, (state, { hasValidAccessToken, hasValidRefreshToken }) => ({
     ...state,
     loading: false,
-    userId,
-    hasStoredSecret,
-    isAuthenticated: hasStoredAccessToken,
-  })),
-  on(Action.requestToken, state => ({
-    ...state,
-    loading: true,
-    isAuthenticated: false,
-  })),
-  on(Action.requestTokenSuccess, state => ({
-    ...state,
-    loading: false,
-    isAuthenticated: true,
-  })),
-  on(Action.requestTokenFailure, state => ({
-    ...state,
-    loading: false,
-    isAuthenticated: false,
+    isAuthenticated: hasValidAccessToken || hasValidRefreshToken,
+    user: hasValidAccessToken || hasValidRefreshToken ? state.user : null,
   })),
   on(Action.requestUser, state => ({
     ...state,
@@ -45,22 +29,5 @@ export const reducer = createReducer(
     ...state,
     loading: false,
     user: null,
-  })),
-  on(Action.registerAnonymousAccount, state => ({
-    ...state,
-    loading: true,
-    isAuthenticated: false,
-  })),
-  on(Action.registerAnonymousAccountSuccess, (state, { userId }) => ({
-    ...state,
-    loading: false,
-    userId,
-    hasStoredSecret: true,
-  })),
-  on(Action.registerAnonymousAccountFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    isAuthenticated: false,
-    error,
   })),
 );

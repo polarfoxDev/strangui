@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeDe from '@angular/common/locales/de';
 import { ApplicationConfig, provideZoneChangeDetection, isDevMode, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -10,6 +10,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import * as authEffects from '@auth-state/auth.effects';
 import { reducer as authReducer } from '@auth-state/auth.reducer';
 import { FEATURE_KEY as AUTH_FEATURE_KEY } from '@auth-state/auth.selectors';
+import { authInterceptor } from '@auth/auth.interceptor';
 import * as coreEffects from '@core-state/core.effects';
 import { reducer as coreReducer } from '@core-state/core.reducer';
 import { FEATURE_KEY as CORE_FEATURE_KEY } from '@core-state/core.selectors';
@@ -24,7 +25,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([authInterceptor]),
+    ),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
