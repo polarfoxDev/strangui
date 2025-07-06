@@ -8,17 +8,16 @@ import { Figure, FigureEvent } from './models';
   selector: 'app-tutorial',
   imports: [RouterModule, LetterComponent],
   templateUrl: './tutorial.component.html',
-  styleUrl: './tutorial.component.css'
+  styleUrl: './tutorial.component.css',
 })
 export class TutorialComponent implements AfterViewInit {
-
   figure1: Figure = {
     letters: this.makeLetters([
       ['F', 'U', 'C', 'H'],
       ['T', 'I', 'E', 'S'],
       ['K', 'A', 'R', 'E'],
       ['T', 'Z', 'F', 'A'],
-      ['E', 'S', 'C', 'H']
+      ['E', 'S', 'C', 'H'],
     ]),
     connections: [],
     events: [
@@ -31,9 +30,9 @@ export class TutorialComponent implements AfterViewInit {
     cursor: {
       opacity: 0,
       x: 2,
-      y: 3
-    }
-  }
+      y: 3,
+    },
+  };
 
   figure2: Figure = {
     letters: this.makeLetters([
@@ -41,7 +40,7 @@ export class TutorialComponent implements AfterViewInit {
       ['T', 'I', 'E', 'S'],
       ['K', 'A', 'R', 'E'],
       ['T', 'Z', 'F', 'A'],
-      ['E', 'S', 'C', 'H']
+      ['E', 'S', 'C', 'H'],
     ]),
     connections: [],
     events: [
@@ -78,9 +77,9 @@ export class TutorialComponent implements AfterViewInit {
     cursor: {
       opacity: 0,
       x: 5,
-      y: 3
-    }
-  }
+      y: 3,
+    },
+  };
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -92,13 +91,15 @@ export class TutorialComponent implements AfterViewInit {
   runFigure(figure: Figure) {
     // run the events and await the delays in between
     let lastDelay = 0;
-    figure.events.forEach(event => {
+    figure.events.forEach((event) => {
       setTimeout(() => {
         if ('pos' in event) {
           event.update(figure.letters[event.pos.row * 4 + event.pos.col]);
-        } else if ('move' in event) {
+        }
+        else if ('move' in event) {
           figure.cursor = { opacity: event.opacity, x: event.move.row, y: event.move.col };
-        } else {
+        }
+        else {
           const from = figure.letters[event.from.row * 4 + event.from.col];
           const to = figure.letters[event.to.row * 4 + event.to.col];
           let connection = figure.connections.find(c => JSON.stringify([c.from, c.to]) === JSON.stringify([from.location, to.location]));
@@ -124,7 +125,7 @@ export class TutorialComponent implements AfterViewInit {
         ['T', 'I', 'E', 'S'],
         ['K', 'A', 'R', 'E'],
         ['T', 'Z', 'F', 'A'],
-        ['E', 'S', 'C', 'H']
+        ['E', 'S', 'C', 'H'],
       ]);
     }, lastDelay + 3000);
     setTimeout(() => {
@@ -141,10 +142,11 @@ export class TutorialComponent implements AfterViewInit {
         delay: 500, opacity: 1, move: positions[0],
       },
       {
-        delay: 200, pos: positions[0],
+        delay: 200,
+        pos: positions[0],
         update: (letter: Letter) => {
           letter.isGuessActive = true;
-        }
+        },
       },
     ];
     positions.slice(1).forEach((position, index) => {
@@ -154,16 +156,19 @@ export class TutorialComponent implements AfterViewInit {
           delay: 600, opacity: 1, move: position,
         },
         {
-          delay: 0, from: previous, to: position,
+          delay: 0,
+          from: previous,
+          to: position,
           update: (connection: Connection) => {
             connection.isGuessActive = true;
-          }
+          },
         },
         {
-          delay: 100, pos: position,
+          delay: 100,
+          pos: position,
           update: (letter: Letter) => {
             letter.isGuessActive = true;
-          }
+          },
         });
     });
     events.push(
@@ -171,30 +176,34 @@ export class TutorialComponent implements AfterViewInit {
         delay: 500, opacity: 0.5, move: positions.at(-1)!,
       },
       {
-        delay: 100, pos: positions[0],
+        delay: 100,
+        pos: positions[0],
         update: (letter: Letter) => {
           letter.isGuessActive = false;
           letter.isSolutionActive = isSolution;
           letter.isSuperSolutionActive = isSuperSolution;
-        }
-      }
+        },
+      },
     );
     positions.slice(1).forEach((position, index) => {
       const previous = positions[index];
       events.push({
-        delay: 0, pos: position,
+        delay: 0,
+        pos: position,
         update: (letter: Letter) => {
           letter.isGuessActive = false;
           letter.isSolutionActive = isSolution;
           letter.isSuperSolutionActive = isSuperSolution;
-        }
+        },
       }, {
-        delay: 0, from: previous, to: position,
+        delay: 0,
+        from: previous,
+        to: position,
         update: (connection: Connection) => {
           connection.isGuessActive = false;
           connection.isSolutionActive = isSolution;
           connection.isSuperSolutionActive = isSuperSolution;
-        }
+        },
       });
     });
     return events;
@@ -211,7 +220,7 @@ export class TutorialComponent implements AfterViewInit {
           isSuperSolutionActive: false,
           hintTiming: -1,
           hintFoundDelay: 0,
-          location: { row: row + 3, col }
+          location: { row: row + 3, col },
         };
       }));
     });

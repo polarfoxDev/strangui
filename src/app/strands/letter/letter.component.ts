@@ -5,32 +5,38 @@ import { Letter, MouseAction } from '@game/models';
   selector: 'app-letter',
   imports: [],
   templateUrl: './letter.component.html',
-  styleUrl: './letter.component.css'
+  styleUrl: './letter.component.css',
 })
 export class LetterComponent {
   @Input() letter!: Letter;
+
   @Input() isDisabled = false;
+
   @Input() set hintAnimationDelay(value: number) {
     if (value > 0) {
       this.hintAnimationPreparing = true;
       setTimeout(() => {
         this.hintAnimationActive = true;
       }, value);
-    } else {
+    }
+    else {
       this.hintAnimationPreparing = false;
       this.hintAnimationActive = false;
     }
   }
+
   @Output() mouseEvent = new EventEmitter<MouseAction>();
 
   hintAnimationPreparing = false;
+
   hintAnimationActive = false;
 
   moveX = 0;
+
   moveY = 0;
 
   @Input() set column(value: number) {
-    this.moveX = 60 - (value * 60);
+    this.moveX = 60 - value * 60;
   }
 
   @Input() set row(value: number) {

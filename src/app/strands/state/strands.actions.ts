@@ -1,5 +1,5 @@
-import { createAction } from "@ngrx/store";
-import { GameState, Letter, LetterLocation } from "@game/models";
+import { createAction } from '@ngrx/store';
+import { GameState, Letter, LetterLocation } from '@game/models';
 
 enum ActionType {
   INITIALIZE = '[Current Game] Initialize',
@@ -13,33 +13,33 @@ enum ActionType {
 }
 
 export const useHint = createAction(
-  ActionType.USE_HINT
+  ActionType.USE_HINT,
 );
 
 export const loadExistingGame = createAction(
   ActionType.LOAD,
-  (gameState: GameState) => ({ gameState })
+  (gameState: GameState) => ({ gameState }),
 );
 
 export const appendToCurrentTry = createAction(
   ActionType.CURRENT_TRY_APPEND,
-  (locationToAppend: LetterLocation) => ({ locationToAppend })
+  (locationToAppend: LetterLocation) => ({ locationToAppend }),
 );
 
 export const submitCurrentTry = createAction(
   ActionType.CURRENT_TRY_SUBMIT,
-  (acceptableTryWords: string[]) => ({ acceptableTryWords })
+  (acceptableTryWords: string[]) => ({ acceptableTryWords }),
 );
 
 export const cancelCurrentTry = createAction(
-  ActionType.CURRENT_TRY_CANCEL
+  ActionType.CURRENT_TRY_CANCEL,
 );
 
 export const updateLetterState = createAction(
   ActionType.UPDATE_LETTER_STATE,
-  (letterUpdate: Partial<Letter> & { location: LetterLocation }) => ({ letterUpdate })
+  (letterUpdate: Partial<Letter> & { location: LetterLocation }) => ({ letterUpdate }),
 );
 
 export const completeGame = createAction(
-  ActionType.COMPLETE
+  ActionType.COMPLETE,
 );

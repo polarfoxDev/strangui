@@ -9,50 +9,50 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: StrandsComponent
+    component: StrandsComponent,
   },
   {
     path: 'tutorial',
-    redirectTo: 'anleitung'
+    redirectTo: 'anleitung',
   },
   {
     path: 'news',
-    redirectTo: 'neuigkeiten'
+    redirectTo: 'neuigkeiten',
   },
   {
     path: 'history',
-    redirectTo: 'vergangenheit'
+    redirectTo: 'vergangenheit',
   },
   {
     path: ':date/tutorial',
-    redirectTo: ':date/anleitung'
+    redirectTo: ':date/anleitung',
   },
   {
     path: ':date/results',
-    redirectTo: ':date/ergebnis'
+    redirectTo: ':date/ergebnis',
   },
   {
     path: 'anleitung',
-    component: TutorialComponent
+    component: TutorialComponent,
   },
   {
     path: 'neuigkeiten',
-    component: ChangelogComponent
+    component: ChangelogComponent,
   },
   {
     path: 'vergangenheit',
-    component: DateSelectorComponent
+    component: DateSelectorComponent,
   },
   {
     path: ':date',
-    component: StrandsComponent
+    component: StrandsComponent,
   },
   {
     path: ':date/anleitung',
-    component: TutorialComponent
+    component: TutorialComponent,
   },
   {
     path: ':date/ergebnis',
-    component: ResultsComponent
+    component: ResultsComponent,
   },
 ];

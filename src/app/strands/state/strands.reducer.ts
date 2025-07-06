@@ -1,8 +1,8 @@
-import { createReducer, on } from "@ngrx/store";
-import { AUTO_TEXT_COLOR_SOLUTION, AUTO_TEXT_COLOR_SUPER_SOLUTION, getSolutionCompareString, letterAt, status } from "@game/strands.helpers";
-import { GameEvent, GameState } from "../models";
-import * as Action from "./strands.actions";
-import { initialState } from "./strands.state";
+import { createReducer, on } from '@ngrx/store';
+import { AUTO_TEXT_COLOR_SOLUTION, AUTO_TEXT_COLOR_SUPER_SOLUTION, getSolutionCompareString, letterAt, status } from '@game/strands.helpers';
+import { GameEvent, GameState } from '../models';
+import * as Action from './strands.actions';
+import { initialState } from './strands.state';
 
 export const reducer = createReducer(
   initialState,
@@ -29,7 +29,7 @@ export const reducer = createReducer(
         activeHintInAnimation: true,
         tipsUsed: state.tipsUsed + 1,
         gameEvents: [...state.gameEvents, GameEvent.HintUsed],
-        letterStates: state.letterStates.map(l => {
+        letterStates: state.letterStates.map((l) => {
           const index = activeHintSolution.locations.findIndex(loc => loc.row === l.location.row && loc.col === l.location.col);
           return {
             ...l,
@@ -49,7 +49,7 @@ export const reducer = createReducer(
       ...state,
       tipsUsed: state.tipsUsed + 1,
       gameEvents: [...state.gameEvents, GameEvent.HintUsed],
-      letterStates: state.letterStates.map(l => {
+      letterStates: state.letterStates.map((l) => {
         if (selectedSolution.locations.some(loc => loc.row === l.location.row && loc.col === l.location.col)) {
           return {
             ...l,
@@ -73,15 +73,18 @@ export const reducer = createReducer(
     if (letterAlreadyInTryAt !== -1) {
       // remove all letters after this letter
       updatedCurrentTry = currentTryLetterStates.slice(0, letterAlreadyInTryAt + 1).map(l => l.location);
-    } else {
+    }
+    else {
       if (state.currentTry.length === 0) {
         updatedCurrentTry = [locationToAppend];
-      } else {
+      }
+      else {
         // require coordinates of latest try point and locationToAppend to touch on sides or corners
         const lastTryLocation = currentTryLetterStates[currentTryLetterStates.length - 1].location;
         if (Math.abs(lastTryLocation.row - locationToAppend.row) <= 1 && Math.abs(lastTryLocation.col - locationToAppend.col) <= 1) {
           updatedCurrentTry = [...state.currentTry, locationToAppend];
-        } else {
+        }
+        else {
           updatedCurrentTry = [locationToAppend];
         }
       }
@@ -90,14 +93,16 @@ export const reducer = createReducer(
       ...state,
       ...status(updatedCurrentTry.map(l => letterAt(state.letterStates, l).letter).join('')),
       currentTry: updatedCurrentTry,
-      tryConnections: updatedCurrentTry.map((letter, index) => (index > 0 ? {
-        isGuessActive: true,
-        isSolutionActive: false,
-        isSuperSolutionActive: false,
-        from: state.currentTry[index - 1],
-        to: letter,
-      } : null)).filter(c => c !== null),
-      letterStates: state.letterStates.map(l => {
+      tryConnections: updatedCurrentTry.map((letter, index) => index > 0
+        ? {
+            isGuessActive: true,
+            isSolutionActive: false,
+            isSuperSolutionActive: false,
+            from: state.currentTry[index - 1],
+            to: letter,
+          }
+        : null).filter(c => c !== null),
+      letterStates: state.letterStates.map((l) => {
         return {
           ...l,
           isGuessActive: updatedCurrentTry.some(loc => loc.row === l.location.row && loc.col === l.location.col),
@@ -131,7 +136,7 @@ export const reducer = createReducer(
           ...status('Bereits gefunden'),
           currentTry: [],
           tryConnections: [],
-          letterStates: state.letterStates.map(l => {
+          letterStates: state.letterStates.map((l) => {
             return {
               ...l,
               isGuessActive: false,
@@ -142,7 +147,7 @@ export const reducer = createReducer(
       // new solution found
       return {
         ...state,
-        solutionStates: state.solutionStates.map(s => {
+        solutionStates: state.solutionStates.map((s) => {
           if (s === solutionMatch) {
             return {
               ...s,
@@ -152,13 +157,12 @@ export const reducer = createReducer(
           return s;
         }),
         gameEvents: [...state.gameEvents, solutionMatch.isSuperSolution ? GameEvent.SuperSolutionFound : GameEvent.SolutionFound],
-        ...(state.solutionStates.every(s => s.found || s === solutionMatch)
+        ...state.solutionStates.every(s => s.found || s === solutionMatch)
           ? status('GEWONNEN!', AUTO_TEXT_COLOR_SUPER_SOLUTION)
-          : (solutionMatch.isSuperSolution
+          : solutionMatch.isSuperSolution
             ? status('DURCHGANGSWORT!', AUTO_TEXT_COLOR_SUPER_SOLUTION)
-            : status(state.currentTry.map(loc => letterAt(state.letterStates, loc).letter).join(''), AUTO_TEXT_COLOR_SOLUTION)
-          )
-        ),
+            : status(state.currentTry.map(loc => letterAt(state.letterStates, loc).letter).join(''), AUTO_TEXT_COLOR_SOLUTION),
+
         currentTry: [],
         tryConnections: [],
         fixedConnections: [
@@ -170,7 +174,7 @@ export const reducer = createReducer(
             isSuperSolutionActive: solutionMatch.isSuperSolution,
           })),
         ],
-        letterStates: state.letterStates.map(l => {
+        letterStates: state.letterStates.map((l) => {
           if (solutionMatch.locations.some(loc => loc.row === l.location.row && loc.col === l.location.col)) {
             return {
               ...l,
@@ -202,7 +206,7 @@ export const reducer = createReducer(
         ...status('Zu kurz!'),
         currentTry: [],
         tryConnections: [],
-        letterStates: state.letterStates.map(l => {
+        letterStates: state.letterStates.map((l) => {
           return {
             ...l,
             isGuessActive: false,
@@ -216,7 +220,7 @@ export const reducer = createReducer(
         ...status('Bereits gefunden'),
         currentTry: [],
         tryConnections: [],
-        letterStates: state.letterStates.map(l => {
+        letterStates: state.letterStates.map((l) => {
           return {
             ...l,
             isGuessActive: false,
@@ -230,7 +234,7 @@ export const reducer = createReducer(
         ...status('Nicht im Wörterbuch'),
         currentTry: [],
         tryConnections: [],
-        letterStates: state.letterStates.map(l => {
+        letterStates: state.letterStates.map((l) => {
           return {
             ...l,
             isGuessActive: false,
@@ -241,7 +245,7 @@ export const reducer = createReducer(
     return {
       ...state,
       nonSolutionWordsFound: [...state.nonSolutionWordsFound, tryWord],
-      letterStates: state.letterStates.map(l => {
+      letterStates: state.letterStates.map((l) => {
         const index = state.currentTry.findIndex(loc => loc.row === l.location.row && loc.col === l.location.col);
         if (index !== -1) {
           return {
@@ -262,7 +266,7 @@ export const reducer = createReducer(
   on(Action.updateLetterState, (state, { letterUpdate }) => {
     return {
       ...state,
-      letterStates: state.letterStates.map(l => {
+      letterStates: state.letterStates.map((l) => {
         if (l.location.row === letterUpdate.location.row && l.location.col === letterUpdate.location.col) {
           return {
             ...l,
