@@ -25,9 +25,9 @@ export class ChangelogComponent implements OnDestroy {
 
   constructor() {
     const subscription = this.store.select(changelogSeenForVersionSelector).pipe(take(1)).subscribe((changelogSeenFor) => {
-      this.changeLog = changeLog.map(versionChange => ({
-        ...versionChange,
-        isNew: isVersionNewer(versionChange.version, changelogSeenFor),
+      this.changeLog = changeLog.map(versionChangeDef => ({
+        ...versionChangeDef,
+        isNew: isVersionNewer(versionChangeDef.version, changelogSeenFor),
       }));
       this.store.dispatch(CoreAction.setChangelogSeenForVersion(packageJson.version));
     });
