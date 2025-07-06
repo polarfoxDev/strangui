@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:3000',
+  riddleBaseUrl: 'http://localhost:3000/de',
 };

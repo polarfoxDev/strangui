@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.stränge.de',
+  riddleBaseUrl: 'https://riddles.strands.polarnight.eu/de',
 };

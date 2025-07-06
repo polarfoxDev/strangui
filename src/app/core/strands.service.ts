@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '@env/environment';
@@ -19,9 +19,6 @@ export class StrandsService {
   }
 
   loadRiddle(date: string): Observable<RiddleConfigUnknownVersion> {
-    const params = new HttpParams()
-      .set('primaryLanguage', navigator.language)
-      .set('additionalLanguages', navigator.languages.join(','));
-    return this.http.get<RiddleConfigUnknownVersion>(new URL(`${environment.apiBaseUrl}/riddles/${date}`).toString(), { params });
+    return this.http.get<RiddleConfigUnknownVersion>(new URL(`${environment.riddleBaseUrl}/${date}`).toString());
   }
 }

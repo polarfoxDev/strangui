@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as AuthAction from '@auth-state/auth.actions';
 import * as CoreAction from '@core-state/core.actions';
 import { changelogSeenForVersionSelector } from '@core-state/core.selectors';
 import { UpdateService } from '@core/update.service';
@@ -28,7 +27,6 @@ export class AppComponent {
 
   constructor() {
     this.store.dispatch(CoreAction.loadCoreState());
-    this.store.dispatch(AuthAction.checkCredentials());
     this.updateService.migrateData().subscribe((migratedTo) => {
       this.store.dispatch(CoreAction.setStorageVersion(migratedTo));
       this.migrationRunning = false;
