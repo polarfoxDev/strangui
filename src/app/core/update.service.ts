@@ -185,6 +185,23 @@ export class UpdateService {
         }
         return of(storageVersion);
       }),
+      map((storageVersion) => {
+        if (isVersionNewer('1.12.5', storageVersion)) {
+          console.info('Migrating data from version', storageVersion, 'to 1.12.5');
+          const metadataMap: GameMetadataByDateMap = JSON.parse(localStorage.getItem('gameOverview') ?? 'null');
+          if (metadataMap) {
+            const brokenGameStates = Object.keys(metadataMap).filter(date => date >= '2025-07-15');
+            brokenGameStates.forEach((date) => {
+              this.moveToLocalStorageBackup(`game_${metadataMap[date].id}`, '1_12_5');
+              delete metadataMap[date];
+            });
+            this.moveToLocalStorageBackup('gameOverview', '1_12_5');
+            localStorage.setItem('gameOverview', JSON.stringify(metadataMap));
+          }
+          return '1.12.5';
+        }
+        return storageVersion;
+      }),
     );
   }
 
