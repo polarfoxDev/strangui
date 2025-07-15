@@ -2,6 +2,13 @@ import { ChangeType, VersionChangeDefinition } from './changelogs.models';
 
 export const changeLog: VersionChangeDefinition[] = [
   {
+    version: '1.12.5',
+    date: '2025-07-15',
+    changes: [
+      { type: ChangeType.Bugfix, description: 'Rätsel ab dem 15.07. sind jetzt lösbar und es werden nicht mehr alle Lösungswörter als Hinweiswörter erkannt' },
+    ],
+  },
+  {
     version: '1.12.4',
     date: '2025-07-06',
     changes: [

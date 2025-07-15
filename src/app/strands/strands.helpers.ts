@@ -11,7 +11,8 @@ export const letterAt = (letterStates: Letter[], location: LetterLocation): Lett
 export const getSolutionCompareString = (letterStates: Letter[], letterLocations: LetterLocation[]): string => {
   const printedWord = letterLocations.map(loc => letterAt(letterStates, loc)).map(l => l.letter).join('');
   const sortedLetterLocations = [...letterLocations].sort((a, b) => a.row - b.row || a.col - b.col);
-  const compareString = JSON.stringify([printedWord, sortedLetterLocations]);
+  const sortedLetterLocationsFormatted = sortedLetterLocations.map(loc => `(${loc.row}|${loc.col})`).join('');
+  const compareString = JSON.stringify([printedWord, sortedLetterLocationsFormatted]);
   return compareString;
 };
 
