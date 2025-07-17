@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://stränge.de/" target="blank"><img src="./docs/icon-1024x1024.png" width="120" alt="stränge.de Logo" /></a>
 </p>
-<h1 align="center">stränge.de</h1>
+<h1 align="center"><a href="https://stränge.de/" target="blank">stränge.de</a></h1>
 <p align="center">
   A web-based daily German word puzzle game.
 </p>
