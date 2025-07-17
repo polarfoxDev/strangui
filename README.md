@@ -15,6 +15,19 @@ You can access the current German language version at [stränge.de](https://str�
 * **Tutorial**: Guides new users on how to play (see [`src/app/tutorial/`](src/app/tutorial/)).
 * **Progressive Web App (PWA)**: Installable on your device for an app-like experience, with offline capabilities (configured in [`src/app/app.config.ts`](src/app/app.config.ts) and [`./ngsw-config.json`](./ngsw-config.json)).
 
+## Other Components
+
+### Riddle Generation
+
+The riddles are stored as JSON files on a simple web server.
+
+Generation of them is done by a combination of some microservices:
+
+* redis or any other drop-in replacement for it – used as a message queue.
+* [straenge-concept-worker](https://github.com/polarfoxDev/straenge-concept-worker) – Generates concepts (super solution, theme and word pool) with OpenAI requests for the actual generator and adds them to the queue. not required, concepts can be provided manually.
+* [straenge-riddle-worker](https://github.com/polarfoxDev/straenge-riddle-worker) – Generates riddles based on concepts from the queue. This part is pretty complex and computationally intensive, so it can take a while and can be parallelized by running multiple instances of this worker.
+* [straenge-results-worker](https://github.com/polarfoxDev/straenge-results-worker) – Stores results from the queue to JSON files.
+
 ## Tech Stack
 
 * **Frontend**: [Angular](https://angular.io/) (v19)
@@ -38,10 +51,10 @@ To get a local copy up and running, follow these simple steps.
 
 ### Installation
 
-1. Clone the repository (replace `your-username` with the actual path if you fork it):
+1. Clone the repository (replace `polarfoxDev` with the actual path if you fork it):
 
     ```bash
-    git clone https://github.com/your-username/strangui.git
+    git clone https://github.com/polarfoxDev/strangui.git
     ```
 
 2. Navigate to the project directory:
