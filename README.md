@@ -1,10 +1,16 @@
+<p align="center">
+  <a href="https://stränge.de/" target="blank"><img src="./docs/icon-1024x1024.png" width="120" alt="stränge.de Logo" /></a>
+</p>
+<h1 align="center">stränge.de</h1>
+<p align="center">
+  A web-based daily German word puzzle game.
+</p>
+
 # strangui
 
-strangui is the frontend code of a web application for playing daily word puzzles.
+This repository contains the frontend Angular code that powers stränge.de.
 
-## Live Demo
-
-You can access the current German language version at [stränge.de](https://stränge.de).
+<img src="./docs/demo.gif" alt="stränge.de Demo" width="220">
 
 ## Features
 
