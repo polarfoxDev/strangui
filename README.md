@@ -30,7 +30,7 @@ The riddles are stored as JSON files on a simple web server.
 Generation of them is done by a combination of some microservices:
 
 * redis or any other drop-in replacement for it – used as a message queue.
-* [straenge-concept-worker](https://github.com/polarfoxDev/straenge-concept-worker) – Generates concepts (super solution, theme and word pool) with OpenAI requests for the actual generator and adds them to the queue. not required, concepts can be provided manually.
+* [straenge-concept-worker](https://github.com/polarfoxDev/straenge-concept-worker) – Generates concepts (super solution, theme and word pool) with OpenAI requests for the actual generator and adds them to the queue. Not required, concepts can be provided manually.
 * [straenge-riddle-worker](https://github.com/polarfoxDev/straenge-riddle-worker) – Generates riddles based on concepts from the queue. This part is pretty complex and computationally intensive, so it can take a while and can be parallelized by running multiple instances of this worker.
 * [straenge-results-worker](https://github.com/polarfoxDev/straenge-results-worker) – Stores results from the queue to JSON files.
 
